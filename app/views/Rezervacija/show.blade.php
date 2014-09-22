@@ -62,10 +62,12 @@ Nije definirano
 </dd>
 <dt>Broj učenika</dt><dd>{{ $rezervacija->broj_ucenika }}</dd>
 </dl>
+@if(strtotime($rezervacija->pocetak_rada) > time())
 {{ Form::open(array('action' => array('RezervacijaController@destroy', $rezervacija->id), 'method' => 'delete')) }}
 {{ Form::submit('Otkaži rezervaciju',
 array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}
+@endif
 </div>
 </div>
 </div>

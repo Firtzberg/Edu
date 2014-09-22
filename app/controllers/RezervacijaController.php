@@ -41,10 +41,31 @@ class RezervacijaController extends \BaseController {
 	public function store()
 	{
 		$r = new Rezervacija();
+
+		//provjera broja učenika
+		$r->broj_ucenika = Input::get('broj_ucenika');
+		if($r->broj_ucenika < 1){
+			Session::flash('poruka', 'Broj učenika mora biti barem 1.');
+			return Redirect::action('RezervacijaController@create')
+			->withInput();
+		}
+
+		//provjera vremena početka
 		$dto = new DateTime(Input::get('datum'));
 		$dto->setTime(Input::get('startHour'), Input::get('startMinute'));
 		$r->pocetak_rada = $dto->format('Y-m-d H:i:s');
-
+		if($dto < new DateTime()){
+			Session::flash('poruka', 'Zadani početak rada je prošao. Nije moguće napraviti rezervaciju u prošlosti.');
+			return Redirect::action('RezervacijaController@create')
+			->withInput();
+		}
+		//provjera trajanja (količina i mjerna jedinica)
+		$r->kolicina = Input::get('kolicina');
+		if($r->kolicina < 1){
+			Session::flash('poruka', 'Trajanje instrukcija mora biti barem 1 sat.');
+			return Redirect::action('RezervacijaController@create')
+			->withInput();
+		}
 		$mjera = Mjera::find(Input::get('mjera'));
 		if(!$mjera)
 		{
@@ -53,12 +74,11 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 		$r->mjera_id = $mjera->id;
-		$r->kolicina = Input::get('kolicina');
 		$dto->add(new DateInterval('PT'.($mjera->trajanje*$r->kolicina).'M'));
 		$kraj_rada = $dto->format('Y-m-d H:i:s');
-		$r->broj_ucenika = Input::get('broj_ucenika');
 		$r->instruktor_id = Auth::id();
 
+		//provjera zauzetosti instruktora
 		$preklapanja = Rezervacija::where('instruktor_id', '=', $r->instruktor_id)
 		->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id')
 		->where('pocetak_rada', '<', $kraj_rada)
@@ -71,6 +91,7 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 
+		//provjera postojanja učionice
 		$ucionica = Ucionica::find(Input::get('ucionica'));
 		if(!$ucionica){
 			Session::flash('poruka', 'Odabrana učionica nije pronađena u sustavu.');
@@ -78,12 +99,14 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 
+		//provjera kapaciteta učionice
 		if($ucionica->max_broj_ucenika < $r->broj_ucenika){
 			Session::flash('poruka', 'Odabrana učionica nema dovoljnu veličinu.');
 			return Redirect::action('RezervacijaController@create')
 			->withInput();
 		}
 
+		//provjera zauzetosti učionice
 		$preklapanja = Rezervacija::where('ucionica_id', '=', $ucionica->id)
 		->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id')
 		->where('pocetak_rada', '<', $kraj_rada)
@@ -134,7 +157,16 @@ class RezervacijaController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Rezervacija::find($id)->delete();
+		$r = Rezervacija::find($id);
+		if(!$r){
+			Session::flash('poruka', 'Rezervacija nije pronađena u sustavu.');
+			return Redirect::action('InstruktorController@show', Auth::id());
+		}
+		if(strtotime($r->pocetak_rada) < time() && !Auth::user()->is_admin) {
+			Session::flash('poruka', 'Samo je administratoru dozvoljeno ukloniti rezervaciju u prošlosti.');
+			return Redirect::action('RezervacijaController@show', $id);
+		}
+		$r->delete();
 		Session::flash('poruka', 'Rezervacija je oslobođena.');
 		return Redirect::action('InstruktorController@show', Auth::id());
 	}
@@ -169,6 +201,14 @@ class RezervacijaController extends \BaseController {
 		if(!(Input::has('za_tvrtku')&& Input::has('ukupno_uplaceno')&&Input::get('za_instruktora')))
 		{
 			Session::flash('poruka', 'Niste unijeli sve potrebne podatke.');
+			return Redirect::action('RezervacijaController@naplati', $id)
+			->withInput();
+		}
+
+
+		if(Input::get('za_tvrtku') < 0 || Input::get(za_instruktora) < 0)
+		{
+			Session::flash('poruka', 'Nepravilan unos. Iznosi en mogu biti negativni.');
 			return Redirect::action('RezervacijaController@naplati', $id)
 			->withInput();
 		}
