@@ -17,13 +17,13 @@ class RezervacijaController extends \BaseController {
 	public function create()
 	{
 		$this->layout->title = "Nova rezervacija";
-		$column = Ucionica::select('adresa')->distinct()->get();
-		foreach ($column as $data) {
-			$address[$data->adresa] = $data->adresa;
+		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
+		foreach ($rows as $row) {
+			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
 		}
 		$this->layout->content =
 		$v = View::make('Rezervacija.create')
-		->with('adrese', $address);
+		->with('ucionice', $ucionice);
 		return $this->layout;
 	}
 
@@ -64,25 +64,31 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 
-		$match = Ucionica::where('adresa', '=', Input::get('adresa'))
-		->where('max_broj_ucenika', '>=', $r->broj_ucenika)
-		->orderBy('max_broj_ucenika')
-		->get();
-		foreach ($match as $mozda) {
-			$preklapanja = Rezervacija::where('ucionica_id', '=', $mozda->id)
-			->where('pocetak_rada', '<', $r->kraj_rada)
-			->where('kraj_rada', '>', $r->pocetak_rada)
-			->count();
-			if($preklapanja==0)
-			{
-				$r->ucionica_id = $mozda->id;
-				break;
-			}
+		$ucionica = Ucionica::where('id', Input::get('ucionica'))
+		->first();
+		if(!$ucionica){
+			Session::flash('poruka', 'Odabrana učionica nije pronađena u sustavu.');
+			return Redirect::action('RezervacijaController@create')
+			->withInput();
 		}
 
-		if(!isset($r->ucionica_id))
+		if($ucionica->max_broj_ucenika < $r->broj_ucenika){
+			Session::flash('poruka', 'Odabrana učionica nema dovoljnu veličinu.');
+			return Redirect::action('RezervacijaController@create')
+			->withInput();
+		}
+
+		$preklapanja = Rezervacija::where('ucionica_id', '=', $ucionica->id)
+		->where('pocetak_rada', '<', $r->kraj_rada)
+		->where('kraj_rada', '>', $r->pocetak_rada)
+		->count();
+		if($preklapanja==0)
 		{
-			Session::flash('poruka', 'U zdanome vremenu nema slobodne učionice na traženoj adresi sa potrebnim kapacitetom.');
+			$r->ucionica_id = $ucionica->id;
+		}
+		else
+		{
+			Session::flash('poruka', 'U zdanome vremenu odabrana učionica nije slobodna.');
 			return Redirect::action('RezervacijaController@create')
 			->withInput();
 		}

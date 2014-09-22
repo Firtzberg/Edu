@@ -35,8 +35,8 @@ array('class' => 'form-control')) }}</div>
 </div>
 </div>
 <div class = "form-group">
-{{ Form::label('Adresa') }}
-{{ Form::select('adresa', $adrese, null,
+{{ Form::label('Učionica') }}
+{{ Form::select('ucionica', $ucionice, null,
 $attributes = array(
 'class' =>'form-control',
 'required' => 'required')) }}
