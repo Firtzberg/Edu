@@ -36,7 +36,7 @@ array('class' => 'btn btn-warning')) }}
 <dl class="dl-horizontal">
 <dt>Instruktor</dt><dd>{{ link_to_action('InstruktorController@show', $rezervacija->instruktor->name, array('id' => $rezervacija->instruktor->id)) }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
-<dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada }}</dd>
+<dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>
 <dt>Učionica</dt><dd>
 @if(is_null($rezervacija->ucionica))
 Uklonjena

@@ -36,4 +36,16 @@ class Rezervacija extends Eloquent {
 		return $this->hasOne('Naplata');
 	}
 
+	public function mjera()
+	{
+		return $this->belongsTo('Mjera','mjera_id');
+	}
+
+	public function kraj_rada()
+	{
+		$dt = new DateTime($this->pocetak_rada);
+		$dt->add(new DateInterval('PT'.$this->mjera->trajanje*$this->kolicina.'M'));
+		return $dt->format('Y-m-d H:i:s');
+	}
+
 }

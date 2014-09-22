@@ -7,30 +7,36 @@
 {{ Form::input('date', 'datum', date('Y-m-d'),
 $attributes = array(
 'class' =>'form-control',
-'required' => 'required')) }}
+'required' => 'required',
+'min' => date('Y-m-d'))) }}
 <div class = "form-group">
 {{ Form::label('Vrijeme početka') }}
 <div class="container-fluid">
 <div class="row">
-<div class="col-xs-4">
+<div class="col-xs-6">
 {{ Form::selectRange('startHour', 8, 22, null,
 array('class' => 'form-control')) }}</div>
-<div class="col-xs-4">
-{{ Form::select('startMinute', array(0 => '00', 15 => '15', 30 => '30', 45 =>'45'), null,
+<div class="col-xs-6">
+{{ Form::select('startMinute', array(0 => '00', 30 => '30'), null,
 array('class' => 'form-control')) }}</div>
 </div>
 </div>
 </div>
 <div class = "form-group">
-{{ Form::label('Vrijeme završetka') }}
+{{ Form::label('Trajanje') }}
 <div class="container-fluid">
 <div class="row">
-<div class="col-xs-4">
-{{ Form::selectRange('endHour', 8, 22, null,
-array('class' => 'form-control')) }}</div>
-<div class="col-xs-4">
-{{ Form::select('endMinute', array(0 => '00', 15 => '15', 30 => '30', 45 =>'45'), null,
-array('class' => 'form-control')) }}</div>
+<div class="col-xs-6">
+{{ Form::input('number', 'kolicina', $value = 1,
+$attributes = array(
+'class' =>'form-control',
+'required' => 'required',
+'min' => 1)) }}</div>
+<div class="col-xs-6">
+{{ Form::select('mjera', $mjere, null,
+$attributes = array(
+'class' => 'form-control',
+'required' => 'required')) }}</div>
 </div>
 </div>
 </div>
@@ -58,7 +64,8 @@ $attributes = array(
 {{ Form::input('number', 'broj_ucenika', $value = null,
 $attributes = array(
 'class' =>'form-control',
-'required' => 'required')) }}
+'required' => 'required',
+'min' => 1)) }}
 </div>
 <div class = "form-group">
 @if(Session::has('poruka'))

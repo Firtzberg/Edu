@@ -1,13 +1,16 @@
 <?php
 
-class Naplata extends Eloquent {
+class Mjera extends Eloquent{
 
 	/**
 	 * The database table used by the model.
 	 *
 	 * @var string
 	 */
-	protected $table = 'naplate';
+	protected $table = 'mjere';
+
+	//Disables timestamps
+	public $timestamps = false;
 
 	/**
 	 * The database table used by the model.
@@ -15,10 +18,4 @@ class Naplata extends Eloquent {
 	 * @var string
 	 */
 	protected $guarded = array('id');
-
-	public function rezervacija()
-	{
-		return $this->belongsTo('Rezervacija','rezervacija_id');
-	}
-
 }

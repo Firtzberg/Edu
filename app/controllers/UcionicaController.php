@@ -158,7 +158,7 @@ class UcionicaController extends \BaseController {
 			if(empty($r->predmet))
 				$r->predmet = "Nema predmeta";
 			$pocetak = strtotime($r->pocetak_rada);
-			$kraj = strtotime($r->kraj_rada);
+			$kraj = strtotime($r->kraj_rada());
 			$d = $dani[date('N',$pocetak)];
 			$key =date('G:i', $pocetak);
 			$grid[$d][$key] = array('span' => (int)(($kraj-$pocetak)/60/15),
@@ -208,9 +208,9 @@ class UcionicaController extends \BaseController {
 		$time->setISODate($year, $week);
 	    $min = $time->format('Y-m-d H:i:s');
 	    $max = $time->modify('+1 week')->format('Y-m-d H:i:s');
-	    return Rezervacija::where('ucionica_id', '=', $id)
+	    return Rezervacija::with('mjera')
+	    ->where('ucionica_id', '=', $id)
 	    ->whereBetween('pocetak_rada', array($min, $max))
-	    ->whereBetween('kraj_rada', array($min, $max))
 	    ->with('instruktor')
 	    ->get();
 	}

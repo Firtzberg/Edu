@@ -34,15 +34,15 @@ class IzvjestajController extends BaseController {
 		$godina = $dto->format('o');
 
 		$primanja = Rezervacija::select(DB::raw('weekday(pocetak_rada)+1 as dan, '.
-			'COALESCE(sum(timestampdiff(minute,pocetak_rada,kraj_rada)),0) as minuta, '.
+			'COALESCE(sum(kolicina*trajanje),0) as minuta, '.
 			'COALESCE(sum(za_instruktora),0) as za_instruktora, '.
 			'COALESCE(sum(za_tvrtku),0) as za_tvrtku, '.
 			'COALESCE(sum(ukupno_uplaceno),0) as ukupno_uplaceno'))
-		->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id');
+		->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id')
+		->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id');
 		if(!is_null($id))
 			$primanja = $primanja->where('instruktor_id', '=', $id);
 		$primanja = $primanja->where(DB::raw('yearweek(pocetak_rada, 3)'), '=', $godina.$tjedan)
-		->where(DB::raw('yearweek(kraj_rada, 3)'), '=', $godina.$tjedan)
 		->groupBy(DB::raw('weekday(pocetak_rada)'))
 		->get();
 		$dani = array(1 => 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja');
@@ -116,15 +116,15 @@ class IzvjestajController extends BaseController {
 			$godina = date('Y');
 		
 		$primanja = Rezervacija::select(DB::raw('month(pocetak_rada) as mjesec, '.
-			'COALESCE(sum(timestampdiff(minute,pocetak_rada,kraj_rada)),0) as minuta, '.
+			'COALESCE(sum(kolicina*trajanje),0) as minuta, '.
 			'COALESCE(sum(za_instruktora),0) as za_instruktora, '.
 			'COALESCE(sum(za_tvrtku),0) as za_tvrtku, '.
 			'COALESCE(sum(ukupno_uplaceno),0) as ukupno_uplaceno'))
-		->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id');
+		->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id')
+		->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id');
 		if(!is_null($id))
 			$primanja = $primanja->where('instruktor_id', '=', $id);
 		$primanja = $primanja->where(DB::raw('year(pocetak_rada)'), '=', $godina)
-		->where(DB::raw('year(kraj_rada)'), '=', $godina)
 		->groupBy(DB::raw('month(pocetak_rada)'))
 		->get();
 

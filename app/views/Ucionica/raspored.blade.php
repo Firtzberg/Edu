@@ -7,14 +7,17 @@
 <table class="table table-striped table-bordered table-condensed text-center">
 <tbody>
 	<tr>
-		<th width='{{ 100/(count($grid)+1) }}%'>
+		<th width='{{ 100/(count($grid)+2) }}%'>
 			Vrijeme
 		</th>
 		@foreach($grid as $dan => $podatak)
-		<th width='{{ 100/(count($grid)+1) }}%'>
+		<th width='{{ 100/(count($grid)+2) }}%'>
 			{{ $dan }}
 		</th>
 		@endforeach
+		<th width='{{ 100/(count($grid)+2) }}%'>
+			Vrijeme
+		</th>
 	</tr>
 	@for($i = $startHour*4; $i < ($endHour+1)*4; $i++)
 	<tr height='1'>
@@ -24,7 +27,7 @@
 			$key = ((int)($i/4)).':00';
 			echo "<td rowspan='4'>$key</td>";
 		}
-		else $key = ((int)($i/4)).':'.($i%4*15);
+		else $key = ((int)($i/4)).':'.($i%4*30);
 		?>
 		@foreach($grid as $podatak)
 			@if(isset($podatak[$key]))
@@ -44,8 +47,23 @@
 			</td>
 			@endif
 		@endforeach
+		<?php
+		if($i%4==0)
+		{
+			$key = ((int)($i/4)).':00';
+			echo "<td rowspan='4'>$key</td>";
+		}
+		else $key = ((int)($i/4)).':'.($i%4*30);
+		?>
 	</tr>
 	@endfor
+	<tr>
+		<th>Vrijeme</th>
+		@foreach($grid as $dan => $podatak)
+		<th>{{ $dan }}</th>
+		@endforeach
+		<th>Vrijeme</th>
+	</tr>
 </tbody>
 </table>
 </div>
