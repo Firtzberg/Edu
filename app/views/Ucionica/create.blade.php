@@ -27,9 +27,7 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('kat') }}
 {{ Form::text('kat', $value = null,
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+$attributes) }}
 </div>
 <div class = "form-group">
 {{ Form::label('max_broj_ucenika') }}
@@ -38,9 +36,7 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('opis') }}
 {{ Form::textarea('opis', $value = null,
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+$attributes) }}
 </div>
 <div class = "form-group">
 	@if(Session::has('poruka'))

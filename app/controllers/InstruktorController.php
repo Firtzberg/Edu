@@ -22,15 +22,15 @@ class InstruktorController extends \BaseController {
 	public function login()
 	{
 		if(Auth::check())
-			return Redirect::action('InstruktorController@show', Auth::id())
+			return Redirect::route('Instruktor.show', Auth::id())
 		->with('poruka', 'Već si bio registriran');
 		$remember = Input::get('remember');
 
 		if(Input::has('userName')&&Input::has('lozinka')&&
 			Auth::attempt(array('name' => Input::get('userName'),
 			'password' => Input::get('lozinka')), $remember))
-			return Redirect::action('InstruktorController@show', Auth::id());
-		return Redirect::action('InstruktorController@signIn')
+			return Redirect::route('Instruktor.show', Auth::id());
+		return Redirect::route('signIn')
 		->withInput()
 		->with('poruka', 'Kriv unos!');
 	}
@@ -40,7 +40,7 @@ class InstruktorController extends \BaseController {
 		Auth::logout();
 		if(Session::has('poruka'))
 			Session::flash('poruka', Session::get('poruka'));
-		return Redirect::action('InstruktorController@signIn');
+		return Redirect::route('signIn');
 	}
 
 	public function changePassword($id)
@@ -55,18 +55,18 @@ class InstruktorController extends \BaseController {
 	public function postChangePassword($id)
 	{
 		if(!(Input::has('oldpass')||Auth::user()->is_admin)||!Input::has('newpass')||!Input::has('rep'))
-			return Redirect::action('InstruktorController@changePassword', $id)
+			return Redirect::route('Instruktor.changePassword', $id)
 		->with('poruka', 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
 		$u = User::find($id);
 		if($newpass != $rep||!(Hash::check($oldpass, $u->lozinka)||Auth::user()->is_admin))
-			return Redirect::action('InstruktorController@changePassword', $id)
+			return Redirect::route('Instruktor.changePassword', $id)
 		->with('poruka', 'Kriv unos!');
 		$u->lozinka = Hash::make($newpass);
 		$u->save();
-		return Redirect::action('InstruktorController@show', $id)
+		return Redirect::route('Instruktor.show', $id)
 		->with('poruka', 'Uspješna promjena zaporke!');
 	}
 
@@ -78,8 +78,17 @@ class InstruktorController extends \BaseController {
 	public function index()
 	{
 		$this->layout->title = "Popis Instruktora";
+		if(Input::has('searchString')){
+			$instruktori = User::where('name', 'like', '%'.Input::get('searchString').'%')
+			->orderBy('name');
+			Input::flash();
+		}
+		else
+			$instruktori = User::orderBy('name');
+		$instruktori = $instruktori->paginate(10);
+
 		$this->layout->content = View::make('Instruktor.index')
-		->with('instruktori', User::paginate(10));
+		->with('instruktori', $instruktori);
 		return $this->layout;
 	}
 
@@ -111,7 +120,7 @@ class InstruktorController extends \BaseController {
 				'lozinka' => 'required|min:5|same:ponovljena',
 				'email' => 'email'));
 		if($validator->fails())
-		  	return Redirect::action('InstruktorController@create')
+		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
 	  	->with('poruka', $validator->messages()->first());
 
@@ -121,7 +130,7 @@ class InstruktorController extends \BaseController {
 		$s->email = Input::get('email');
 		$s->lozinka = Hash::make(Input::get('lozinka'));
 		$s->save();
-		return Redirect::action('InstruktorController@index')
+		return Redirect::route('Instruktor.index')
 	  	->with('flash', 'Instruktor je uspješno dodan.');
 	}
 
@@ -135,6 +144,10 @@ class InstruktorController extends \BaseController {
 	public function show($id, $tjedan = null, $godina = null)
 	{
 		$u =  User::find($id);
+		if(!$u){
+			Session::flash('poruka', 'Odabrani instruktor nije pronađen u sustavu.');
+			return Redirect::route('Instruktor.show', Auth::id());
+		}
 		$this->layout->title = $u->name." - Instruktor";
 		$this->layout->content =
 		View::make('Instruktor.show')
@@ -176,7 +189,7 @@ class InstruktorController extends \BaseController {
 			$u->name = Input::get('name');
 		$u->save();
 		Session::flash('poruka', 'Instruktor uspješno uređen');
-		return Redirect::action('InstruktorController@show', $id);
+		return Redirect::route('Instruktor.show', $id);
 	}
 
 
@@ -195,7 +208,7 @@ class InstruktorController extends \BaseController {
 			$u->delete();
 			Session::flash('poruka', 'Instruktor je uspješno uklonjen!');
 		}
-		return Redirect::action('InstruktorController@index');
+		return Redirect::route('Instruktor.index');
 	}
 
 

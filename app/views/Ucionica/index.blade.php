@@ -5,6 +5,15 @@
 {{ Session::get('poruka') }}
 </div>
 @endif
+{{ Form::open(array('route' => array('Ucionica.search'), 'method' => 'get', 'class' => 'form')) }}
+{{ Form::text('searchString', $value = null,
+$attributes = array(
+	'class' => 'form-control',
+	'required' => 'required',
+	'placeholder' => 'Pretraži',
+	'autofocus' => 'autofocus'
+)) }}
+{{ Form::close() }}
 
 <table class="table table-striped">
 	<tbody>
@@ -16,7 +25,7 @@
 @foreach($ucionice as $ucionica)
 <tr>
 	<td>
-{{ link_to_action('UcionicaController@show', $ucionica->naziv, $parameters = array($ucionica->id)) }}
+{{ link_to_route('Ucionica.show', $ucionica->naziv, $parameters = array($ucionica->id)) }}
 	</td>
 	<td>{{ $ucionica->adresa }}</td>
 	<td>{{ $ucionica->max_broj_ucenika }}</td>
@@ -26,6 +35,6 @@
 </table>
 {{ $ucionice->links() }}
 @if(Auth::user()->is_admin)
-{{ link_to_action('UcionicaController@create', 'Dodaj učionicu') }}
+{{ link_to_route('Ucionica.create', 'Dodaj učionicu') }}
 @endif
 </div>

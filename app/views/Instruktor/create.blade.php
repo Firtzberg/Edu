@@ -1,11 +1,11 @@
 <div class="container">
 @if(isset($instruktor))
-{{ Form::model($instruktor, array('action' => array('InstruktorController@update', $instruktor->id),
+{{ Form::model($instruktor, array('route' => array('Instruktor.update', $instruktor->id),
 'method' => 'put',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 <h2 class="form-heading">Uređivaje instruktora</h2>
 @else
-{{ Form::open(array('action' => 'InstruktorController@store',
+{{ Form::open(array('route' => 'Instruktor.store',
 'style' => 'max-width:330px;padding:15px;margin:auto'))}}
 <h2 class="form-heading">Dodavanje instruktora</h2>
 @endif
@@ -24,14 +24,10 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('Zaporka') }}
 {{ Form::password('lozinka',
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+$attributes) }}
 {{ Form::label('Ponovljena zaporka') }}
 {{ Form::password('ponovljena',
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+$attributes) }}
 </div>
 @endif
 <div class = "form-group">
@@ -43,8 +39,7 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('Email') }}
 {{ Form::email('email', $value = null,
-$attributes = array(
-'class' =>'form-control')) }}
+$attributes) }}
 </div>
 <div class = "form-group">
 @if(Session::has('poruka'))

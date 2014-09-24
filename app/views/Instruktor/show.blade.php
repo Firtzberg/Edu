@@ -15,11 +15,11 @@
 </dl>
 
 @yield('raspored')
-{{ Form::open(array('action' => array('InstruktorController@destroy', $instruktor->id), 'method' => 'delete', 'class' => 'form')) }}
+{{ Form::open(array('route' => array('Instruktor.destroy', $instruktor->id), 'method' => 'delete', 'class' => 'form')) }}
 @if(Auth::user()->is_admin || Auth::id() == $instruktor->id)
-{{ link_to_action('InstruktorController@edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}
- {{ link_to_action('IzvjestajController@tjedni_izvjestaj', 'Izvjestaj', array($instruktor->id), array('class' => 'btn btn-default')) }}
- {{ link_to_action('InstruktorController@changePassword', 'Promijeni zaporku', array($instruktor->id), array('class' => 'btn btn-default')) }} 
+{{ link_to_route('Instruktor.edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}
+ {{ link_to_route('Izvjestaj.tjedni', 'Izvjestaj', array($instruktor->id), array('class' => 'btn btn-default')) }}
+ {{ link_to_route('Instruktor.changePassword', 'Promijeni zaporku', array($instruktor->id), array('class' => 'btn btn-default')) }} 
 @endif
 @if(Auth::user()->is_admin&& !$instruktor->is_admin)
 {{ Form::submit('Ukloni', array(

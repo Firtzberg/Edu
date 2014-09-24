@@ -12,7 +12,7 @@
 <h4>Nije moguće naplatiti prije odrade instrukcija.</h4>
 @else
 <h4>Naplata nije zvršena.</h4>
-{{ link_to_action('RezervacijaController@naplati', 'Naplati', array($rezervacija->id),
+{{ link_to_route('Rezervacija.naplati', 'Naplati', array($rezervacija->id),
 array('class' => 'btn btn-primary')) }}
 @endif
 @else
@@ -23,8 +23,8 @@ array('class' => 'btn btn-primary')) }}
 <dt>Za instruktora</dt><dd>{{ $rezervacija->naplata->za_instruktora }}</dd>
 <dt>Za tvrtku</dt><dd>{{ $rezervacija->naplata->za_tvrtku }}</dd>
 </dl>
-{{ Form::open(array('action' => array('RezervacijaController@destroy_naplata', $rezervacija->id), 'method' => 'delete')) }}
-{{ link_to_action('RezervacijaController@naplati', 'Uredi naplatu', array($rezervacija->id),
+{{ Form::open(array('action' => array('Rezervacija.destroy_naplata', $rezervacija->id), 'method' => 'delete')) }}
+{{ link_to_route('Rezervacija.naplati', 'Uredi naplatu', array($rezervacija->id),
 array('class' => 'btn btn-primary')) }}
  {{ Form::submit('Ukloni naplatu',
 array('class' => 'btn btn-warning')) }}
@@ -34,14 +34,14 @@ array('class' => 'btn btn-warning')) }}
 
 <div class="col-sm-6">
 <dl class="dl-horizontal">
-<dt>Instruktor</dt><dd>{{ link_to_action('InstruktorController@show', $rezervacija->instruktor->name, array('id' => $rezervacija->instruktor->id)) }}</dd>
+<dt>Instruktor</dt><dd>{{ link_to_route('Instruktor.show', $rezervacija->instruktor->name, array('id' => $rezervacija->instruktor->id)) }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
 <dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>
 <dt>Učionica</dt><dd>
 @if(is_null($rezervacija->ucionica))
 Uklonjena
 @else
-{{ link_to_action('UcionicaController@show',
+{{ link_to_route('Ucionica.show',
 	$rezervacija->ucionica->naziv.', '.$rezervacija->ucionica->adresa,
 	array($rezervacija->ucionica->id)) }}
 @endif
@@ -63,7 +63,7 @@ Nije definirano
 <dt>Broj učenika</dt><dd>{{ $rezervacija->broj_ucenika }}</dd>
 </dl>
 @if(strtotime($rezervacija->pocetak_rada) > time())
-{{ Form::open(array('action' => array('RezervacijaController@destroy', $rezervacija->id), 'method' => 'delete')) }}
+{{ Form::open(array('action' => array('Rezervacija.destroy', $rezervacija->id), 'method' => 'delete')) }}
 {{ Form::submit('Otkaži rezervaciju',
 array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}

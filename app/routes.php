@@ -10,35 +10,9 @@
 | and give it the Closure to execute when that URI is requested.
 |
 */
-Route::filter('admin', function(){
-	if(!Auth::check()||!Auth::user()->is_admin)
-	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
-		return Redirect::to('logout')
-		->with('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
-	}
-});
-Route::filter('myProfile', function($route){
-	$id = $route->getParameter('id');
-	if($id == null)
-		$id = $route->getParameter('Instruktor');
-	if(!Auth::check()||!(Auth::user()->is_admin||Auth::id()==$id))
-	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
-		return Redirect::to('logout');
-	}
-});
-Route::filter('myRezervacija', function($route){
-	$id = $route->getParameter('id');
-	if($id == null)
-		$id = $route->getParameter('Rezervacija');
-	if(!Auth::check()||!(Auth::user()->is_admin||
-		Auth::id()==Rezervacija::find($id)->instruktor_id))
-	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
-		return Redirect::to('logout');
-	}
-});
+Route::pattern('id', '[0-9]+');
+Route::pattern('tjedan', '[0-9]+');
+Route::pattern('godina', '[0-9]+');
 
 Route::get('/signin', array('as' => 'signIn', 'uses' => 'InstruktorController@signIn'));
 Route::get('/login', array('as' => 'signIn2', 'uses' => 'InstruktorController@signIn'));
@@ -48,22 +22,28 @@ Route::get('/logout', array('as' => 'logout', 'uses' => 'InstruktorController@lo
 
 Route::group(array('before' => 'auth'), function(){
 
+//search
+Route::get('/Instruktor/search', array('as' => 'Instruktor.search', 'uses' => 'InstruktorController@index'));
+Route::get('/Ucionica/search', array('as' => 'Ucionica.search', 'uses' => 'UcionicaController@index'));
+
+
 Route::resource('Ucionica', 'UcionicaController');
 Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index', 'update', 'edit')));
 Route::resource('Instruktor', 'InstruktorController');
 
-Route::get('/Instruktor/{id}/changePassword', array('as' => 'changePassword', 'uses' => 'InstruktorController@changePassword'));
-Route::post('/Instruktor/{id}/changePassword', array('as' => 'pchangePassword', 'uses' => 'InstruktorController@postChangePassword'));
+Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
+Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));
 
-Route::get('/Ucionica/{id}/{tjedan?}/{godina?}', array('uses' => 'UcionicaController@show', 'as' => 'UcionicaController@showT'));
-Route::get('/Instruktor/{id}/{tjedan?}/{godina?}', array('uses' => 'InstruktorController@show', 'as' => 'InstruktorController@showT'));
+Route::get('/Ucionica/{id}/{tjedan?}/{godina?}', array('uses' => 'UcionicaController@show', 'as' => 'Ucionica.raspored'));
+Route::get('/Instruktor/{id}/{tjedan?}/{godina?}', array('uses' => 'InstruktorController@show', 'as' => 'Instruktor.raspored'));
 
-Route::get('/Rezervacija/{id}/naplati', array('uses' => 'RezervacijaController@naplati', 'as' => 'RezervacijaController@naplati'));
-Route::put('/Rezervacija/{id}/naplata', array('uses' => 'RezervacijaController@naplata', 'as' => 'RezervacijaController@naplata'));
-Route::delete('/Rezervacija/{id}/destroy_naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'RezervacijaController@destroy_naplata'));
+Route::get('/Rezervacija/{id}/naplati', array('uses' => 'RezervacijaController@naplati', 'as' => 'Rezervacija.naplati'));
+Route::put('/Rezervacija/{id}/naplata', array('uses' => 'RezervacijaController@naplata', 'as' => 'Rezervacija.naplata'));
+Route::delete('/Rezervacija/{id}/destroy_naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Rezervacija.destroy_naplata'));
 
-Route::get('/Izvjestaj/{id}/Godina/{godina?}', array('uses' => 'IzvjestajController@godisnji_izvjestaj', 'as' => 'IzvjestajController@godisnji_izvjestaj'));
-Route::get('/Izvjestaj/{id}/Tjedan/{tjedan?}/{godina?}', array('uses' => 'IzvjestajController@tjedni_izvjestaj', 'as' => 'IzvjestajController@tjedni_izvjestaj'));
-Route::get('/Izvjestaj/Godina/{godina?}', array('uses' => 'IzvjestajController@ukupni_godisnji_izvjestaj', 'as' => 'IzvjestajController@ukupni_godisnji_izvjestaj'));
-Route::get('/Izvjestaj/Tjedan/{tjedan?}/{godina?}', array('uses' => 'IzvjestajController@ukupni_tjedni_izvjestaj', 'as' => 'IzvjestajController@ukupni_tjedni_izvjestaj'));
+Route::get('/Izvjestaj/{id}/Godina/{godina?}', array('uses' => 'IzvjestajController@godisnji_izvjestaj', 'as' => 'Izvjestaj.godisnji'));
+Route::get('/Izvjestaj/{id}/Tjedan/{tjedan?}/{godina?}', array('uses' => 'IzvjestajController@tjedni_izvjestaj', 'as' => 'Izvjestaj.tjedni'));
+Route::get('/Izvjestaj/Godina/{godina?}', array('uses' => 'IzvjestajController@ukupni_godisnji_izvjestaj', 'as' => 'Izvjestaj.ukupni_godisnji'));
+Route::get('/Izvjestaj/Tjedan/{tjedan?}/{godina?}', array('uses' => 'IzvjestajController@ukupni_tjedni_izvjestaj', 'as' => 'Izvjestaj.ukupni_tjedni'));
+
 });

@@ -3,16 +3,16 @@
 Godišnji izvjestaj
 @if(isset($instruktor))
  instruktora
-{{ link_to_action('InstruktorController@show', $instruktor->name, array('id' => $instruktor->id)) }}
+{{ link_to_route('Instruktor.show', $instruktor->name, array('id' => $instruktor->id)) }}
 @endif
  za {{ $godina }}. godinu</p>
 <ul class="pager">
 @if(isset($instruktor))
-<li class="previous">{{ link_to_action('IzvjestajController@godisnji_izvjestaj', '<< Prethodna godina', array('id' => $instruktor->id, 'godina' => $godina - 1)) }}</li>
-<li class="next">{{ link_to_action('IzvjestajController@godisnji_izvjestaj', 'Sljedeća godina >>', array('id' => $instruktor->id, 'godina' => $godina + 1)) }}</li>
+<li class="previous">{{ link_to_route('Izvjestaj.godisnji', '<< Prethodna godina', array('id' => $instruktor->id, 'godina' => $godina - 1)) }}</li>
+<li class="next">{{ link_to_route('Izvjestaj.godisnji', 'Sljedeća godina >>', array('id' => $instruktor->id, 'godina' => $godina + 1)) }}</li>
 @else
-<li class="previous">{{ link_to_action('IzvjestajController@ukupni_godisnji_izvjestaj', '<< Prethodna godina', array('godina' => $godina - 1)) }}</li>
-<li class="next">{{ link_to_action('IzvjestajController@ukupni_godisnji_izvjestaj', 'Sljedeća godina >>', array('godina' => $godina + 1)) }}</li>
+<li class="previous">{{ link_to_route('Izvjestaj.ukupni_godisnji', '<< Prethodna godina', array('godina' => $godina - 1)) }}</li>
+<li class="next">{{ link_to_route('Izvjestaj.ukupni_godisnji', 'Sljedeća godina >>', array('godina' => $godina + 1)) }}</li>
 @endif
 </ul>
 <div class="table-responsive">
@@ -39,13 +39,13 @@ Godišnji izvjestaj
 
 <div class="navbar">
 @if(isset($instruktor))
-{{ link_to_action('IzvjestajController@tjedni_izvjestaj', 'Tjedni izvještaj', array('id' => $instruktor->id), array('class' => 'btn btn-link navbar')) }}
+{{ link_to_route('Izvjestaj.tjedni', 'Tjedni izvještaj', array('id' => $instruktor->id), array('class' => 'btn btn-link navbar')) }}
 @if(Auth::user()->is_admin)
-{{ link_to_action('IzvjestajController@ukupni_godisnji_izvjestaj', 'Ukupni godišnji izvještaj', null, array('class' => 'btn btn-link navbar')) }}
-{{ link_to_action('IzvjestajController@ukupni_tjedni_izvjestaj', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
+{{ link_to_route('Izvjestaj.ukupni_godisnji', 'Ukupni godišnji izvještaj', null, array('class' => 'btn btn-link navbar')) }}
+{{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 @endif
 @else
-{{ link_to_action('IzvjestajController@ukupni_tjedni_izvjestaj', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
+{{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 @endif
 </div>
 </div>

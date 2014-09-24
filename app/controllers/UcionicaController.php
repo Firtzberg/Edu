@@ -19,9 +19,17 @@ class UcionicaController extends \BaseController {
 	public function index()
 	{
 		$this->layout->title = "Popis učionica";
+		if(Input::has('searchString')){
+			$ucionice = ucionica::where('naziv', 'like', '%'.Input::get('searchString').'%')
+			->orderBy('naziv');
+			Input::flash();
+		}
+		else
+			$ucionice = Ucionica::orderBy('naziv');
+		$ucionice = $ucionice->paginate(10);
 		$this->layout->content =
 		View::make('Ucionica.index')
-		->with('ucionice', Ucionica::paginate(10));
+		->with('ucionice', $ucionice);
 		return $this->layout;
 	}
 
@@ -52,9 +60,9 @@ class UcionicaController extends \BaseController {
 		if(true)
 		{
 			Session::flash('poruka', 'Učionica je uspješno dodana.');
-	  		return Redirect::action('UcionicaController@index');
+	  		return Redirect::route('Ucionica.index');
 	  	}
-	  	return Redirect::action('UcionicaController@create')
+	  	return Redirect::route('Ucionica.create')
 	  	->withInput()
 	  	->withErrors($s->errors());
 	}
@@ -108,7 +116,7 @@ class UcionicaController extends \BaseController {
 		if(true)
 		{
 			Session::flash('poruka','Učionica uspješno uređena');
-			return Redirect::action('UcionicaController@show', array($id));
+			return Redirect::route('Ucionica.show', array($id));
 		}
 
 		return Redirect('ucionica.edit')
@@ -127,7 +135,7 @@ class UcionicaController extends \BaseController {
 	{
 		Ucionica::find($id)->delete();
 		Session::flash('poruka', 'Učionica je uspješno uklonjena!');
-		return Redirect::action('UcionicaController@index');
+		return Redirect::route('Ucionica.index');
 	}
 
 	public function raspored($id, $tjedan = null, $godina = null)

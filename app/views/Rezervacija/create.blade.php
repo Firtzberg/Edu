@@ -28,7 +28,7 @@ array('class' => 'form-control')) }}</div>
 <div class="row">
 <div class="col-xs-6">
 {{ Form::input('number', 'kolicina', $value = 1,
-$attributes = array(
+$numAttributes = array(
 'class' =>'form-control',
 'required' => 'required',
 'min' => 1)) }}</div>
@@ -43,7 +43,7 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('Učionica') }}
 {{ Form::select('ucionica', $ucionice, null,
-$attributes = array(
+$controlAttributes = array(
 'class' =>'form-control',
 'required' => 'required')) }}
 </div>
@@ -56,16 +56,12 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('Predmet') }}
 {{ Form::text('predmet', $value = null,
-$attributes = array(
-'class' =>'form-control')) }}
+$attributes) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Broj učenika') }}
 {{ Form::input('number', 'broj_ucenika', $value = null,
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required',
-'min' => 1)) }}
+$numAttributes) }}
 </div>
 <div class = "form-group">
 @if(Session::has('poruka'))

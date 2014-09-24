@@ -16,11 +16,11 @@
 			</button>
 			<div class = "collapse navbar-collapse navHeaderCollapse">
 				<ul class = "nav navbar-nav navbar-right">
-					<li>{{ link_to_action('RezervacijaController@create', 'Nova Rezervacija') }}</li>
-					<li>{{ link_to_action('UcionicaController@index', 'Učionice') }}</li>
-					<li>{{ link_to_action('InstruktorController@index', 'Instruktori') }}</li>
-					<li>{{ link_to_action('InstruktorController@show', 'Profil', Auth::id()) }}</li>
-					<li>{{ link_to_action('InstruktorController@logout', 'Odjava') }}</li>
+					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
+					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
+					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
+					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>
+					<li>{{ link_to_route('logout', 'Odjava') }}</li>
 				</ul>
 			</div>
 		</div>
