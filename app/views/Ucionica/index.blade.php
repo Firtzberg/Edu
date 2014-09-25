@@ -5,9 +5,9 @@
 {{ Session::get('poruka') }}
 </div>
 @endif
-{{ Form::open(array('route' => array('Ucionica.search'), 'method' => 'get', 'class' => 'form')) }}
-{{ Form::text('searchString', $value = null,
-$attributes = array(
+{{ Form::open(array('route' => array('Ucionica.search'), 'method' => 'get', 'class' => 'form', 'style' => 'max-width:200px;padding:15px')) }}
+{{ Form::text('searchString', null,
+array(
 	'class' => 'form-control',
 	'required' => 'required',
 	'placeholder' => 'Pretraži',
@@ -15,6 +15,7 @@ $attributes = array(
 )) }}
 {{ Form::close() }}
 
+@if($ucionice->count() > 0)
 <table class="table table-striped">
 	<tbody>
 		<tr>
@@ -34,6 +35,11 @@ $attributes = array(
 </tbody>
 </table>
 {{ $ucionice->links() }}
+@else
+<div class="container">
+<h3>Nema rezultata.</h3>
+</div>
+@endif
 @if(Auth::user()->is_admin)
 {{ link_to_route('Ucionica.create', 'Dodaj učionicu') }}
 @endif

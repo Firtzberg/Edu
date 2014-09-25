@@ -1,6 +1,5 @@
-
 	<div class = "container">
-		{{ Form::open(array('action' => array('InstruktorController@changePassword',
+		{{ Form::open(array('route' => array('Instruktor.postChangePassword',
 		'id' => $instruktor->id),
 		'class' => 'form-signin',
 		'style' => 'max-width:330px;padding:15px;margin:auto')) }}
@@ -8,23 +7,23 @@
 		@if(!Auth::user()->is_admin)
 		<div class = "form-group">
 			{{ Form::password('oldpass',
-			$attributes = array(
-				'placeholder' => 'Stara zaporka',
-				'class' => 'form-control',
-				'autofocus' => 'autofocus',
-				'required' => 'required')) }}
+				array(
+					'placeholder' => 'Stara zaporka',
+					'class' => 'form-control',
+					'autofocus' => 'autofocus',
+					'required' => 'required')) }}
 		</div>
 		@endif
 		<div class = "form-group">
 			{{ Form::password('newpass',
-				$attributes = array(
+				array(
 					'placeholder' => 'Nova zaporka',
 					'class' => 'form-control',
 					'required' => 'required')) }}
 		</div>
 		<div class = "form-group">
 			{{ Form::password('rep',
-				$attributes = array(
+				array(
 					'placeholder' => 'Ponovi',
 					'class' => 'form-control',
 					'required' => 'required')) }}
@@ -34,7 +33,7 @@
 			<p>{{ Session::get('poruka') }}</p>
 		</div>
 		@endif
-		{{ Form::submit('Promijeni', $attributes = array(
+		{{ Form::submit('Promijeni', array(
 		'class' => 'btn btn-lg btn-primary btn-block')) }}
 		{{ Form::close() }}
 	</div>

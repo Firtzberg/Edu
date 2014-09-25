@@ -48,4 +48,9 @@ class Rezervacija extends Eloquent {
 		return $dt->format('Y-m-d H:i:s');
 	}
 
+	public function Klijenti()
+	{
+		return $this->belognsToMany('Klijent', 'klijent_rezervacija');
+	}
+
 }

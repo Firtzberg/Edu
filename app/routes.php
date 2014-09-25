@@ -25,11 +25,13 @@ Route::group(array('before' => 'auth'), function(){
 //search
 Route::get('/Instruktor/search', array('as' => 'Instruktor.search', 'uses' => 'InstruktorController@index'));
 Route::get('/Ucionica/search', array('as' => 'Ucionica.search', 'uses' => 'UcionicaController@index'));
+Route::get('/Klijent/search', array('as' => 'Klijent.search', 'uses' => 'KlijentController@index'));
 
 
 Route::resource('Ucionica', 'UcionicaController');
 Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index', 'update', 'edit')));
 Route::resource('Instruktor', 'InstruktorController');
+Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
 
 Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
 Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));

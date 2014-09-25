@@ -77,6 +77,10 @@ class UcionicaController extends \BaseController {
 	public function show($id, $tjedan = null, $godina = null)
 	{
 		$u = Ucionica::find($id);
+		if(!$u){
+			Session::flash('poruka', 'Učionica nije pronađena u sustavu.');
+	  		return Redirect::route('Ucionica.index');
+		}
 		$this->layout->title = $u->naziv." - Učionica";
 		$this->layout->content =
 		View::make('Ucionica.show')

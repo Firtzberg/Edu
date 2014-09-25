@@ -13,7 +13,7 @@
 
 @yield('raspored')
 @if(Auth::user()->is_admin)
-{{ Form::open(array('action' => array('UcionicaController@destroy', $ucionica->id), 'method' => 'delete')) }}
+{{ Form::open(array('route' => array('Ucionica.destroy', $ucionica->id), 'method' => 'delete')) }}
 {{ link_to_route('Ucionica.edit', 'Uredi', array($ucionica->id), array('class' => 'btn btn-default')) }}
  {{ Form::submit('Ukloni', array('class' => 'btn btn-warning')) }}
 {{ Form::close() }}

@@ -1,32 +1,36 @@
+<?php
+$optional = array('class' =>'form-control');
+$required = array(
+'class' =>'form-control',
+'required' => 'required');
+?>
 <div class = "container">
 <h2>Naplaćivanje</h2>
 <div class="row">
 <div class="col-sm-6">
 @if(isset($naplata))
-{{ Form::model($naplata, array('action' => array('Rezervacija.naplata', $rezervacija->id),
+{{ Form::model($naplata, array('route' => array('Rezervacija.naplata', $rezervacija->id),
 'method' => 'put',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 @else
-{{ Form::open(array('action' => array('Rezervacija.naplata', $rezervacija->id),
+{{ Form::open(array('route' => array('Rezervacija.naplata', $rezervacija->id),
 'method' => 'put',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 @endif
 <div class = "form-group">
 {{ Form::label('Ukupan iznos') }}
-{{ Form::input('number', 'ukupno_uplaceno', $value = null,
-$RequiredAttributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+{{ Form::input('number', 'ukupno_uplaceno', null,
+$required) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Za instruktora') }}
-{{ Form::input('number', 'za_instruktora', $value = null,
-$RequiredAttributes) }}
+{{ Form::input('number', 'za_instruktora', null,
+$required) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Za tvrtku') }}
-{{ Form::input('number', 'za_tvrtku', $value = null,
-$RequiredAttributes) }}
+{{ Form::input('number', 'za_tvrtku', null,
+$required) }}
 {{ Form::hidden('rezervacija_id', $rezervacija->id) }}
 </div>
 <div class = "form-group">
@@ -35,7 +39,7 @@ $RequiredAttributes) }}
 		{{ Session::get('poruka') }}
 	</div>
 @endif
-{{ Form::submit('Naplati', $attributes = array(
+{{ Form::submit('Naplati', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}

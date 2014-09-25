@@ -8,13 +8,13 @@
 </head>
 <body>
 	<div class = "container">
-		{{ Form::open(array('action' => 'login',
+		{{ Form::open(array('route' => 'login',
 		'class' => 'form-signin',
 		'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 		<h2 class="form-signin-heading">Za nastavak popunite obrazac</h2>
 		<div class = "form-group">
-			{{ Form::text('userName', $value = null,
-			$attributes = array(
+			{{ Form::text('userName', null,
+			array(
 				'placeholder' => 'Korisničko ime',
 				'class' => 'form-control',
 				'autofocus' => 'autofocus',
@@ -22,7 +22,7 @@
 		</div>
 		<div class = "form-group">
 			{{ Form::password('lozinka',
-				$attributes = array(
+				array(
 					'placeholder' => 'Zaporka',
 					'class' => 'form-control',
 					'required' => 'required')) }}
@@ -38,7 +38,7 @@
 			{{ Session::get('poruka') }}
 		</div>
 		@endif
-		{{ Form::submit('SignIn', $attributes = array(
+		{{ Form::submit('SignIn', array(
 		'class' => 'btn btn-lg btn-primary btn-block')) }}
 		{{ Form::close() }}
 	</div>

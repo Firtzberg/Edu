@@ -1,8 +1,8 @@
-<div class = "container"><h2>Instruktori</h2>
+<div class = "container"><h2>Klijenti</h2>
 @if(Session::has('poruka'))
 {{ Session::get('poruka') }}<br><br>
 @endif
-{{ Form::open(array('route' => array('Instruktor.search'), 'method' => 'get', 'class' => 'form', 'style' => 'max-width:200px;padding:15px')) }}
+{{ Form::open(array('route' => array('Klijent.search'), 'method' => 'get', 'class' => 'form', 'style' => 'max-width:200px;padding:15px')) }}
 {{ Form::text('searchString', null,
 array(
 	'class' => 'form-control',
@@ -12,28 +12,28 @@ array(
 )) }}
 {{ Form::close() }}
 
-@if($instruktori->count() > 0)
+@if($klijenti->count() > 0)
 <table class="table">
 <tbody>
 	<tr>
 		<th>Ime</th>
 	</tr>
-@foreach($instruktori as $i)
+@foreach($klijenti as $k)
 <tr>
 	<td>
-		{{ link_to_route('Instruktor.show', $i->name, $parameters = array($i->id)) }}
+		{{ link_to_route('Klijent.show', $k->ime, array($k->broj_mobitela)) }}
 	</td>
 </tr>
 @endforeach
 </tbody>
 </table>
-{{ $instruktori->links() }}
+{{ $klijenti->links() }}
 @else
 <div class="container">
 <h3>Nema rezultata.</h3>
 </div>
 @endif
 @if(Auth::user()->is_admin)
-{{ link_to_route('Instruktor.create', 'Dodaj instruktora', null, array('class' => 'btn btn-secondary')) }}
+{{ link_to_route('Klijent.create', 'Dodaj klijenta', null, array('class' => 'btn btn-secondary')) }}
 @endif
 </div>

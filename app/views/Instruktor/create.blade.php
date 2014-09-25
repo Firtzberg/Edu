@@ -1,3 +1,9 @@
+<?php
+$optional = array('class' =>'form-control');
+$required = array(
+'class' =>'form-control',
+'required' => 'required');
+?>
 <div class="container">
 @if(isset($instruktor))
 {{ Form::model($instruktor, array('route' => array('Instruktor.update', $instruktor->id),
@@ -12,10 +18,8 @@
 <div class = "form-group">
 {{ Form::label('Ime') }}
 @if(Auth::user()->is_admin)
-{{ Form::text('name', $value = null,
-$attributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+{{ Form::text('name', null,
+$required) }}
 @else
 <br>{{ Form::label($instruktor->name)}}
 @endif
@@ -24,22 +28,21 @@ $attributes = array(
 <div class = "form-group">
 {{ Form::label('Zaporka') }}
 {{ Form::password('lozinka',
-$attributes) }}
+$required) }}
 {{ Form::label('Ponovljena zaporka') }}
 {{ Form::password('ponovljena',
-$attributes) }}
+$required) }}
 </div>
 @endif
 <div class = "form-group">
 {{ Form::label('broj_mobitela') }}
-{{ Form::text('broj_mobitela', $value = null,
-$attributes = array(
-'class' =>'form-control')) }}
+{{ Form::text('broj_mobitela', null,
+$optional) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Email') }}
-{{ Form::email('email', $value = null,
-$attributes) }}
+{{ Form::email('email', null,
+$optional) }}
 </div>
 <div class = "form-group">
 @if(Session::has('poruka'))
@@ -47,7 +50,7 @@ $attributes) }}
 {{ Session::get('poruka') }}
 </div>
 @endif
-{{ Form::submit('Pohrani', $attributes = array(
+{{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}

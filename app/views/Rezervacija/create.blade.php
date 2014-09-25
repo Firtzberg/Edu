@@ -1,11 +1,21 @@
+<?php
+$optional = array('class' =>'form-control');
+$required = array(
+'class' =>'form-control',
+'required' => 'required');
+$requiredPositive = array(
+'class' =>'form-control',
+'required' => 'required',
+'min' => 1)
+?>
 <div class="container">
-{{ Form::open(array('action' => 'RezervacijaController@store',
+{{ Form::open(array('route' => 'Rezervacija.store',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 <h2 class="form-heading">Rezerviranje</h2>
 <div class = "form-group">
 {{ Form::label('Datum') }}
 {{ Form::input('date', 'datum', date('Y-m-d'),
-$attributes = array(
+array(
 'class' =>'form-control',
 'required' => 'required',
 'min' => date('Y-m-d'))) }}
@@ -15,10 +25,10 @@ $attributes = array(
 <div class="row">
 <div class="col-xs-6">
 {{ Form::selectRange('startHour', 8, 22, null,
-array('class' => 'form-control')) }}</div>
+$required) }}</div>
 <div class="col-xs-6">
 {{ Form::select('startMinute', array(0 => '00', 30 => '30'), null,
-array('class' => 'form-control')) }}</div>
+$required) }}</div>
 </div>
 </div>
 </div>
@@ -27,41 +37,33 @@ array('class' => 'form-control')) }}</div>
 <div class="container-fluid">
 <div class="row">
 <div class="col-xs-6">
-{{ Form::input('number', 'kolicina', $value = 1,
-$numAttributes = array(
-'class' =>'form-control',
-'required' => 'required',
-'min' => 1)) }}</div>
+{{ Form::input('number', 'kolicina', 1,
+$requiredPositive) }}</div>
 <div class="col-xs-6">
 {{ Form::select('mjera', $mjere, null,
-$attributes = array(
-'class' => 'form-control',
-'required' => 'required')) }}</div>
+$required) }}</div>
 </div>
 </div>
 </div>
 <div class = "form-group">
 {{ Form::label('Učionica') }}
 {{ Form::select('ucionica', $ucionice, null,
-$controlAttributes = array(
-'class' =>'form-control',
-'required' => 'required')) }}
+$required) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Usmjerenje') }}
-{{ Form::text('usmjerenje', $value = null,
-$attributes = array(
-'class' =>'form-control')) }}
+{{ Form::text('usmjerenje', null,
+$optional) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Predmet') }}
-{{ Form::text('predmet', $value = null,
-$attributes) }}
+{{ Form::text('predmet', null,
+$optional) }}
 </div>
 <div class = "form-group">
 {{ Form::label('Broj učenika') }}
-{{ Form::input('number', 'broj_ucenika', $value = null,
-$numAttributes) }}
+{{ Form::input('number', 'broj_ucenika', null,
+$requiredPositive) }}
 </div>
 <div class = "form-group">
 @if(Session::has('poruka'))
@@ -69,7 +71,7 @@ $numAttributes) }}
 {{ Session::get('poruka') }}
 </div>
 @endif
-{{ Form::submit('Rezerviraj', $attributes = array(
+{{ Form::submit('Rezerviraj', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
