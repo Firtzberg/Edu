@@ -13,6 +13,8 @@
 Route::pattern('id', '[0-9]+');
 Route::pattern('tjedan', '[0-9]+');
 Route::pattern('godina', '[0-9]+');
+Route::pattern('page', '[0-9]+');
+Route::when('*', 'csrf', array('post', 'put', 'delete', 'update'));
 
 Route::get('/signin', array('as' => 'signIn', 'uses' => 'InstruktorController@signIn'));
 Route::get('/login', array('as' => 'signIn2', 'uses' => 'InstruktorController@signIn'));
@@ -21,11 +23,12 @@ Route::post('/login', array('as' => 'login', 'uses' => 'InstruktorController@log
 Route::get('/logout', array('as' => 'logout', 'uses' => 'InstruktorController@logout'));
 
 Route::group(array('before' => 'auth'), function(){
+Route::post('/Klijent/Suggestions', array('uses' => 'KlijentController@getSuggestionedKlijents', 'as' => 'Klijent.Suggestions'));
 
 //search
-Route::get('/Instruktor/search', array('as' => 'Instruktor.search', 'uses' => 'InstruktorController@index'));
-Route::get('/Ucionica/search', array('as' => 'Ucionica.search', 'uses' => 'UcionicaController@index'));
-Route::get('/Klijent/search', array('as' => 'Klijent.search', 'uses' => 'KlijentController@index'));
+Route::post('/Instruktor/list/{page}/{searchString?}', array('as' => 'Instruktor.list', 'uses' => 'InstruktorController@_list'));
+Route::post('/Ucionica/list/{page}/{searchString?}', array('as' => 'Ucionica.list', 'uses' => 'UcionicaController@_list'));
+Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list', 'uses' => 'KlijentController@_list'));
 
 
 Route::resource('Ucionica', 'UcionicaController');

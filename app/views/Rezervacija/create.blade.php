@@ -60,11 +60,7 @@ $optional) }}
 {{ Form::text('predmet', null,
 $optional) }}
 </div>
-<div class = "form-group">
-{{ Form::label('Broj učenika') }}
-{{ Form::input('number', 'broj_ucenika', null,
-$requiredPositive) }}
-</div>
+@yield('klijent-input')
 <div class = "form-group">
 @if(Session::has('poruka'))
 <div class = "alert alert-warning">

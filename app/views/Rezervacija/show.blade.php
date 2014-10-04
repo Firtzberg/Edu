@@ -60,14 +60,24 @@ Nije definirano
 {{ $rezervacija->predmet }}
 @endif
 </dd>
-<dt>Broj učenika</dt><dd>{{ $rezervacija->broj_ucenika }}</dd>
+<dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
 </dl>
-@if(strtotime($rezervacija->pocetak_rada) > time())
+@if(strtotime($rezervacija->pocetak_rada) > time() || Auth::user()->is_admin)
 {{ Form::open(array('route' => array('Rezervacija.destroy', $rezervacija->id), 'method' => 'delete')) }}
 {{ Form::submit('Otkaži rezervaciju',
 array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}
 @endif
 </div>
+</div>
+<div>
+<h3>Klijenti <small>ukupno {{ $rezervacija->klijenti()->count() }}</small></h3>
+<dl class="dl-horizontal">
+@foreach($rezervacija->klijenti as $klijent)
+<br/>
+<dt>{{ $klijent->broj_mobitela }}</dt>
+<dd>{{ link_to_route('Klijent.show', $klijent->ime, array('id' => $klijent->broj_mobitela)) }}</dd>
+@endforeach
+</dl>
 </div>
 </div>

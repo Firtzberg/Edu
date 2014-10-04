@@ -13,7 +13,7 @@ class CreateKlijentiTable extends Migration {
 	public function up()
 	{
 		Schema::create('klijenti', function(Blueprint $table){
-			$table->char('broj_mobitela', 14);
+			$table->char('broj_mobitela', 20);
 			$table->string('ime');
 			$table->string('email')
 			->nullable();
@@ -24,7 +24,7 @@ class CreateKlijentiTable extends Migration {
 		});
 
 		Schema::create('klijent_rezervacija', function(Blueprint $table){
-			$table->char('klijent_id', 14)
+			$table->char('klijent_id', 20)
 			->nullable()
 			->index();
 			$table->integer('rezervacija_id')

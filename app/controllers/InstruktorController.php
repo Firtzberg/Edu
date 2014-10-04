@@ -78,18 +78,26 @@ class InstruktorController extends \BaseController {
 	public function index()
 	{
 		$this->layout->title = "Popis Instruktora";
-		if(Input::has('searchString')){
-			$instruktori = User::where('name', 'like', '%'.Input::get('searchString').'%')
+		$this->layout->content = View::make('Instruktor.index')
+		->with('list', $this->_list());
+		return $this->layout;
+	}
+
+	public function _list($page = 1, $searchString = null){
+		if(!empty($searchString)){
+			$instruktori = User::where('name', 'like', '%'.$searchString.'%')
 			->orderBy('name');
-			Input::flash();
 		}
 		else
 			$instruktori = User::orderBy('name');
+		if($page != 1)
+			Paginator::setCurrentPage($page);
 		$instruktori = $instruktori->paginate(10);
-
-		$this->layout->content = View::make('Instruktor.index')
+		$v = View::make('Instruktor.list')
 		->with('instruktori', $instruktori);
-		return $this->layout;
+		if(Request::ajax())
+			return $v->renderSections()['list'];
+		return $v;
 	}
 
 

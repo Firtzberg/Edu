@@ -19,18 +19,27 @@ class UcionicaController extends \BaseController {
 	public function index()
 	{
 		$this->layout->title = "Popis učionica";
-		if(Input::has('searchString')){
-			$ucionice = ucionica::where('naziv', 'like', '%'.Input::get('searchString').'%')
+		$this->layout->content =
+		View::make('Ucionica.index')
+		->with('list', $this->_list());
+		return $this->layout;
+	}
+
+	public function _list($page = 1, $searchString = null){
+		if(!empty($searchString)){
+			$ucionice = Ucionica::where('naziv', 'like', '%'.$searchString.'%')
 			->orderBy('naziv');
-			Input::flash();
 		}
 		else
 			$ucionice = Ucionica::orderBy('naziv');
+		if($page != 1)
+			Paginator::setCurrentPage($page);
 		$ucionice = $ucionice->paginate(10);
-		$this->layout->content =
-		View::make('Ucionica.index')
+		$v = View::make('Ucionica.list')
 		->with('ucionice', $ucionice);
-		return $this->layout;
+		if(Request::ajax())
+			return $v->renderSections()['list'];
+		return $v;
 	}
 
 

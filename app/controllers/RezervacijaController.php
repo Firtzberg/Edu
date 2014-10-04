@@ -25,10 +25,12 @@ class RezervacijaController extends \BaseController {
 		foreach ($rows as $row) {
 			$mjere[$row->id] = $row->simbol;
 		}
+
 		$this->layout->content =
 		$v = View::make('Rezervacija.create')
 		->with('ucionice', $ucionice)
-		->with('mjere', $mjere);
+		->with('mjere', $mjere)
+		->with('klijent', View::make('Klijent.listForm'));
 		return $this->layout;
 	}
 
@@ -42,12 +44,55 @@ class RezervacijaController extends \BaseController {
 	{
 		$r = new Rezervacija();
 
-		//provjera broja učenika
-		$r->broj_ucenika = Input::get('broj_ucenika');
-		if($r->broj_ucenika < 1){
-			Session::flash('poruka', 'Broj učenika mora biti barem 1.');
+		//izgradnja niza polaznika
+		$polaznici = array();
+		for($i = 1; Input::has('form-klijenti-item-'.$i.'-broj_mobitela'); $i++){
+			$ime = Input::get('form-klijenti-item-'.$i.'-ime');
+			$broj_mobitela = Input::get('form-klijenti-item-'.$i.'-broj_mobitela');
+			//provjera potpunosti
+			if(empty($ime) || empty($broj_mobitela)){
+				Session::flash('poruka', 'Niste unijeli sve potrebne podatke za polaznika u '.$i.'. redu.');
+				return Redirect::route('Rezervacija.create')
+				->withInput();
+			}
+
+			if(strlen($broj_mobitela) > 1)
+				if($broj_mobitela[0] == '0' && $broj_mobitela[1] != '0')
+					$broj_mobitela = '00385'.substr($broj_mobitela, 1);
+			$broj_mobitela = str_replace('+', '00', $broj_mobitela);
+			$chars = str_split($broj_mobitela);
+			$chars = array_filter($chars, function($char){return ($char >='0' && $char <= '9');});
+			$broj_mobitela = implode($chars);
+
+			//check if multiple broj_mobetela have the same value
+			foreach ($polaznici as $index => $polaznik) {
+				if($polaznik->broj_mobitela == $broj_mobitela){
+					if($polaznik->ime == $ime)
+						Session::flash('poruka', 'Višestruko ste unijeli istog polaznika ('.$ime.')');
+					else Session::flash('poruka', 'Unijeli ste isti broj mobitela za različite polaznike ('.
+						$polaznik->ime.' i '.$ime.').');
+					return Redirect::route('Rezervacija.create')
+					->withInput();
+				}
+			}
+			$polaznici[] = new Klijent(array('ime' => $ime, 'broj_mobitela' => $broj_mobitela));
+		}
+		//provjera broja korisnika
+		if(count($polaznici) < 1){
+			Session::flash('poruka', 'Potreban je barem 1 polaznik.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
+		}
+		//provjera usklađenosti s bazom podataka
+		foreach($polaznici as $key => $polaznik){
+			$model = Klijent::find($polaznik->broj_mobitela);
+			if($model && $model->ime != $polaznik->ime){
+				Session::flash('poruka', 'U sustavu već postoji klijent s brojem mobitela '.$model->broj_mobitela.'.');
+				return Redirect::route('Rezervacija.create')
+				->withInput();
+			}
+			if(!$model)
+				$polaznik->save();
 		}
 
 		//provjera vremena početka
@@ -129,6 +174,7 @@ class RezervacijaController extends \BaseController {
 			$r->predmet = Input::get('predmet');
 
 		$r->save();
+		$r->klijenti()->attach(array_map(function($klijent){return $klijent->broj_mobitela;}, $polaznici));
 		return Redirect::route('Rezervacija.show', array($r->id));
 	}
 
@@ -144,7 +190,7 @@ class RezervacijaController extends \BaseController {
 		$this->layout->title = "Prikaz rezervacije";
 		$this->layout->content =
 		View::make('Rezervacija.show')
-		->with('rezervacija', Rezervacija::find($id));
+		->with('rezervacija', Rezervacija::with('naplata', 'klijenti')->find($id));
 		return $this->layout;
 	}
 

@@ -80,4 +80,15 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->email;
 	}
 
+	public function klijenti(){
+		return Klijent::select('klijenti.broj_mobitela', 'klijenti.ime')
+		->whereExists(function($query){
+			$query->from('klijent_rezervacija')
+			->join('rezervacije', 'rezervacije.id', '=', 'klijent_rezervacija.rezervacija_id')
+			->join('users', 'users.id', '=', 'rezervacije.instruktor_id')
+			->where('users.id', '=', Auth::id())
+			->whereRaw('klijent_rezervacija.klijent_id=klijenti.broj_mobitela');
+		});
+	}
+
 }
