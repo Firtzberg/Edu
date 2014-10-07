@@ -9,11 +9,6 @@ class Ucionica extends Eloquent {
 	 */
 	protected $table = 'ucionice';
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
 	protected $guarded = array('id');
 
 	public function rezervacije()

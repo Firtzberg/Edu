@@ -9,11 +9,6 @@ class Naplata extends Eloquent {
 	 */
 	protected $table = 'naplate';
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
 	protected $guarded = array('id');
 
 	public function rezervacija()

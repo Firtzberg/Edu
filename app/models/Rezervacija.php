@@ -9,17 +9,7 @@ class Rezervacija extends Eloquent {
 	 */
 	protected $table = 'rezervacije';
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
 	protected $guarded = array('id');
-
-	public function naziv()
-	{
-		return $this->naziv;
-	}
 
 	public function instruktor()
 	{

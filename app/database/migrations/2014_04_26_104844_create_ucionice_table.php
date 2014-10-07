@@ -17,7 +17,8 @@ class CreateUcioniceTable extends Migration {
 			$table->increments('id');
 			$table->string('naziv')
 			->unique();
-			$table->integer('max_broj_ucenika');
+			$table->integer('max_broj_ucenika')
+			->unsigned();
 			$table->string('adresa');
 			$table->integer('kat');
 			$table->text('opis');

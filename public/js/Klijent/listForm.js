@@ -1,4 +1,5 @@
 var klijentManager = {
+	url: '../Klijent/Suggestions',
 	containerSelector: '#form-klijenti-container',
 	addButtonSelector: '#form-klijent-add',
 	itemPrefix: 'form-klijenti-item-',
@@ -78,10 +79,10 @@ var klijentManager = {
 
 		jQuery(klijentManager.containerSelector).append(elementDiv);
 
-		klijentManager.adjustAutocomplete(jQuery(elementDiv));
+		klijentManager.adjust(jQuery(elementDiv));
 	},
 
-	adjustAutocomplete: function(jQueryElementDiv){
+	adjust: function(jQueryElementDiv){
 		divId = jQueryElementDiv.attr('id');
 		if(divId.length <= klijentManager.itemPrefix.length)
 			return false;
@@ -108,7 +109,7 @@ var klijentManager = {
 			var numberInput = jQuery('input[name=' + elementKey + klijentManager.phoneSufix + ']');
 			var nameInput = jQuery('input[name=' + elementKey + klijentManager.nameSufix + ']');
 			jQuery.ajax({
-				url: '../Klijent/Suggestions',
+				url: klijentManager.url,
 				dataType: 'json',
 				type: 'post',
 				data: {
