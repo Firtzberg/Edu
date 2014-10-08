@@ -1,9 +1,9 @@
-<div class="container">
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
 'class' =>'form-control',
-'required' => 'required');
+'required' => 'required',
+'autocomplete' => 'off');
 $mobAttributes = array(
 'class' =>'form-control',
 'required' => 'required');
@@ -41,13 +41,7 @@ $optional) }}
 $optional) }}
 </div>
 <div class = "form-group">
-	@if(Session::has('poruka'))
-	<div class="alert alert-warning">
-		{{ Session::get('poruka') }}
-	</div>
-	@endif
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
-</div>

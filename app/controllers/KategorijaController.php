@@ -1,0 +1,123 @@
+<?php
+
+class KategorijaController extends \BaseController {
+
+	protected $layout = 'layouts.master';
+
+	/**
+	 * Display root category.
+	 *
+	 * @return Response
+	 */
+	public function index()
+	{
+		$kategorija = Kategorija::whereRaw('id = nadkategorija_id')
+		->with('podkategorije', 'predmeti')
+		->first();
+		$this->layout->title = 'Kategorije';
+		$this->layout->content = View::make('Kategorija.show')
+		->with('kategorija', $kategorija);
+		return $this->layout;
+	}
+
+	/**
+	 * Store a newly created resource in storage.
+	 *
+	 * @return Response
+	 */
+	public function store()
+	{
+		$ime = Input::get('ime');
+		$nadkategorija_id = Input::get('nadkategorija_id');
+		if(!$nadkategorija_id){
+			Session::flash('greska', 'Nije zadana nadkategorija kategorije.');
+			return Redirect::route('Kategorija.index');
+		}
+		$nadkategorija = Kategorija::find($nadkategorija_id);
+		if(!$nadkategorija){
+			Session::flash('greska', 'Nadkategorija nije pronađena u sustavu.');
+			return Redirect::route('Kategorija.index');
+		}
+		if(empty($ime)){
+			Session::flash('greska', 'Ime kategorije je obvezno.');
+			return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+		}
+		if($nadkategorija->podkategorije()->where('ime', '=', $ime)->count() > 0){
+			Session::flash('greska', 'Kategorija '.$nadkategorija->ime.' već ima podkategoriju s imenom '.$ime.'.');
+			return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+		}
+
+		$kategorija = new Kategorija();
+		$kategorija->ime = $ime;
+		$nadkategorija->podkategorije()->save($kategorija);
+		Session::flash('poruka', 'Kategorija uspješno dodana.');
+		return Redirect::route('Kategorija.show', array('id' => $kategorija->id));
+	}
+
+
+	/**
+	 * Display the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function show($id)
+	{
+		$kategorija = Kategorija::with('predmeti', 'podkategorije')->find($id);
+		if(!$kategorija){
+			Session::flash('greska', 'Kategorija nije pronađena u sustavu.');
+			return Redirect::route('');
+		}
+		$this->layout->title = $kategorija->ime.' - Kategorija';
+		$this->layout->content = View::make('Kategorija.show')
+		->with('kategorija', $kategorija);
+		return $this->layout;
+	}
+
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update($id)
+	{
+		$ime = Input::get('ime');
+		if(!$ime){
+			Session::flash('greska', 'Ime kategorije je obvezno.');
+			return Redirect::route('Kategorija.show', array('id' => $id));
+		}
+		$kategorija = Kategorija::find($id);
+		if(!$kategorija){
+			Session::flash('greska', 'Kategorija nije pronađena u sustavu.');
+			return Redirect::route('');
+		}
+		$kategorija->ime = $ime;
+		$kategorija->save();
+		Session::flush('poruka', 'Kategorija je uspješno preimenovana.');
+		return Redirect::route('Kategorija.show', array('id' => $id));
+	}
+
+
+	/**
+	 * Remove the specified resource from storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function destroy($id)
+	{
+		$kategorija = Kategorija::find($id);
+		if(!$kategorija){
+			Session::flash('greska', 'Kategorija nije pronađena u sustavu.');
+			return Redirect::route('Kategorija.index');
+		}
+		$nadkategorija_id = $kategorija->nadkategorija_id;
+		$kategorija->delete();
+		Session::flash('poruka', 'Kategorija je uspješno uklonjena!');
+		return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+	}
+
+
+}

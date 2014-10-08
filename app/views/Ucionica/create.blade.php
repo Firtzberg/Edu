@@ -2,9 +2,9 @@
 $optional = array('class' =>'form-control');
 $required = array(
 'class' =>'form-control',
-'required' => 'required');
+'required' => 'required',
+'autocomplete' => 'off');
 ?>
-<div class="container">
 @if(isset($ucionica))
 {{ Form::model($ucionica, array('route' => array('Ucionica.update', $ucionica->id),
 'method' => 'put',
@@ -21,7 +21,8 @@ $required = array(
 array(
 'class' =>'form-control',
 'autofocus' => 'autofocus',
-'required' => 'required')) }}
+'required' => 'required',
+'autocomplete' => 'off')) }}
 </div>
 <div class = "form-group">
 {{ Form::label('adresa') }}
@@ -43,13 +44,7 @@ $required) }}
 $required) }}
 </div>
 <div class = "form-group">
-	@if(Session::has('poruka'))
-	<div class="alert alert-warning">
-		{{ Session::get('poruka') }}
-	</div>
-	@endif
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
-</div>

@@ -4,7 +4,6 @@ $required = array(
 'class' =>'form-control',
 'required' => 'required');
 ?>
-<div class="container">
 @if(isset($instruktor))
 {{ Form::model($instruktor, array('route' => array('Instruktor.update', $instruktor->id),
 'method' => 'put',
@@ -19,7 +18,11 @@ $required = array(
 {{ Form::label('Ime') }}
 @if(Auth::user()->is_admin)
 {{ Form::text('name', null,
-$required) }}
+array(
+'class' =>'form-control',
+'autofocus' => 'autofocus',
+'required' => 'required',
+'autocomplete' => 'off')) }}
 @else
 <br>{{ Form::label($instruktor->name)}}
 @endif
@@ -45,13 +48,8 @@ $optional) }}
 $optional) }}
 </div>
 <div class = "form-group">
-@if(Session::has('poruka'))
-<div class="alert alert-warning">
-{{ Session::get('poruka') }}
-</div>
 @endif
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
-</div>

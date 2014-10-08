@@ -104,13 +104,13 @@ class KlijentController extends \BaseController {
 	{
 		if(!Input::has('broj_mobitela'))
 		{
-			Session::flash('poruka', 'Broj mobitela je obvezan.');
+			Session::flash('greska', 'Broj mobitela je obvezan.');
 	  		return Redirect::route('Klijent.create')
 	  		->withInput();
 	  	}
 		if(!Input::has('ime'))
 		{
-			Session::flash('poruka', 'Ime i prezuime su obvezni.');
+			Session::flash('greska', 'Ime i prezuime su obvezni.');
 	  		return Redirect::route('Klijent.create')
 	  		->withInput();
 	  	}
@@ -126,7 +126,7 @@ class KlijentController extends \BaseController {
 
 		if(Klijent::find($broj_mobitela))
 		{
-			Session::flash('poruka', 'U sustavu već postoji klijent s unešenim brojem.');
+			Session::flash('greska', 'U sustavu već postoji klijent s unešenim brojem.');
 	  		return Redirect::route('Klijent.create')
 	  		->withInput();
 	  	}
@@ -158,7 +158,7 @@ class KlijentController extends \BaseController {
 	{
 		$k = Klijent::find($id);
 		if(!$k){
-			Session::flash('poruka', 'Klijent '.$id.' nije pronađen u sustavu.');
+			Session::flash('greska', 'Klijent '.$id.' nije pronađen u sustavu.');
 	  		return Redirect::route('Klijent.index');
 		}
 		$this->layout->title = $k->ime." - Kijent";
@@ -179,7 +179,7 @@ class KlijentController extends \BaseController {
 	{
 		$k = Klijent::find($id);
 		if(!$k){
-			Session::flash('poruka', 'Klijent nije pronađen u sustavu.');
+			Session::flash('greska', 'Klijent nije pronađen u sustavu.');
 	  		return Redirect::route('Klijent.index');
 		}
 		$this->layout->title = $k->ime." - Uredi klijenta";
@@ -200,13 +200,13 @@ class KlijentController extends \BaseController {
 	{
 		if(!Input::has('broj_mobitela'))
 		{
-			Session::flash('poruka', 'Broj mobitela je obvezan.');
+			Session::flash('greska', 'Broj mobitela je obvezan.');
 	  		return Redirect::route('Klijent.edit')
 	  		->withInput();
 	  	}
 		if(!Input::has('ime'))
 		{
-			Session::flash('poruka', 'Ime i prezuime su obvezni.');
+			Session::flash('greska', 'Ime i prezuime su obvezni.');
 	  		return Redirect::route('Klijent.edit')
 	  		->withInput();
 	  	}
@@ -225,7 +225,7 @@ class KlijentController extends \BaseController {
 		$k = Klijent::find($id);
 		if(!$k)
 		{
-			Session::flash('poruka', 'Uređivani klijent je uklonjen iz sustava.');
+			Session::flash('greska', 'Uređivani klijent je uklonjen iz sustava.');
 	  		return Redirect::route('Klijent.create')
 	  		->withInput();
 	  	}

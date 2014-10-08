@@ -27,6 +27,7 @@ class CreateCijeneTable extends Migration {
 			$table->integer('minimalno')
 			->unsigned();
 			$table->timestamps();
+			$table->primary(array('predmet_id', 'mjera_id'));
 		});
 		Schema::table('cijene', function(Blueprint $table)
 		{

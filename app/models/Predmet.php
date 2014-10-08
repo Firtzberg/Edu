@@ -15,4 +15,10 @@ class Predmet extends Eloquent {
 	{
 		return $this->belongsTo('Kategorija','kategorija_id');
 	}
+
+	public function cijene(){
+		return $this->belongsToMany('Mjera', 'cijene')
+		->withPivot('individualno', 'popust', 'minimalno')
+		->withTimestamps();
+	}
 }

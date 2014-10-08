@@ -4,7 +4,6 @@ $required = array(
 'class' =>'form-control',
 'required' => 'required');
 ?>
-<div class = "container">
 <h2>Naplaćivanje</h2>
 <div class="row">
 <div class="col-sm-6">
@@ -34,11 +33,6 @@ $required) }}
 {{ Form::hidden('rezervacija_id', $rezervacija->id) }}
 </div>
 <div class = "form-group">
-@if(Session::has('poruka'))
-	<div class="alert alert-warning">
-		{{ Session::get('poruka') }}
-	</div>
-@endif
 {{ Form::submit('Naplati', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
@@ -68,6 +62,5 @@ Nije definirano
 </dd>
 <dt>Broj učenika</dt><dd>{{ $rezervacija->broj_ucenika }}</dd>
 </dl>
-</div>
 </div>
 </div>

@@ -153,7 +153,7 @@ class InstruktorController extends \BaseController {
 	{
 		$u =  User::find($id);
 		if(!$u){
-			Session::flash('poruka', 'Odabrani instruktor nije pronađen u sustavu.');
+			Session::flash('greska', 'Odabrani instruktor nije pronađen u sustavu.');
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
 		$this->layout->title = $u->name." - Instruktor";
@@ -210,8 +210,10 @@ class InstruktorController extends \BaseController {
 	public function destroy($id)
 	{
 		$u = User::find($id);
-		if($u->is_admin)
-			Session::flash('poruka', 'Nije moguće ukloniti administratora.');
+		if(!$u)
+			Session::flash('greska', 'Instruktor nije pronađen u sustavu.');
+		elseif($u->is_admin)
+			Session::flash('greska', 'Nije moguće ukloniti administratora.');
 		else{
 			$u->delete();
 			Session::flash('poruka', 'Instruktor je uspješno uklonjen!');

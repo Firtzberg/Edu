@@ -87,7 +87,7 @@ class UcionicaController extends \BaseController {
 	{
 		$u = Ucionica::find($id);
 		if(!$u){
-			Session::flash('poruka', 'Učionica nije pronađena u sustavu.');
+			Session::flash('greska', 'Učionica nije pronađena u sustavu.');
 	  		return Redirect::route('Ucionica.index');
 		}
 		$this->layout->title = $u->naziv." - Učionica";

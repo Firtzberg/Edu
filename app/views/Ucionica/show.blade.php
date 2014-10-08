@@ -1,9 +1,3 @@
-<div class = "container">
-@if(Session::has('poruka'))
-<div class="alert alert-warning">
-{{Session::get('poruka')}}
-</div>
-@endif
 <h2>Učionica {{ $ucionica->naziv }}</h2>
 <dl class = "dl-horizontal">
 <dt>Najveći broj učenika</dt><dd>{{ $ucionica->max_broj_ucenika }}</dd>
@@ -18,4 +12,3 @@
  {{ Form::submit('Ukloni', array('class' => 'btn btn-warning')) }}
 {{ Form::close() }}
 @endif
-</div>

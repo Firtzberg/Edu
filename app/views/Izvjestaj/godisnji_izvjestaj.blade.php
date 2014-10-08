@@ -1,4 +1,3 @@
-<div class = "container">
 <p>
 Godišnji izvjestaj
 @if(isset($instruktor))
@@ -47,5 +46,4 @@ Godišnji izvjestaj
 @else
 {{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 @endif
-</div>
 </div>

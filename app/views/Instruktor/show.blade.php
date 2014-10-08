@@ -1,9 +1,3 @@
-<div class = "container">
-@if(Session::has('poruka'))
-<div class="alert alert-warning">
-{{Session::get('poruka')}}
-</div>
-@endif
 <h2>Instruktor {{ $instruktor->name }}</h2>
 <dl class="dl-horizontal">
 @if(!empty($instruktor->broj_mobitela))
@@ -26,4 +20,3 @@
 'class' => 'btn btn-warning')) }}
 @endif
 {{ Form::close() }}
-</div>

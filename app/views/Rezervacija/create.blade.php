@@ -8,7 +8,6 @@ $requiredPositive = array(
 'required' => 'required',
 'min' => 1)
 ?>
-<div class="container">
 {{ Form::open(array('route' => 'Rezervacija.store',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 <h2 class="form-heading">Rezerviranje</h2>
@@ -19,6 +18,7 @@ array(
 'class' =>'form-control',
 'required' => 'required',
 'min' => date('Y-m-d'))) }}
+</div>
 <div class = "form-group">
 {{ Form::label('Vrijeme početka') }}
 <div class="container-fluid">
@@ -62,13 +62,7 @@ $optional) }}
 </div>
 @yield('klijent-input')
 <div class = "form-group">
-@if(Session::has('poruka'))
-<div class = "alert alert-warning">
-{{ Session::get('poruka') }}
-</div>
-@endif
 {{ Form::submit('Rezerviraj', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
-</div>

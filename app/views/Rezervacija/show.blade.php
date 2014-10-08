@@ -1,10 +1,4 @@
-<div class="container">
 <h2>Prikaz rezervacije</h2>
-@if(Session::has('poruka'))
-<div class="alert alert-warning">
-{{Session::get('poruka')}}
-</div>
-@endif
 <div class="row">
 <div class="col-sm-6">
 @if(is_null($rezervacija->naplata))
@@ -79,5 +73,4 @@ array('class' => 'btn btn-danger')) }}
 <dd>{{ link_to_route('Klijent.show', $klijent->ime, array('id' => $klijent->broj_mobitela)) }}</dd>
 @endforeach
 </dl>
-</div>
 </div>

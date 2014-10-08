@@ -35,6 +35,9 @@ Route::resource('Ucionica', 'UcionicaController');
 Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index', 'update', 'edit')));
 Route::resource('Instruktor', 'InstruktorController');
 Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
+Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));
+Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
+Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
 
 Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
 Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));

@@ -21,13 +21,22 @@
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
 					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
+					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
 					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>
 					<li>{{ link_to_route('logout', 'Odjava') }}</li>
 				</ul>
 			</div>
 		</div>
 	</div>
-	{{ $content }}
+	<div id="content-container" class="container">
+		@if(Session::has('poruka'))
+		<div class="alert alert-success">{{ Session::get('poruka') }}</div>
+		@endif
+		@if(Session::has('greska'))
+		<div class="alert alert-danger">{{ Session::get('greska') }}</div>
+		@endif
+		{{ $content }}
+	</div>
 	<script src = "{{ URL::to('js/bootstrap.min.js') }}"></script>
 </body>
 </html>
