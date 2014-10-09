@@ -24,7 +24,7 @@ array(
 <div class="container-fluid">
 <div class="row">
 <div class="col-xs-6">
-{{ Form::selectRange('startHour', 8, 22, null,
+{{ Form::selectRange('startHour', BaseController::START_HOUR, BaseController::END_HOUR, null,
 $required) }}</div>
 <div class="col-xs-6">
 {{ Form::select('startMinute', array(0 => '00', 30 => '30'), null,

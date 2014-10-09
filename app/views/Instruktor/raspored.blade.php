@@ -17,7 +17,7 @@
 		@endforeach
 		<th width='{{ 100/(count($grid)+2) }}%'>Vrijeme</th>
 	</tr>
-	@for($i = $startHour*4; $i < ($endHour+1)*4; $i++)
+	@for($i = BaseController::START_HOUR*4; $i < (BaseController::END_HOUR+1)*4; $i++)
 	<tr>
 		<?php
 		if($i%4==0)

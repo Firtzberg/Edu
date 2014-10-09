@@ -2,8 +2,6 @@
 
 class InstruktorController extends \BaseController {
 
-	private $startHour = 8;
-	private $endHour = 22;
 	protected $layout = "layouts.master";
 
 	public function __construct()
@@ -23,7 +21,7 @@ class InstruktorController extends \BaseController {
 	{
 		if(Auth::check())
 			return Redirect::route('Instruktor.show', Auth::id())
-		->with('poruka', 'Već si bio registriran');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Već si bio registriran');
 		$remember = Input::get('remember');
 
 		if(Input::has('userName')&&Input::has('lozinka')&&
@@ -32,14 +30,14 @@ class InstruktorController extends \BaseController {
 			return Redirect::route('Instruktor.show', Auth::id());
 		return Redirect::route('signIn')
 		->withInput()
-		->with('poruka', 'Kriv unos!');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Kriv unos!');
 	}
 
 	public function logout()
 	{
 		Auth::logout();
-		if(Session::has('poruka'))
-			Session::flash('poruka', Session::get('poruka'));
+		if(Session::has(self::SUCCESS_MESSAGE_KEY))
+			Session::flash(self::SUCCESS_MESSAGE_KEY, Session::get(self::SUCCESS_MESSAGE_KEY));
 		return Redirect::route('signIn');
 	}
 
@@ -56,18 +54,18 @@ class InstruktorController extends \BaseController {
 	{
 		if(!(Input::has('oldpass')||Auth::user()->is_admin)||!Input::has('newpass')||!Input::has('rep'))
 			return Redirect::route('Instruktor.changePassword', $id)
-		->with('poruka', 'Nedovoljan unos!');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
 		$u = User::find($id);
 		if($newpass != $rep||!(Hash::check($oldpass, $u->lozinka)||Auth::user()->is_admin))
 			return Redirect::route('Instruktor.changePassword', $id)
-		->with('poruka', 'Kriv unos!');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Kriv unos!');
 		$u->lozinka = Hash::make($newpass);
 		$u->save();
 		return Redirect::route('Instruktor.show', $id)
-		->with('poruka', 'Uspješna promjena zaporke!');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Uspješna promjena zaporke!');
 	}
 
 	/**
@@ -130,7 +128,7 @@ class InstruktorController extends \BaseController {
 		if($validator->fails())
 		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
-	  	->with('poruka', $validator->messages()->first());
+	  	->with(self::SUCCESS_MESSAGE_KEY, $validator->messages()->first());
 
 		$s = new User();
 		$s->name = Input::get('name');
@@ -153,7 +151,7 @@ class InstruktorController extends \BaseController {
 	{
 		$u =  User::find($id);
 		if(!$u){
-			Session::flash('greska', 'Odabrani instruktor nije pronađen u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrani instruktor nije pronađen u sustavu.');
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
 		$this->layout->title = $u->name." - Instruktor";
@@ -196,7 +194,7 @@ class InstruktorController extends \BaseController {
 		if(Input::has('name'))
 			$u->name = Input::get('name');
 		$u->save();
-		Session::flash('poruka', 'Instruktor uspješno uređen');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
 		return Redirect::route('Instruktor.show', $id);
 	}
 
@@ -211,12 +209,12 @@ class InstruktorController extends \BaseController {
 	{
 		$u = User::find($id);
 		if(!$u)
-			Session::flash('greska', 'Instruktor nije pronađen u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Instruktor nije pronađen u sustavu.');
 		elseif($u->is_admin)
-			Session::flash('greska', 'Nije moguće ukloniti administratora.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće ukloniti administratora.');
 		else{
 			$u->delete();
-			Session::flash('poruka', 'Instruktor je uspješno uklonjen!');
+			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno uklonjen!');
 		}
 		return Redirect::route('Instruktor.index');
 	}
@@ -260,7 +258,7 @@ class InstruktorController extends \BaseController {
 
 		foreach ($dani as $d) {
 			$col = $grid[$d];
-			for($i = $this->startHour*4; $i < ($this->endHour+1)*4;)
+			for($i = self::START_HOUR*4; $i < (self::END_HOUR+1)*4;)
 			{
 				if($i%4==0)
 					$key = ((int)($i/4)).':00';
@@ -289,9 +287,7 @@ class InstruktorController extends \BaseController {
 		->with('tjedan', $tjedan)
 		->with('godina', $godina)
 		->with('rezervacije', $rezervacije)
-		->with('grid', $grid)
-		->with('startHour', $this->startHour)
-		->with('endHour', $this->endHour);
+		->with('grid', $grid);
 	}
 
 	private function getRezervacije($week, $year, $id)

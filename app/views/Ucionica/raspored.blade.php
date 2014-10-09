@@ -19,7 +19,7 @@
 			Vrijeme
 		</th>
 	</tr>
-	@for($i = $startHour*4; $i < ($endHour+1)*4; $i++)
+	@for($i = BaseController::START_HOUR*4; $i < (BaseController::END_HOUR+1)*4; $i++)
 	<tr height='1'>
 		<?php
 		if($i%4==0)

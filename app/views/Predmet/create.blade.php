@@ -7,7 +7,11 @@ $requiredPositive = array(
 'required' => 'required',
 'min' => 0)
 ?>
-
+@if(isset($predmet))
+{{ $predmet->nadkategorija->getBreadCrumbs() }}
+@else
+{{ Kategorija::find($kategorija_id)->getBreadCrumbs() }}
+@endif
 
 @if(isset($predmet))
 {{ Form::model($predmet, array('route' => array('Predmet.update', $predmet->id),

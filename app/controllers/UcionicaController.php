@@ -2,8 +2,6 @@
 
 class UcionicaController extends \BaseController {
 
-	private $startHour = 8;
-	private $endHour = 22;
 	protected $layout = 'layouts.master';
 
 	public function __construct()
@@ -68,7 +66,7 @@ class UcionicaController extends \BaseController {
 		$s->save();
 		if(true)
 		{
-			Session::flash('poruka', 'Učionica je uspješno dodana.');
+			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica je uspješno dodana.');
 	  		return Redirect::route('Ucionica.index');
 	  	}
 	  	return Redirect::route('Ucionica.create')
@@ -87,7 +85,7 @@ class UcionicaController extends \BaseController {
 	{
 		$u = Ucionica::find($id);
 		if(!$u){
-			Session::flash('greska', 'Učionica nije pronađena u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Učionica nije pronađena u sustavu.');
 	  		return Redirect::route('Ucionica.index');
 		}
 		$this->layout->title = $u->naziv." - Učionica";
@@ -128,7 +126,7 @@ class UcionicaController extends \BaseController {
 		$u->update(Input::all());
 		if(true)
 		{
-			Session::flash('poruka','Učionica uspješno uređena');
+			Session::flash(self::SUCCESS_MESSAGE_KEY,'Učionica uspješno uređena');
 			return Redirect::route('Ucionica.show', array($id));
 		}
 
@@ -147,7 +145,7 @@ class UcionicaController extends \BaseController {
 	public function destroy($id)
 	{
 		Ucionica::find($id)->delete();
-		Session::flash('poruka', 'Učionica je uspješno uklonjena!');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica je uspješno uklonjena!');
 		return Redirect::route('Ucionica.index');
 	}
 
@@ -189,7 +187,7 @@ class UcionicaController extends \BaseController {
 
 		foreach ($dani as $d) {
 			$col = $grid[$d];
-			for($i = $this->startHour*4; $i < ($this->endHour+1)*4;)
+			for($i = self::START_HOUR*4; $i < (self::END_HOUR+1)*4;)
 			{
 				if($i%4==0)
 					$key = ((int)($i/4)).':00';
@@ -217,9 +215,7 @@ class UcionicaController extends \BaseController {
 		->with('ucionica', Ucionica::find($id))
 		->with('tjedan', $tjedan)
 		->with('godina', $godina)
-		->with('grid', $grid)
-		->with('startHour', $this->startHour)
-		->with('endHour', $this->endHour);
+		->with('grid', $grid);
 	}
 
 	private function getRezervacije($week, $year, $id)

@@ -51,7 +51,7 @@ class RezervacijaController extends \BaseController {
 			$broj_mobitela = Input::get('form-klijenti-item-'.$i.'-broj_mobitela');
 			//provjera potpunosti
 			if(empty($ime) || empty($broj_mobitela)){
-				Session::flash('greska', 'Niste unijeli sve potrebne podatke za polaznika u '.$i.'. redu.');
+				Session::flash(self::DANGER_MESSAGE_KEY, 'Niste unijeli sve potrebne podatke za polaznika u '.$i.'. redu.');
 				return Redirect::route('Rezervacija.create')
 				->withInput();
 			}
@@ -68,8 +68,8 @@ class RezervacijaController extends \BaseController {
 			foreach ($polaznici as $index => $polaznik) {
 				if($polaznik->broj_mobitela == $broj_mobitela){
 					if($polaznik->ime == $ime)
-						Session::flash('greska', 'Višestruko ste unijeli istog polaznika ('.$ime.')');
-					else Session::flash('greska', 'Unijeli ste isti broj mobitela za različite polaznike ('.
+						Session::flash(self::DANGER_MESSAGE_KEY, 'Višestruko ste unijeli istog polaznika ('.$ime.')');
+					else Session::flash(self::DANGER_MESSAGE_KEY, 'Unijeli ste isti broj mobitela za različite polaznike ('.
 						$polaznik->ime.' i '.$ime.').');
 					return Redirect::route('Rezervacija.create')
 					->withInput();
@@ -79,7 +79,7 @@ class RezervacijaController extends \BaseController {
 		}
 		//provjera broja korisnika
 		if(count($polaznici) < 1){
-			Session::flash('greska', 'Potreban je barem 1 polaznik.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Potreban je barem 1 polaznik.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
@@ -87,7 +87,7 @@ class RezervacijaController extends \BaseController {
 		foreach($polaznici as $key => $polaznik){
 			$model = Klijent::find($polaznik->broj_mobitela);
 			if($model && $model->ime != $polaznik->ime){
-				Session::flash('greska', 'U sustavu već postoji klijent s brojem mobitela '.$model->broj_mobitela.'.');
+				Session::flash(self::DANGER_MESSAGE_KEY, 'U sustavu već postoji klijent s brojem mobitela '.$model->broj_mobitela.'.');
 				return Redirect::route('Rezervacija.create')
 				->withInput();
 			}
@@ -100,21 +100,21 @@ class RezervacijaController extends \BaseController {
 		$dto->setTime(Input::get('startHour'), Input::get('startMinute'));
 		$r->pocetak_rada = $dto->format('Y-m-d H:i:s');
 		if($dto < new DateTime()){
-			Session::flash('greska', 'Zadani početak rada je prošao. Nije moguće napraviti rezervaciju u prošlosti.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Zadani početak rada je prošao. Nije moguće napraviti rezervaciju u prošlosti.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
 		//provjera trajanja (količina i mjerna jedinica)
 		$r->kolicina = Input::get('kolicina');
 		if($r->kolicina < 1){
-			Session::flash('greska', 'Trajanje instrukcija mora biti barem 1 sat.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Trajanje instrukcija mora biti barem 1 sat.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
 		$mjera = Mjera::find(Input::get('mjera'));
 		if(!$mjera)
 		{
-			Session::flash('greska', 'Odabrana mjera nije pronađena u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana mjera nije pronađena u sustavu.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
@@ -131,7 +131,7 @@ class RezervacijaController extends \BaseController {
 		->count();
 		if($preklapanja != 0)
 		{
-			Session::flash('greska', 'U zadanome vremenu ste već zauzeti. Provjerite raspored.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'U zadanome vremenu ste već zauzeti. Provjerite raspored.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
@@ -139,14 +139,14 @@ class RezervacijaController extends \BaseController {
 		//provjera postojanja učionice
 		$ucionica = Ucionica::find(Input::get('ucionica'));
 		if(!$ucionica){
-			Session::flash('greska', 'Odabrana učionica nije pronađena u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana učionica nije pronađena u sustavu.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
 
 		//provjera kapaciteta učionice
 		if($ucionica->max_broj_ucenika < $r->broj_ucenika){
-			Session::flash('greska', 'Odabrana učionica nema dovoljnu veličinu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana učionica nema dovoljnu veličinu.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
@@ -163,7 +163,7 @@ class RezervacijaController extends \BaseController {
 		}
 		else
 		{
-			Session::flash('greska', 'U zdanome vremenu je odabrana učionica zauzeta.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'U zdanome vremenu je odabrana učionica zauzeta.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
@@ -175,8 +175,8 @@ class RezervacijaController extends \BaseController {
 
 		$r->save();
 		$r->klijenti()->attach(array_map(function($klijent){return $klijent->broj_mobitela;}, $polaznici));
-		Session::flash('poruka', 'Uspješno ste rezervirali.')
-		return Redirect::route('Rezervacija.show', array($r->id));
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Uspješno ste rezervirali.');
+		return Redirect::route('Rezervacija.show', array('id' => $r->id));
 	}
 
 
@@ -206,15 +206,15 @@ class RezervacijaController extends \BaseController {
 	{
 		$r = Rezervacija::find($id);
 		if(!$r){
-			Session::flash('greska', 'Rezervacija nije pronađena u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Rezervacija nije pronađena u sustavu.');
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
 		if(strtotime($r->pocetak_rada) < time() && !Auth::user()->is_admin) {
-			Session::flash('greska', 'Samo je administratoru dozvoljeno ukloniti rezervaciju u prošlosti.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Samo je administratoru dozvoljeno ukloniti rezervaciju u prošlosti.');
 			return Redirect::route('Rezervacija.show', $id);
 		}
 		$r->delete();
-		Session::flash('poruka', 'Rezervacija je oslobođena.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
 		return Redirect::route('Instruktor.show', Auth::id());
 	}
 
@@ -223,7 +223,7 @@ class RezervacijaController extends \BaseController {
 		$r = Rezervacija::find($id);
 		if(strtotime($r->pocetak_rada) > time())
 		{
-			Session::flash('greska', 'Nije moguće naplatiti instrukcije prije nego se odrade.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
 			return Redirect::route('Rezervacija.show', $id);
 		}
 		$this->layout->title = "Naplata";
@@ -241,13 +241,13 @@ class RezervacijaController extends \BaseController {
 		$n = $r->naplata;
 		if(strtotime($r->pocetak_rada) > time())
 		{
-			Session::flash('greska', 'Nije moguće naplatiti instrukcije prije nego se odrade.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
 			return Redirect::route('Rezervacija.show', $id);
 		}
 
 		if(!(Input::has('za_tvrtku')&& Input::has('ukupno_uplaceno')&&Input::get('za_instruktora')))
 		{
-			Session::flash('greska', 'Niste unijeli sve potrebne podatke.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Niste unijeli sve potrebne podatke.');
 			return Redirect::route('Rezervacija.naplati', $id)
 			->withInput();
 		}
@@ -255,14 +255,14 @@ class RezervacijaController extends \BaseController {
 
 		if(Input::get('za_tvrtku') < 0 || Input::get('za_instruktora') < 0)
 		{
-			Session::flash('greska', 'Nepravilan unos. Iznosi en mogu biti negativni.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nepravilan unos. Iznosi en mogu biti negativni.');
 			return Redirect::route('Rezervacija.naplati', $id)
 			->withInput();
 		}
 
 		if(Input::get('za_tvrtku') + Input::get('za_instruktora') != Input::get('ukupno_uplaceno'))
 		{
-			Session::flash('greska', 'Nepravilan unos. Ukupni iznos se dijeli na tvrtku i instruktora.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nepravilan unos. Ukupni iznos se dijeli na tvrtku i instruktora.');
 			return Redirect::route('Rezervacija.naplati', $id)
 			->withInput();
 		}
@@ -273,14 +273,14 @@ class RezervacijaController extends \BaseController {
 			$n->save();
 		}
 		else $n->update(Input::all());
-		Session::flash('poruka', 'Naplata je uspješna.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Naplata je uspješna.');
 		return Redirect::route('Rezervacija.show', $id);
 	}
 
 	public function destroy_naplata($id)
 	{
 		Rezervacija::find($id)->naplata->delete();
-		Session::flash('poruka', 'Naplata je uspješno uklonjena');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Naplata je uspješno uklonjena');
 		return Redirect::route('Rezervacija.show', $id);
 	}
 

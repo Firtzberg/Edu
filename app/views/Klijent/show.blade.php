@@ -1,4 +1,3 @@
-
 <h2>Klijent {{ $klijent->ime }}</h2>
 <dl class = "dl-horizontal">
 <dt>Broj mobitela</dt><dd>{{ $klijent->broj_mobitela }}</dd>

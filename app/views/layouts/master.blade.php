@@ -29,10 +29,10 @@
 		</div>
 	</div>
 	<div id="content-container" class="container">
-		@if(Session::has('poruka'))
+		@if(Session::has(BaseController::SUCCESS_MESSAGE_KEY))
 		<div class="alert alert-success">{{ Session::get('poruka') }}</div>
 		@endif
-		@if(Session::has('greska'))
+		@if(Session::has(BaseController::DANGER_MESSAGE_KEY))
 		<div class="alert alert-danger">{{ Session::get('greska') }}</div>
 		@endif
 		{{ $content }}
