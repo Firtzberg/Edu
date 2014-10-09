@@ -12,6 +12,11 @@ class InstruktorController extends \BaseController {
     		array('changePassword', 'postChangePassword', 'edit', 'update')));
     }
 
+    private function itemNotFound(){
+		Session::flash(self::DANGER_MESSAGE_KEY, 'Instruktor nije pronađen u sustavu.');
+  		return Redirect::route('Instruktor.index');
+    }
+
 	public function signIn()
 	{
 		return View::make('signIn');
@@ -149,15 +154,13 @@ class InstruktorController extends \BaseController {
 	 */
 	public function show($id, $tjedan = null, $godina = null)
 	{
-		$u =  User::find($id);
-		if(!$u){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrani instruktor nije pronađen u sustavu.');
-			return Redirect::route('Instruktor.show', Auth::id());
-		}
-		$this->layout->title = $u->name." - Instruktor";
+		$i =  User::find($id);
+		if(!$i)
+			return $this->itemNotFound();
+		$this->layout->title = $i->name." - Instruktor";
 		$this->layout->content =
 		View::make('Instruktor.show')
-		->with('instruktor',$u)
+		->with('instruktor',$i)
 		->with('raspored', $this->raspored($id, $tjedan, $godina));
 		return $this->layout;
 	}
@@ -171,11 +174,13 @@ class InstruktorController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$u =  User::find($id);
-		$this->layout->title = $u->name." - Uredi instruktora";
+		$i =  User::find($id);
+		if(!$i)
+			return $this->itemNotFound();
+		$this->layout->title = $i->name." - Uredi instruktora";
 		$this->layout->content =
 		View::make('Instruktor.create')
-		->with('instruktor', User::find($id));
+		->with('instruktor', $i);
 		return $this->layout;
 	}
 
@@ -188,12 +193,14 @@ class InstruktorController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$u = User::find($id);
-		$u->email = Input::get('email');
-		$u->broj_mobitela= Input::get('broj_mobitela');
+		$i = User::find($id);
+		if(!$i)
+			return $this->itemNotFound();
+		$i->email = Input::get('email');
+		$i->broj_mobitela= Input::get('broj_mobitela');
 		if(Input::has('name'))
-			$u->name = Input::get('name');
-		$u->save();
+			$i->name = Input::get('name');
+		$i->save();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
 		return Redirect::route('Instruktor.show', $id);
 	}
@@ -209,7 +216,7 @@ class InstruktorController extends \BaseController {
 	{
 		$u = User::find($id);
 		if(!$u)
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Instruktor nije pronađen u sustavu.');
+			return $this->itemNotFound();
 		elseif($u->is_admin)
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće ukloniti administratora.');
 		else{

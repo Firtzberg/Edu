@@ -1,4 +1,4 @@
-{{ $predmet->nadkategorija->getBreadCrumbs() }}
+{{ $predmet->kategorija->getBreadCrumbs() }}
 <h2>{{ $predmet->ime }}</h2>
 <p>Predmet je 
 @if($predmet->enabled)

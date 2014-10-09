@@ -43,6 +43,7 @@ Route::post('/Predmet/{id}/enable', array('as' => 'Predmet.enable', 'uses' => 'P
 Route::post('/Predmet/{id}/disable', array('as' => 'Predmet.disable', 'uses' => 'PredmetController@disable'));
 Route::post('/Kategorija/{id}/enable', array('as' => 'Kategorija.enable', 'uses' => 'KategorijaController@enable'));
 Route::post('/Kategorija/{id}/disable', array('as' => 'Kategorija.disable', 'uses' => 'KategorijaController@disable'));
+Route::get('/Kategorija/{id}/Children', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
 
 Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
 Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));

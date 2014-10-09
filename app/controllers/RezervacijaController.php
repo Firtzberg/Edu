@@ -30,7 +30,8 @@ class RezervacijaController extends \BaseController {
 		$v = View::make('Rezervacija.create')
 		->with('ucionice', $ucionice)
 		->with('mjere', $mjere)
-		->with('klijent', View::make('Klijent.listForm'));
+		->with('klijent', View::make('Klijent.listForm'))
+		->with('predmet', View::make('Kategorija.select'));
 		return $this->layout;
 	}
 

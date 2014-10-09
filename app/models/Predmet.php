@@ -11,7 +11,7 @@ class Predmet extends Eloquent {
 	
 	protected $guarded = array('id');
 
-	public function nadkategorija()
+	public function kategorija()
 	{
 		return $this->belongsTo('Kategorija','kategorija_id');
 	}

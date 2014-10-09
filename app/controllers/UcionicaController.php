@@ -9,6 +9,11 @@ class UcionicaController extends \BaseController {
     	$this->beforeFilter('admin', array('only' =>
     		array('create', 'store', 'edit', 'update', 'destroy')));
     }
+
+    private function itemNotFound(){
+		Session::flash(self::DANGER_MESSAGE_KEY, 'Učionica nije rponađena u sustavu.');
+  		return Redirect::route('Ucionica.index');
+    }
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -84,10 +89,8 @@ class UcionicaController extends \BaseController {
 	public function show($id, $tjedan = null, $godina = null)
 	{
 		$u = Ucionica::find($id);
-		if(!$u){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Učionica nije pronađena u sustavu.');
-	  		return Redirect::route('Ucionica.index');
-		}
+		if(!$u)
+			return $this->itemNotFound();
 		$this->layout->title = $u->naziv." - Učionica";
 		$this->layout->content =
 		View::make('Ucionica.show')
@@ -106,6 +109,8 @@ class UcionicaController extends \BaseController {
 	public function edit($id)
 	{
 		$u = Ucionica::find($id);
+		if(!$u)
+			return $this->itemNotFound();
 		$this->layout->title = $u->naziv." - Uredi učionicu";
 		$this->layout->content =
 		View::make('Ucionica.create')
@@ -123,6 +128,8 @@ class UcionicaController extends \BaseController {
 	public function update($id)
 	{
 		$u = Ucionica::find($id);
+		if(!$u)
+			return $this->itemNotFound();
 		$u->update(Input::all());
 		if(true)
 		{
@@ -144,7 +151,10 @@ class UcionicaController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		Ucionica::find($id)->delete();
+		$u = Ucionica::find($id)
+		if(!$u)
+			return $this->itemNotFound();
+		$u->delete();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica je uspješno uklonjena!');
 		return Redirect::route('Ucionica.index');
 	}

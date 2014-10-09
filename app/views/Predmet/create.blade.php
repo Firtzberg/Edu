@@ -8,7 +8,7 @@ $requiredPositive = array(
 'min' => 0)
 ?>
 @if(isset($predmet))
-{{ $predmet->nadkategorija->getBreadCrumbs() }}
+{{ $predmet->kategorija->getBreadCrumbs() }}
 @else
 {{ Kategorija::find($kategorija_id)->getBreadCrumbs() }}
 @endif

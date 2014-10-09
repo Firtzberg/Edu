@@ -4,6 +4,11 @@ class KlijentController extends \BaseController {
 
 	protected $layout = "layouts.master";
 
+	private function itemNotFound(){
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Klijent nije pronađen u sustavu.');
+		return Redirect::route('Klijent.index');
+	}
+
 	/**
 	 * Display a listing of the resource.
 	 *
@@ -157,10 +162,8 @@ class KlijentController extends \BaseController {
 	public function show($id)
 	{
 		$k = Klijent::find($id);
-		if(!$k){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Klijent '.$id.' nije pronađen u sustavu.');
-	  		return Redirect::route('Klijent.index');
-		}
+		if(!$k)
+			return $this->itemNotFound();
 		$this->layout->title = $k->ime." - Kijent";
 		$this->layout->content =
 		View::make('Klijent.show')
@@ -178,10 +181,8 @@ class KlijentController extends \BaseController {
 	public function edit($id)
 	{
 		$k = Klijent::find($id);
-		if(!$k){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Klijent nije pronađen u sustavu.');
-	  		return Redirect::route('Klijent.index');
-		}
+		if(!$k)
+			return $this->itemNotFound();
 		$this->layout->title = $k->ime." - Uredi klijenta";
 		$this->layout->content =
 		View::make('Klijent.create')

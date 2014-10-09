@@ -4,42 +4,9 @@ class PredmetController extends \BaseController {
 
 	protected $layout = 'layouts.master';
 
-	const notFoundMessage = 'Predmet nije pronađen u sustavu.';
-
-	/**
-	 * Display root category.
-	 *
-	 * @return Response
-	 */
-	public function enable($id)
-	{
-		$predmet = Predmet::find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
-		$predmet->enabled = true;
-		$predmet->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je vidljiv.');
-		return Redirect::route('Predmet.show', array('id' => $id));
-	}
-
-	/**
-	 * Display root category.
-	 *
-	 * @return Response
-	 */
-	public function disable($id)
-	{
-		$predmet = Predmet::find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
-		$predmet->enabled = false;
-		$predmet->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno skriven.');
-		return Redirect::route('Predmet.show', array('id' => $id));
+	private function itemNotFound(){
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Predmet nije pronađen u sustavu.');
+		return Redirect::route('Kategorija.index');
 	}
 
 	/**
@@ -67,7 +34,7 @@ class PredmetController extends \BaseController {
 		$kategorija_id = Input::get('kategorija_id');
 		$kategorija = Kategorija::find($kategorija_id);
 		if(!$kategorija_id){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije zadana nadkategorija predmeta.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije zadana kategorija predmeta.');
 			return Redirect::route('Kategorija.index');
 		}
 		if(!$kategorija){
@@ -146,10 +113,8 @@ class PredmetController extends \BaseController {
 	public function show($id)
 	{
 		$predmet = Predmet::with('cijene')->find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
+		if(!$predmet)
+			return $this->itemNotFound();
 		$this->layout->title = $predmet->ime.' - Predmet';
 		$this->layout->content = View::make('Predmet.show')
 		->with('predmet', $predmet);
@@ -165,10 +130,8 @@ class PredmetController extends \BaseController {
 	public function edit($id)
 	{
 		$predmet = Predmet::with('cijene')->find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
+		if(!$predmet)
+			return $this->itemNotFound();
 		$this->layout->title = $predmet->ime." - Uredi predmet";
 		$this->layout->content =
 		View::make('Predmet.create')
@@ -185,11 +148,9 @@ class PredmetController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$predmet = Predmet::with('cijene', 'nadkategorija')->find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
+		$predmet = Predmet::with('cijene', 'kategorija')->find($id);
+		if(!$predmet)
+			return $this->itemNotFound();
 
 		$ime = Input::get('ime');
 		if(empty($ime)){
@@ -197,8 +158,8 @@ class PredmetController extends \BaseController {
 			return Redirect::route('Predmet.edit', array('id' => $id))
 			->withInput();
 		}
-		if($predmet->nadkategorija->predmeti()->where('ime', '=', $ime)->where('id', '!=', $id)->count() > 0){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'U kategoriji '.$predmet->nadkategorija->ime.' već postoji predmet s imenom '.$ime.'.');
+		if($predmet->kategorija->predmeti()->where('ime', '=', $ime)->where('id', '!=', $id)->count() > 0){
+			Session::flash(self::DANGER_MESSAGE_KEY, 'U kategoriji '.$predmet->kategorija->ime.' već postoji predmet s imenom '.$ime.'.');
 			return Redirect::route('Predmet.edit', array('id' => $id))
 			->withInput();
 		}
@@ -256,15 +217,43 @@ class PredmetController extends \BaseController {
 	public function destroy($id)
 	{
 		$predmet = Predmet::find($id);
-		if(!$predmet){
-			Session::flash(self::DANGER_MESSAGE_KEY, $this->notFoundMessage);
-			return Redirect::route('Kategorija.index');
-		}
+		if(!$predmet)
+			return $this->itemNotFound();
 		$kategorija_id = $predmet->kategorija_id;
 		$predmet->delete();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uklonjen!');
 		return Redirect::route('Kategorija.show', array('id' => $kategorija_id));
 	}
 
+	/**
+	 * Display root category.
+	 *
+	 * @return Response
+	 */
+	public function enable($id)
+	{
+		$predmet = Predmet::find($id);
+		if(!$predmet)
+			return $this->itemNotFound();
+		$predmet->enabled = true;
+		$predmet->save();
+		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je vidljiv.');
+		return Redirect::route('Predmet.show', array('id' => $id));
+	}
 
+	/**
+	 * Display root category.
+	 *
+	 * @return Response
+	 */
+	public function disable($id)
+	{
+		$predmet = Predmet::find($id);
+		if(!$predmet)
+			return $this->itemNotFound();
+		$predmet->enabled = false;
+		$predmet->save();
+		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno skriven.');
+		return Redirect::route('Predmet.show', array('id' => $id));
+	}
 }
