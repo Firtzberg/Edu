@@ -3,6 +3,7 @@ var selectManager ={
 	SubjectLabel: 'Predmeti',
 	errorMessage: 'Došlo je do greške. Provjerite vezu.',
 	waitMessage: 'Učitavam...',
+	submitSeletor: 'input[type=submit]',
 	onChange: function(select){
 		var selectedOption = jQuery(select.options[select.selectedIndex]);
 		var grupa = selectedOption.closest('optgroup').prop('label');
@@ -13,8 +14,10 @@ var selectManager ={
 	onSubjectChosen: function (select, subjectId) {
 		select.siblings('div.sub').remove();
 		jQuery('input[type=hidden][name=predmet_id]').val(subjectId);
+		jQuery(selectManager.submitSeletor).removeAttr('disabled');
 	},
 	onCategoryChosen: function (select, categoryId) {
+		jQuery(selectManager.submitSeletor).attr('disabled', 'disabled');
 		jQuery('input[type=hidden][name=predmet_id]').val('');
 		var sibling;
 		sibling = select.siblings('div.sub');
@@ -84,4 +87,8 @@ var selectManager ={
 			}
 		});
 	}
-}
+};
+
+jQuery(function(){
+	jQuery(selectManager.submitSeletor).attr('disabled', 'disabled');
+});

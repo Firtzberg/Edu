@@ -40,7 +40,8 @@ class Rezervacija extends Eloquent {
 
 	public function klijenti()
 	{
-		return $this->belongsToMany('Klijent', 'klijent_rezervacija');
+		return $this->belongsToMany('Klijent', 'klijent_rezervacija')
+		->withPivot('missed');
 	}
 
 }

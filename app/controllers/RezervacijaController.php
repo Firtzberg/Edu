@@ -45,6 +45,14 @@ class RezervacijaController extends \BaseController {
 	{
 		$r = new Rezervacija();
 
+		//provjera predmeta
+		$predmet_id = Input::get('predmet_id');
+		if(!$predmet_id){
+			Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Odabir predmeta je obvezan.');
+			return Redirect::route('Rezervacija.create')
+			->withInput();
+		}
+
 		//izgradnja niza polaznika
 		$polaznici = array();
 		for($i = 1; Input::has('form-klijenti-item-'.$i.'-broj_mobitela'); $i++){

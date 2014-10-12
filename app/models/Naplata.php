@@ -9,7 +9,9 @@ class Naplata extends Eloquent {
 	 */
 	protected $table = 'naplate';
 
-	protected $guarded = array('id');
+	protected $primaryKey = 'rezervacija_id';
+
+	protected $guarded = array('rezervacija_id');
 
 	public function rezervacija()
 	{

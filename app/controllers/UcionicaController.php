@@ -151,7 +151,7 @@ class UcionicaController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		$u = Ucionica::find($id)
+		$u = Ucionica::find($id);
 		if(!$u)
 			return $this->itemNotFound();
 		$u->delete();

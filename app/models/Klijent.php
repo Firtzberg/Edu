@@ -19,6 +19,7 @@ class Klijent extends Eloquent{
 
     public function rezervacije()
     {
-    	return $this->belongsToMany('Rezervacija','klijent_rezervacija');
+    	return $this->belongsToMany('Rezervacija','klijent_rezervacija')
+    	->withPivot('missed');
     }
 }
