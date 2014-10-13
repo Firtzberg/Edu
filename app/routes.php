@@ -32,12 +32,13 @@ Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list'
 
 
 Route::resource('Ucionica', 'UcionicaController');
-Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index', 'update', 'edit')));
+Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index')));
 Route::resource('Instruktor', 'InstruktorController');
 Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
 Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));
 Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
 Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
+Route::get('/Rezervacija/{id}/copy', array('as' => 'Rezervacija.copy', 'uses' => 'RezervacijaController@copy'));
 
 Route::post('/Predmet/{id}/enable', array('as' => 'Predmet.enable', 'uses' => 'PredmetController@enable'));
 Route::post('/Predmet/{id}/disable', array('as' => 'Predmet.disable', 'uses' => 'PredmetController@disable'));

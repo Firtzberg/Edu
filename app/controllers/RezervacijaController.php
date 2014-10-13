@@ -9,6 +9,12 @@ class RezervacijaController extends \BaseController {
     	$this->beforeFilter('myRezervacija', array('except' =>
     		array('create', 'store')));
     }
+
+	private function itemNotFound(){
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Rezervacija nije pronađen u sustavu.');
+		return Redirect::route('Instruktor.index');
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -21,15 +27,10 @@ class RezervacijaController extends \BaseController {
 		foreach ($rows as $row) {
 			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
 		}
-		$rows = Mjera::select('id', 'simbol')->get();
-		foreach ($rows as $row) {
-			$mjere[$row->id] = $row->simbol;
-		}
 
 		$this->layout->content =
 		$v = View::make('Rezervacija.create')
 		->with('ucionice', $ucionice)
-		->with('mjere', $mjere)
 		->with('klijent', View::make('Klijent.listForm'))
 		->with('predmet', View::make('Kategorija.select'));
 		return $this->layout;
@@ -120,7 +121,7 @@ class RezervacijaController extends \BaseController {
 			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
-		$mjera = Mjera::find(Input::get('mjera'));
+		$mjera = Mjera::find(Input::get('mjera_id'));
 		if(!$mjera)
 		{
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana mjera nije pronađena u sustavu.');
@@ -146,7 +147,7 @@ class RezervacijaController extends \BaseController {
 		}
 
 		//provjera postojanja učionice
-		$ucionica = Ucionica::find(Input::get('ucionica'));
+		$ucionica = Ucionica::find(Input::get('ucionica_id'));
 		if(!$ucionica){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana učionica nije pronađena u sustavu.');
 			return Redirect::route('Rezervacija.create')
@@ -154,7 +155,7 @@ class RezervacijaController extends \BaseController {
 		}
 
 		//provjera kapaciteta učionice
-		if($ucionica->max_broj_ucenika < $r->broj_ucenika){
+		if($ucionica->max_broj_ucenika < count($polaznici)){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrana učionica nema dovoljnu veličinu.');
 			return Redirect::route('Rezervacija.create')
 			->withInput();
@@ -177,15 +178,107 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 
-		if(Input::has('usmjerenje'))
-			$r->usmjerenje = Input::get('usmjerenje');
-		if(Input::has('predmet'))
-			$r->predmet = Input::get('predmet');
+		//provjera predmeta
+		if(!Input::has('predmet_id'))
+		{
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Predmet je obvezan.');
+			return Redirect::route('Rezervacija.create')
+			->withInput();
+		}
+		$predmet = Predmet::find(Input::get('predmet_id'));
+		if(!$predmet){
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Odabrani predmet nije pronađen u sustavu.');
+			return Redirect::route('Rezervacija.create')
+			->withInput();
+		}
+		$r->predmet_id = $predmet->id;
 
 		$r->save();
 		$r->klijenti()->attach(array_map(function($klijent){return $klijent->broj_mobitela;}, $polaznici));
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Uspješno ste rezervirali.');
 		return Redirect::route('Rezervacija.show', array('id' => $r->id));
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function copy($id)
+	{
+		$rezervacija = Rezervacija::with('klijenti')->find($id);
+		//provjera postojanja
+		if(!$rezervacija)
+			return $this->itemNotFound();
+
+		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
+		foreach ($rows as $row) {
+			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
+		}
+
+		if(!$rezervacija->predmet)
+			$this->layout->title = 'Nepoznato';
+		else $this->layout->title = $rezervacija->predmet->ime;
+		$this->layout->title .= " - Uredi rezervaciju";
+		$this->layout->content =
+		View::make('Rezervacija.create')
+		->with('ucionice', $ucionice)
+		->with('klijent', View::make('Klijent.listForm')
+			->with('klijenti', $rezervacija->klijenti))
+		->with('predmet', View::make('Kategorija.select')
+			->with('predmet_id', $rezervacija->predmet_id));;
+		return $this->layout;
+	}
+
+	/**
+	 * Show the form for editing the specified resource.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function edit($id)
+	{
+		$rezervacija = Rezervacija::with('klijenti', 'mjera', 'ucionica')->find($id);
+		//provjera postojanja
+		if(!$rezervacija)
+			return $this->itemNotFound();
+
+		//provjera dozvole
+		if(strtotime($rezervacija->pocetak_rada) < time() && !Auth::user()->is_admin) {
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Samo je administratoru dozvoljeno uređivati započetu rezervaciju.');
+			return Redirect::route('Rezervacija.show', $id);
+		}
+
+		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
+		foreach ($rows as $row) {
+			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
+		}
+
+		if(!$rezervacija->predmet)
+			$this->layout->title = 'Nepoznato';
+		else $this->layout->title = $rezervacija->predmet->ime;
+		$this->layout->title .= " - Uredi rezervaciju";
+		$this->layout->content =
+		View::make('Rezervacija.create')
+		->with('rezervacija', $rezervacija)
+		->with('ucionice', $ucionice)
+		->with('klijent', View::make('Klijent.listForm')
+			->with('klijenti', $rezervacija->klijenti))
+		->with('predmet', View::make('Kategorija.select')
+			->with('predmet_id', $rezervacija->predmet_id));;
+		return $this->layout;
+	}
+
+
+	/**
+	 * Update the specified resource in storage.
+	 *
+	 * @param  int  $id
+	 * @return Response
+	 */
+	public function update($id)
+	{
 	}
 
 
@@ -197,10 +290,13 @@ class RezervacijaController extends \BaseController {
 	 */
 	public function show($id)
 	{
+		$rezervacija = Rezervacija::with('naplata', 'predmet', 'mjera', 'klijenti')->find($id);
+		if(!$rezervacija)
+			return $this->itemNotFound();
 		$this->layout->title = "Prikaz rezervacije";
 		$this->layout->content =
 		View::make('Rezervacija.show')
-		->with('rezervacija', Rezervacija::with('naplata', 'klijenti')->find($id));
+		->with('rezervacija', $rezervacija);
 		return $this->layout;
 	}
 
@@ -219,7 +315,7 @@ class RezervacijaController extends \BaseController {
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
 		if(strtotime($r->pocetak_rada) < time() && !Auth::user()->is_admin) {
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Samo je administratoru dozvoljeno ukloniti rezervaciju u prošlosti.');
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Samo je administratoru dozvoljeno ukloniti započetu rezervaciju.');
 			return Redirect::route('Rezervacija.show', $id);
 		}
 		$r->delete();

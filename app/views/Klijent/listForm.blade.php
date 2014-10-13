@@ -4,16 +4,28 @@
 <div class="form-group">
 {{Form::label('Polaznici')}}
 <div id="form-klijenti-container">
-@if(Input::old('form-klijenti-item-1-broj_mobitela'))
 <script type="text/javascript">
-@for($i = 1; Input::old('form-klijenti-item-'.$i.'-broj_mobitela'); $i++)
-<?php $key =  'form-klijenti-item-'.$i; ?>
-klijentManager.add("{{ Input::old($key.'-broj_mobitela') }}", "{{ Input::old($key.'-ime') }}")
-@endfor
+klijentManager.init(
+<?php
+	$klijentCollection = array();
+	if(isset($klijenti))
+		$klijentCollection = $klijenti->toArray('ime', 'broj_mobitela');
+	else{
+		for($i = 1; Input::old('form-klijenti-item-'.$i.'-broj_mobitela'); $i++){
+			$key =  'form-klijenti-item-'.$i;
+			$klijentItem = array(
+				'broj_mobitela' => Input::old($key.'-broj_mobitela'),
+				'ime' => Input::old($key.'-ime')
+			);
+			$klijentCollection[] = $klijentItem;
+		}
+	}
+	echo json_encode($klijentCollection);
+?>
+);
 </script>
-@endif
 </div>
-{{ Form::button('New Klijent', array(
+{{ Form::button('Dodaj polaznika', array(
 'class' => 'btn btn-success',
 'id' => 'form-klijent-add')) }}
 </div>

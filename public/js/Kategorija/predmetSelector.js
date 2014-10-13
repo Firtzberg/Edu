@@ -1,36 +1,32 @@
 var selectManager ={
-	CategoryLabel: 'Kategorije',
-	SubjectLabel: 'Predmeti',
+	categoryLabel: 'Kategorije',
+	subjectLabel: 'Predmeti',
 	errorMessage: 'Došlo je do greške. Provjerite vezu.',
 	waitMessage: 'Učitavam...',
-	submitSeletor: 'input[type=submit]',
+	selected: false,
+	subjectInputSelector: 'input[type=hidden][name=predmet_id]',
+	divContainerSelector: 'div#predmet-select',
 	onChange: function(select){
 		var selectedOption = jQuery(select.options[select.selectedIndex]);
 		var grupa = selectedOption.closest('optgroup').prop('label');
-		if(grupa == selectManager.CategoryLabel)
+		if(grupa == selectManager.categoryLabel)
 			selectManager.onCategoryChosen(jQuery(select), selectedOption.val());
 		else selectManager.onSubjectChosen(jQuery(select), selectedOption.val());
 	},
 	onSubjectChosen: function (select, subjectId) {
 		select.siblings('div.sub').remove();
-		jQuery('input[type=hidden][name=predmet_id]').val(subjectId);
-		jQuery(selectManager.submitSeletor).removeAttr('disabled');
+		jQuery(selectManager.subjectInputSelector).val(subjectId);
+		selectManager.selected = true;
 	},
 	onCategoryChosen: function (select, categoryId) {
-		jQuery(selectManager.submitSeletor).attr('disabled', 'disabled');
-		jQuery('input[type=hidden][name=predmet_id]').val('');
-		var sibling;
-		sibling = select.siblings('div.sub');
-		if(sibling.length != 1)
-		{
-			sibling.remove();
-			divElement = document.createElement('div');
-			divElement.className = 'sub';
-			sibling = jQuery(divElement);
-			select.parent().append(sibling);
-		}
-		else
-			sibling.empty();
+		selectManager.selected = false;
+		jQuery(selectManager.subjectInputSelector).val('');
+		select.siblings('div.sub').remove();
+		divElement = document.createElement('div');
+		divElement.className = 'sub';
+		var sibling = jQuery(divElement);
+		select.parent().append(sibling);
+
 		jQuery.ajax({
 			url: '../Kategorija/' + categoryId + '/Children',
 			dataType: 'json',
@@ -42,53 +38,97 @@ var selectManager ={
 				sibling.html(selectManager.errorMessage);
 			},
 			success: function(data){
-				var dropdown = document.createElement('select');
-				dropdown.className = 'form-control form-group';
-				dropdown = jQuery(dropdown);
-				var optgroup;
-				var opt;
-
-				opt = document.createElement('option');
-				opt.hidden = 'hidden';
-				opt.selected = 'selected';
-				opt.disabled = 'disabled';
-				dropdown.append(opt);
-
-				if(data.predmeti.length > 0){
-					optgroup = document.createElement('optgroup');
-					optgroup.label = selectManager.SubjectLabel;
-					optgroup = jQuery(optgroup);
-					for(var key in data.predmeti){
-						opt = document.createElement('option');
-						opt.value = data.predmeti[key].id;
-						opt = jQuery(opt);
-						opt.html(data.predmeti[key].ime);
-						optgroup.append(opt);
-					}
-					dropdown.append(optgroup);
-				}
-
-				if(data.kategorije.length > 0){
-					optgroup = document.createElement('optgroup');
-					optgroup.label = selectManager.CategoryLabel;
-					optgroup = jQuery(optgroup);
-					for(var key in data.kategorije){
-						opt = document.createElement('option');
-						opt.value = data.kategorije[key].id;
-						opt = jQuery(opt);
-						opt.html(data.kategorije[key].ime);
-						optgroup.append(opt);
-					}
-					dropdown.append(optgroup);
-				}
-
-				dropdown.change(function(){selectManager.onChange(this);});
-				sibling.html(dropdown);
+				sibling.html(selectManager.dataToDropDown(data));
 			}
 		});
+	},
+	dataToDropDown: function(data){
+		var dropdown = document.createElement('select');
+		dropdown.className = 'form-control form-group';
+		dropdown.required = 'required';
+		dropdown = jQuery(dropdown);
+		var optgroup;
+		var opt;
+
+		opt = document.createElement('option');
+		opt.hidden = 'hidden';
+		opt.selected = 'selected';
+		opt.disabled = 'disabled';
+		dropdown.append(opt);
+
+		if(typeof data.predmeti != 'undefined' && data.predmeti.length > 0){
+			optgroup = document.createElement('optgroup');
+			optgroup.label = selectManager.subjectLabel;
+			optgroup = jQuery(optgroup);
+			for(var key in data.predmeti){
+				opt = document.createElement('option');
+				opt.value = data.predmeti[key].id;
+				opt = jQuery(opt);
+				opt.html(data.predmeti[key].ime);
+				optgroup.append(opt);
+			}
+			dropdown.append(optgroup);
+		}
+
+		if(typeof data.kategorije != 'undefined' && data.kategorije.length > 0){
+			optgroup = document.createElement('optgroup');
+			optgroup.label = selectManager.categoryLabel;
+			optgroup = jQuery(optgroup);
+			for(var key in data.kategorije){
+				opt = document.createElement('option');
+				opt.value = data.kategorije[key].id;
+				opt = jQuery(opt);
+				opt.html(data.kategorije[key].ime);
+				optgroup.append(opt);
+			}
+			dropdown.append(optgroup);
+		}
+
+		dropdown.change(function(){selectManager.onChange(this);});
+		return dropdown;
+	},
+	isPredmetSelected: function() {
+		return selectManager.selected;
+	},
+	init: function(myComplexStructure){
+		errorManager.register(selectManager.isPredmetSelected, 'Niste odabrali predmet.');
+
+		var divElement = jQuery(selectManager.divContainerSelector);
+
+		var predmetIdInput = document.createElement('input');
+		predmetIdInput.type = 'hidden';
+		predmetIdInput.name = 'predmet_id';
+		predmetIdInput = jQuery(predmetIdInput);
+		divElement.append(predmetIdInput);
+
+		var level;
+		var dropdown;
+		var opt;
+		var nestedDiv;
+		for(var key in myComplexStructure){
+			level = myComplexStructure[key];
+			dropdown = selectManager.dataToDropDown(level.content);
+
+			if(typeof level.selected != 'undefined')
+			{
+				if(level.selected.type == 'kategorija')
+					dropdown.find('optgroup[label='+selectManager.categoryLabel+'] option[value='+
+						level.selected.id+']').attr('selected', 'selected');
+				else{
+					dropdown.find('optgroup[label='+selectManager.subjectLabel+'] option[value='+
+						level.selected.id+']').attr('selected', 'selected');
+					predmetIdInput.val(level.selected.id);
+					selectManager.selected = true;
+				}
+			}
+
+			nestedDiv = document.createElement('div');
+			nestedDiv.className = 'sub';
+			nestedDiv = jQuery(nestedDiv);
+			nestedDiv.append(dropdown);
+
+			divElement.append(nestedDiv);
+			divElement = nestedDiv;
+		}
 	}
 };
-
-jQuery(function(){
-	jQuery(selectManager.submitSeletor).attr('disabled', 'disabled');
-});

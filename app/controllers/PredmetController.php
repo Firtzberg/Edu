@@ -237,7 +237,7 @@ class PredmetController extends \BaseController {
 			return $this->itemNotFound();
 		$predmet->enabled = true;
 		$predmet->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je vidljiv.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je vidljiv.');
 		return Redirect::route('Predmet.show', array('id' => $id));
 	}
 
@@ -253,7 +253,7 @@ class PredmetController extends \BaseController {
 			return $this->itemNotFound();
 		$predmet->enabled = false;
 		$predmet->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno skriven.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno skriven.');
 		return Redirect::route('Predmet.show', array('id' => $id));
 	}
 }

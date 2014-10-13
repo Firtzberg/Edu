@@ -21,6 +21,11 @@ class Rezervacija extends Eloquent {
 		return $this->belongsTo('Ucionica','ucionica_id');
 	}
 
+	public function predmet()
+	{
+		return $this->belongsTo('Predmet','predmet_id');
+	}
+
 	public function naplata()
 	{
 		return $this->hasOne('Naplata');

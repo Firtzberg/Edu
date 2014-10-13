@@ -96,7 +96,7 @@ class KategorijaController extends \BaseController {
 			return $this->itemNotFound();
 		$kategorija->ime = $ime;
 		$kategorija->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno preimenovana.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno preimenovana.');
 		return Redirect::route('Kategorija.show', array('id' => $id));
 	}
 
@@ -130,7 +130,7 @@ class KategorijaController extends \BaseController {
 			return $this->itemNotFound();
 		$kategorija->enabled = true;
 		$kategorija->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Kategorija je vidljiva.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je vidljiva.');
 		return Redirect::route('Kategorija.show', array('id' => $id));
 	}
 
@@ -146,29 +146,15 @@ class KategorijaController extends \BaseController {
 			return $this->itemNotFound();
 		$kategorija->enabled = false;
 		$kategorija->save();
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno skrivena.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno skrivena.');
 		return Redirect::route('Kategorija.show', array('id' => $id));
 	}
 
 	public function getChildren($id){
-		$data = array();
-		$kategorije = Kategorija::select('id', 'ime')
-		->where('nadkategorija_id', '=', $id)
-		->where('enabled', '=', true)
-		->whereRaw('nadkategorija_id != id')
-		->get()
-		->toArray();
-		$predmeti = Predmet::select('id', 'ime')
-		->where('kategorija_id', '=', $id)
-		->where('enabled', '=', true)
-		->get()
-		->toArray();
-		return Response::json(
-			array(
-				'kategorije' => $kategorije,
-				'predmeti' => $predmeti
-			)
-		);
+		$kategorija = Kategorija::find($id);
+		if(!$kategorija)
+			return $this->itemNotFound();
+		return Response::json($kategorija->getEnabledChildren());
 	}
 
 }

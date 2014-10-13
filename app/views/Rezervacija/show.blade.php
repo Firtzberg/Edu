@@ -5,7 +5,7 @@
 @if(strtotime($rezervacija->pocetak_rada)>time())
 <h4>Nije moguće naplatiti prije odrade instrukcija.</h4>
 @else
-<h4>Naplata nije zvršena.</h4>
+<h4>Naplata nije izvršena.</h4>
 {{ link_to_route('Rezervacija.naplati', 'Naplati', array($rezervacija->id),
 array('class' => 'btn btn-primary')) }}
 @endif
@@ -30,6 +30,7 @@ array('class' => 'btn btn-warning')) }}
 <dl class="dl-horizontal">
 <dt>Instruktor</dt><dd>{{ link_to_route('Instruktor.show', $rezervacija->instruktor->name, array('id' => $rezervacija->instruktor->id)) }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
+<dt>Trajanje</dt><dd>{{ $rezervacija->kolicina.' '.$rezervacija->mjera->znacenje }}</dd>
 <dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>
 <dt>Učionica</dt><dd>
 @if(is_null($rezervacija->ucionica))
@@ -40,24 +41,22 @@ Uklonjena
 	array($rezervacija->ucionica->id)) }}
 @endif
 </dd>
-<dt>Usmjerenje</dt><dd>
-@if(empty($rezervacija->usmjerenje))
-Nije definirano
-@else
-{{ $rezervacija->usmjerenje }}
-@endif
-</dd>
 <dt>Predmet</dt><dd>
-@if(empty($rezervacija->predmet))
-Nije definirano
+@if($rezervacija->predmet)
+{{ $rezervacija->predmet->ime }}
 @else
-{{ $rezervacija->predmet }}
+Nije definiran
 @endif
 </dd>
+<dt>Rezervacija obavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
 <dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
 </dl>
 @if(strtotime($rezervacija->pocetak_rada) > time() || Auth::user()->is_admin)
 {{ Form::open(array('route' => array('Rezervacija.destroy', $rezervacija->id), 'method' => 'delete')) }}
+{{ link_to_route('Rezervacija.edit', 'Uredi', array('id' => $rezervacija->id), array('class' => 'btn btn-default')) }} 
+@endif
+{{ link_to_route('Rezervacija.copy', 'Kopiraj', array('id' => $rezervacija->id), array('class' => 'btn btn-default')) }} 
+@if(strtotime($rezervacija->pocetak_rada) > time() || Auth::user()->is_admin)
 {{ Form::submit('Otkaži rezervaciju',
 array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}

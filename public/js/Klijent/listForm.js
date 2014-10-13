@@ -35,11 +35,9 @@ var klijentManager = {
 		};
 	},
 
-	add: function (broj_mobitela, ime) {
-		if(typeof broj_mobitela == 'undefined')
-			broj_mobitela = '';
-		if(typeof ime == 'undefined')
-			ime = '';
+	add: function (klijent) {
+		if(typeof klijent == 'undefined')
+			klijent = {broj_mobitela: '', ime: ''};
 		klijentManager.total++;
 		var key = klijentManager.itemPrefix + klijentManager.total;
 		var elementDiv = document.createElement('div');
@@ -54,7 +52,7 @@ var klijentManager = {
 		numberInput.required = 'required';
 		numberInput.className = 'form-control';
 		numberInput.placeholder = 'Broj mobitela';
-		numberInput.value = broj_mobitela;
+		numberInput.value = klijent.broj_mobitela;
 		nestedDiv.appendChild(numberInput);
 		elementDiv.appendChild(nestedDiv);
 
@@ -66,7 +64,7 @@ var klijentManager = {
 		nameInput.required = 'required';
 		nameInput.className = 'form-control';
 		nameInput.placeholder = 'Ime i prezime';
-		nameInput.value = ime;
+		nameInput.value = klijent.ime;
 		nestedDiv.appendChild(nameInput);
 		elementDiv.appendChild(nestedDiv);
 
@@ -170,19 +168,26 @@ var klijentManager = {
 			select: selectFunction
 		});
 		return true;
+	},
+	oneOrMore: function(){
+		return klijentManager.total > 0;
+	},
+	init: function(klijentArray){
+		errorManager.register(klijentManager.oneOrMore, 'Potreban je barem jedan polaznik.');
+
+		klijentManager.formToken = jQuery('input[name=_token]').val();
+		var klijent;
+		for(var key in klijentArray){
+			klijent = klijentArray[key];
+			klijentManager.add(klijent);
+		}
+		if(klijentArray.length < 1)
+			klijentManager.add();
+
+		jQuery(function(){
+			jQuery(klijentManager.addButtonSelector).on('click',
+				function(){klijentManager.add();}
+			);
+		});
 	}
 }
-
-jQuery(document).ready(function () {
-	klijentManager.formToken = jQuery('input[name=_token]').val();
-	jQuery(klijentManager.addButtonSelector).on('click', function(){klijentManager.add();});
-	jQuery('form').on('submit', function(){
-		if(klijentManager.total < 1){
-			alert('Potreban je barem jedan polaznik.');
-			return false;
-		}
-		return true;
-	});
-	if(klijentManager.total == 0)
-		klijentManager.add();
-});
