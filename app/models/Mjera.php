@@ -1,6 +1,7 @@
 <?php
 
 class Mjera extends Eloquent{
+	const NOT_FOUND_MESSAGE = 'Zadana mjera nije pronađena u sustavu.';
 
 	/**
 	 * The database table used by the model.
@@ -18,4 +19,5 @@ class Mjera extends Eloquent{
 	 * @var string
 	 */
 	protected $guarded = array('id');
+
 }

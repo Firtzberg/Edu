@@ -11,7 +11,7 @@ class UcionicaController extends \BaseController {
     }
 
     private function itemNotFound(){
-		Session::flash(self::DANGER_MESSAGE_KEY, 'Učionica nije rponađena u sustavu.');
+		Session::flash(self::DANGER_MESSAGE_KEY, Ucionica::NOT_FOUND_MESSAGE);
   		return Redirect::route('Ucionica.index');
     }
 	/**

@@ -5,7 +5,7 @@ class KategorijaController extends \BaseController {
 	protected $layout = 'layouts.master';
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Kategorija nije pronađena u sustavu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
 		return View::make('Kategorija.index');
 	}
 

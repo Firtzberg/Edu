@@ -1,6 +1,7 @@
 <?php
 
 class Naplata extends Eloquent {
+	const NOT_FOUND_MESSAGE = 'Zadana naplata nije pronađena u sustavu.';
 
 	/**
 	 * The database table used by the model.

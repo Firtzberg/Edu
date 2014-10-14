@@ -5,7 +5,7 @@ class KlijentController extends \BaseController {
 	protected $layout = "layouts.master";
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Klijent nije pronađen u sustavu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, Klijent::NOT_FOUND_MESSAGE);
 		return Redirect::route('Klijent.index');
 	}
 

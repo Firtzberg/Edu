@@ -1,4 +1,6 @@
 var selectManager ={
+	urlPrefix: '../Kategorija/',
+	urlSufix: '/Children',
 	categoryLabel: 'Kategorije',
 	subjectLabel: 'Predmeti',
 	errorMessage: 'Došlo je do greške. Provjerite vezu.',
@@ -28,7 +30,7 @@ var selectManager ={
 		select.parent().append(sibling);
 
 		jQuery.ajax({
-			url: '../Kategorija/' + categoryId + '/Children',
+			url: selectManager.urlPrefix + categoryId + selectManager.urlSufix,
 			dataType: 'json',
 			type: 'get',
 			beforeSend: function(){

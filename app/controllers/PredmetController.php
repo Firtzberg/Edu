@@ -5,7 +5,7 @@ class PredmetController extends \BaseController {
 	protected $layout = 'layouts.master';
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Predmet nije pronađen u sustavu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, Predmet::NOT_FOUND_MESSAGE);
 		return Redirect::route('Kategorija.index');
 	}
 
@@ -38,7 +38,7 @@ class PredmetController extends \BaseController {
 			return Redirect::route('Kategorija.index');
 		}
 		if(!$kategorija){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Kategorija nije pronađena u sustavu.');
+			Session::flash(self::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
 			return Redirect::route('Kategorija.index');
 		}
 		if(empty($ime)){

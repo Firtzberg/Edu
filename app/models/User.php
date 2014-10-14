@@ -4,6 +4,7 @@ use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
+	const NOT_FOUND_MESSAGE = 'Zadani instruktor nije pronađen u sustavu.';
 
 	/**
 	 * The database table used by the model.

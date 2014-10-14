@@ -34,7 +34,9 @@
 			}
 			echo json_encode($levels);
 			?>
-			);});
+			);
+			selectManager.urlPrefix = "{{ route('Kategorija.index').'/' }}";
+		});
 	</script>
 </div>
 @endsection

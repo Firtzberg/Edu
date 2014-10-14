@@ -1,6 +1,7 @@
 <?php
 
 class Kategorija extends Eloquent {
+	const NOT_FOUND_MESSAGE = 'Zadana kategorija nije pronađena u sustavu.';
 
 	/**
 	 * The database table used by the model.

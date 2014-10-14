@@ -13,7 +13,7 @@ class InstruktorController extends \BaseController {
     }
 
     private function itemNotFound(){
-		Session::flash(self::DANGER_MESSAGE_KEY, 'Instruktor nije pronađen u sustavu.');
+		Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
   		return Redirect::route('Instruktor.index');
     }
 

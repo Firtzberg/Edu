@@ -1,6 +1,7 @@
 <?php
 
 class Predmet extends Eloquent {
+	const NOT_FOUND_MESSAGE = 'Zadani predmet nije pronađen u sustavu.';
 
 	/**
 	 * The database table used by the model.

@@ -23,6 +23,7 @@ klijentManager.init(
 	echo json_encode($klijentCollection);
 ?>
 );
+klijentManager.url = "{{ route('Klijent.Suggestions') }}";
 </script>
 </div>
 {{ Form::button('Dodaj polaznika', array(

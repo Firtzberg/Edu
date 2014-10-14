@@ -1,6 +1,7 @@
 <?php
 
 class Ucionica extends Eloquent {
+	const NOT_FOUND_MESSAGE = 'Zadana učionica nije pronađena u sustavu.';
 
 	/**
 	 * The database table used by the model.
