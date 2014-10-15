@@ -108,14 +108,6 @@ class Rezervacija extends Eloquent {
 					if(empty($ime) || empty($broj_mobitela))
 						return 'Niste unijeli sve potrebne podatke za polaznika u '.$i.'. redu.';
 
-					if(strlen($broj_mobitela) > 1)
-						if($broj_mobitela[0] == '0' && $broj_mobitela[1] != '0')
-							$broj_mobitela = '00385'.substr($broj_mobitela, 1);
-					$broj_mobitela = str_replace('+', '00', $broj_mobitela);
-					$chars = str_split($broj_mobitela);
-					$chars = array_filter($chars, function($char){return ($char >='0' && $char <= '9');});
-					$broj_mobitela = implode($chars);
-
 					//check if multiple broj_mobetela have the same value
 					foreach ($polaznici as $index => $polaznik) {
 						if($polaznik->broj_mobitela == $broj_mobitela){
@@ -125,7 +117,10 @@ class Rezervacija extends Eloquent {
 								$polaznik->ime.' i '.$ime.').';
 						}
 					}
-					$polaznici[] = new Klijent(array('ime' => $ime, 'broj_mobitela' => $broj_mobitela));
+					$polaznik = new Klijent();
+					$polaznik->broj_mobitela = $polaznik->getStorableBrojMobitela($broj_mobitela);
+					$polaznik->ime = $ime;
+					$polaznici[] = $polaznik;
 				}
 				//kraj izgradnje niza polaznika
 			//kraj provjere postojanja podataka za polaznike

@@ -70,17 +70,8 @@ class KlijentController extends \BaseController {
 			}
 			$collection = $query->take(5)->get();
 		}
-		foreach ($collection as $item) {
-			$broj = $item->broj_mobitela;
-			if(substr($broj, 0, 5) == '00385')
-				$broj = '0'.substr($broj, 5);
-			if(strlen($broj) > 3 && $broj[0] == '0'){
-				$broj = substr_replace($broj, ' ', 3, 0);
-				if(strlen($broj) > 7)
-					$broj = substr_replace($broj, ' ', 7, 0);
-			}
-			$item->broj_mobitela = $broj;
-		}
+		foreach ($collection as $item) 
+			$item->broj_mobitela = $item->getReadableBrojMobitela();
 
 		return Response::json($collection);
 	}
@@ -121,13 +112,6 @@ class KlijentController extends \BaseController {
 	  	}
 
 		$broj_mobitela = Input::get('broj_mobitela');
-		if(strlen($broj_mobitela) > 1)
-			if($broj_mobitela[0] == '0' && $broj_mobitela[1] != '0')
-				$broj_mobitela = '00385'.substr($broj_mobitela, 1);
-		$broj_mobitela = str_replace('+', '00', $broj_mobitela);
-		$chars = str_split($broj_mobitela);
-		$chars = array_filter($chars, function($char){return ($char >='0' && $char <= '9');});
-		$broj_mobitela = implode($chars);
 
 		if(Klijent::find($broj_mobitela))
 		{
@@ -137,7 +121,7 @@ class KlijentController extends \BaseController {
 	  	}
 
 		$k = new Klijent();
-		$k->broj_mobitela = $broj_mobitela;
+		$k->broj_mobitela = $k->getStorableBrojMobitela($broj_mobitela);
 		$k->ime =  Input::get('ime');
 		$k->facebook = Input::get('facebook');
 		$k->email = Input::get('email');
@@ -213,15 +197,6 @@ class KlijentController extends \BaseController {
 	  	}
 
 		$broj_mobitela = Input::get('broj_mobitela');
-		if($id != $broj_mobitela){
-			if(strlen($broj_mobitela) > 1)
-				if($broj_mobitela[0] == '0' && $broj_mobitela[1] != '0')
-					$broj_mobitela = '00385'.substr($broj_mobitela, 1);
-			$broj_mobitela = str_replace('+', '00', $broj_mobitela);
-			$chars = str_split($broj_mobitela);
-			$chars = array_filter($chars, function($char){return ($char >='0' && $char <= '9');});
-			$broj_mobitela = implode($chars);
-		}
 
 		$k = Klijent::find($id);
 		if(!$k)
@@ -231,7 +206,8 @@ class KlijentController extends \BaseController {
 	  		->withInput();
 	  	}
 
-		$k->broj_mobitela = $broj_mobitela;
+	  	if($broj_mobitela != $id)
+	  		$k->broj_mobitela = $k->getStorableBrojMobitela($broj_mobitela);
 		$k->ime =  Input::get('ime');
 		$k->facebook = Input::get('facebook');
 		$k->email = Input::get('email');

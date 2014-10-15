@@ -92,7 +92,12 @@ $requiredPositive = array(
 	</div>
 </div>
 <div class = "form-group">
-	{{ Form::submit('Rezerviraj', array(
+	<?php
+	if(isset($rezervacija))
+		$value = 'Promijeni';
+	else $value = 'Rezerviraj';
+	?>
+	{{ Form::submit($value, array(
 	'class' => 'btn btn-lg btn-primary btn-block',
 	'style' => 'margin:auto;max-width:330px')) }}
 </div>

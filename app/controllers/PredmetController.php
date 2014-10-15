@@ -54,51 +54,16 @@ class PredmetController extends \BaseController {
 
 		$predmet = new Predmet();
 		$predmet->ime = $ime;
-		$mjere = Mjera::all();
-		$cijene = array();
-		foreach ($mjere as $mjera) {
-			$cijena = array();
 
-			if(Input::has('individualno-cijena-'.$mjera->id)){
-				$value = Input::get('individualno-cijena-'.$mjera->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Individualna cijena za '.$mjera->znacenje.' ne može biti negativna.');
-					return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-					->withInput();
-				}
-				$cijena['individualno'] = $value;
-			}
-			else $cijena['individualno'] = 0;
-			if(Input::has('popust-cijena-'.$mjera->id)){
-				$value = Input::get('popust-cijena-'.$mjera->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Popust po dodatnoj osobi za '.$mjera->znacenje.' ne može biti negativan.');
-					return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-					->withInput();
-				}
-				$cijena['popust'] = $value;
-			}
-			else $cijena['popust'] = 0;
-			if(Input::has('minimalno-cijena-'.$mjera->id)){
-				$value = Input::get('minimalno-cijena-'.$mjera->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Minimalna cijena za '.$mjera->znacenje.' ne može biti negativan.');
-					return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-					->withInput();
-				}
-				if($cijena['individualno'] < $value){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Minimalna cijena za '.$mjera->znacenje.' ne može biti manja od individualne cijene.');
-					return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-					->withInput();
-				}
-				$cijena['minimalno'] = $value;
-			}
-			else $cijena['minimalno'] = 0;
-
-			$cijene[$mjera->id] = $cijena;
+		$mjereSyncronizator = $predmet->getErrorOrCijenaSyncArray(Input::all());
+		if(!is_array($mjereSyncronizator)){
+			Session::flash(self::DANGER_MESSAGE_KEY, $mjereSyncronizator);
+			return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
+			->withInput();
 		}
+
 		$kategorija->predmeti()->save($predmet);
-		$predmet->cijene()->attach($cijene);
+		$predmet->cijene()->sync($mjereSyncronizator);-
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno dodan.');
 		return Redirect::route('Predmet.show', array('id' => $predmet->id));
 	}
@@ -165,45 +130,17 @@ class PredmetController extends \BaseController {
 		}
 
 		$predmet->ime = $ime;
-		foreach ($predmet->cijene as $cijena) {
-			if(Input::has('individualno-cijena-'.$cijena->id)){
-				$value = Input::get('individualno-cijena-'.$cijena->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Individualna cijena za '.$cijena->znacenje.' ne može biti negativna.');
-					return Redirect::route('Predmet.edit', array('id' => $id))
-					->withInput();
-				}
-				$cijena->pivot->individualno = $value;
-			}
-			else $cijena->pivot->individualno = 0;
-			if(Input::has('popust-cijena-'.$cijena->id)){
-				$value = Input::get('popust-cijena-'.$cijena->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Popust po dodatnoj osobi za '.$cijena->znacenje.' ne može biti negativan.');
-					return Redirect::route('Predmet.edit', array('id' => $id))
-					->withInput();
-				}
-				$cijena->pivot->popust = $value;
-			}
-			else $cijena->pivot->minimalno = 0;
-			if(Input::has('minimalno-cijena-'.$cijena->id)){
-				$value = Input::get('minimalno-cijena-'.$cijena->id);
-				if($value < 0){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Minimalna cijena za '.$cijena->znacenje.' ne može biti negativan.');
-					return Redirect::route('Predmet.edit', array('id' => $id))
-					->withInput();
-				}
-				if($cijena->pivot->individualno < $value){
-					Session::flash(self::DANGER_MESSAGE_KEY, 'Minimalna cijena za '.$cijena->znacenje.' ne može biti manja od individualne cijene.');
-					return Redirect::route('Predmet.edit', array('id' => $id))
-					->withInput();
-				}
-				$cijena->pivot->minimalno = $value;
-			}
-			else $cijena->pivot->minimalno = 0;
+
+		$mjereSyncronizator = $predmet->getErrorOrCijenaSyncArray(Input::all());
+		if(!is_array($mjereSyncronizator)){
+			Session::flash(self::DANGER_MESSAGE_KEY, $mjereSyncronizator);
+			return Redirect::route('Predmet.edit', array('id' => $id))
+			->withInput();
 		}
-		$predmet->push();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno Uređen.');
+
+		$predmet->save();
+		$predmet->cijene()->sync($mjereSyncronizator);
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uređen.');
 		return Redirect::route('Predmet.show', array('id' => $id));
 	}
 
