@@ -2,8 +2,6 @@
 
 class PredmetController extends \BaseController {
 
-	protected $layout = 'layouts.master';
-
 	private function itemNotFound(){
 		Session::flash(BaseController::DANGER_MESSAGE_KEY, Predmet::NOT_FOUND_MESSAGE);
 		return Redirect::route('Kategorija.index');
@@ -16,11 +14,8 @@ class PredmetController extends \BaseController {
 	 */
 	public function create($kategorija_id)
 	{
-		$this->layout->title = "Dodaj predmet";
-		$this->layout->content =
-		View::make('Predmet.create')
+		return View::make('Predmet.create')
 		->with('kategorija_id', $kategorija_id);
-		return $this->layout;
 	}
 
 	/**
@@ -80,10 +75,8 @@ class PredmetController extends \BaseController {
 		$predmet = Predmet::with('cijene')->find($id);
 		if(!$predmet)
 			return $this->itemNotFound();
-		$this->layout->title = $predmet->ime.' - Predmet';
-		$this->layout->content = View::make('Predmet.show')
+		return View::make('Predmet.show')
 		->with('predmet', $predmet);
-		return $this->layout;
 	}
 
 	/**
@@ -97,11 +90,8 @@ class PredmetController extends \BaseController {
 		$predmet = Predmet::with('cijene')->find($id);
 		if(!$predmet)
 			return $this->itemNotFound();
-		$this->layout->title = $predmet->ime." - Uredi predmet";
-		$this->layout->content =
-		View::make('Predmet.create')
+		return View::make('Predmet.create')
 		->with('predmet', $predmet);
-		return $this->layout;
 	}
 
 

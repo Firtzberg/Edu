@@ -1,3 +1,10 @@
+@extends('layouts.master')
+
+@section('title')
+Promjena zaporke
+@endsection
+
+@section('content')
 {{ Form::open(array('route' => array('Instruktor.postChangePassword',
 'id' => $instruktor->id),
 'class' => 'form-signin',
@@ -35,3 +42,4 @@
 {{ Form::submit('Promijeni', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 {{ Form::close() }}
+@endsection

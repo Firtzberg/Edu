@@ -1,3 +1,13 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($instruktor))
+{{ $instruktor->name }} - 
+@endif
+Godišnji izvještaj
+@endsection
+
+@section('content')
 <p>
 Godišnji izvjestaj
 @if(isset($instruktor))
@@ -47,3 +57,4 @@ Godišnji izvjestaj
 {{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 @endif
 </div>
+@endsection

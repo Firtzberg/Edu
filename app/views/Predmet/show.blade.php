@@ -1,3 +1,10 @@
+@extends('layouts.master')
+
+@section('title')
+Predmet {{ $predmet->ime }}
+@endsection
+
+@section('content')
 {{ $predmet->kategorija->getBreadCrumbs() }}
 <h2>{{ $predmet->ime }}</h2>
 <p>Predmet je 
@@ -36,3 +43,4 @@ skriven
 	</tbody></table>
 </div>
 {{ link_to_route('Predmet.edit', 'Uredi', array('id' => $predmet->id), array('class' => 'btn btn-default')) }}
+@endsection

@@ -1,3 +1,14 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($ucionica))
+{{ $ucionica->naziv }} - Uređivanje
+@else
+Dodavanje Učionice
+@endif
+@endsection
+
+@section('content')
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
@@ -48,3 +59,4 @@ $required) }}
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
+@endsection

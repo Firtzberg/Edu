@@ -2,7 +2,9 @@
 <html>
 <head>
 	<meta charset="UTF-8">
-	<title>{{ $title }}</title>
+	<title>
+		@yield('title')
+	</title>
 	<meta name = "viewport" content="width=device-width, initial-scale=1.0">
 	<link href = "{{URL::to('css/bootstrap.min.css')}}" rel="stylesheet">
 	<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
@@ -38,7 +40,7 @@
 		@if(Session::has(BaseController::DANGER_MESSAGE_KEY))
 		<div class="alert alert-danger">{{ Session::get('greska') }}</div>
 		@endif
-		{{ $content }}
+		@yield('content')
 	</div>
 	{{ HTML::script('js/bootstrap.min.js') }}
 </body>

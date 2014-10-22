@@ -1,3 +1,14 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($predmet))
+{{ $predmet->ime }} - Uređivanje
+@else
+Dodavanje Predmeta
+@endif
+@endsection
+
+@section('content')
 <?php
 $required = array(
 'class' =>'form-control',
@@ -64,3 +75,4 @@ $requiredPositive = array(
 </div>
 {{ Form::submit('Pohrani', array('class' => 'btn btn-primary')) }}
 {{ Form::close() }}
+@endsection

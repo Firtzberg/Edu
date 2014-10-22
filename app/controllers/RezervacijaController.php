@@ -2,8 +2,6 @@
 
 class RezervacijaController extends \BaseController {
 
-	protected $layout = 'layouts.master';
-
 	public function __construct()
     {
     	$this->beforeFilter('myRezervacija', array('except' =>
@@ -16,7 +14,6 @@ class RezervacijaController extends \BaseController {
 	}
 
 	public function create_naplata($id){
-		$this->layout->title = "Naplata";
 		$naplata =  new Naplata();
 		$naplata->rezervacija = Rezervacija::with('predmet', 'predmet.cijene', 'mjera', 'klijenti')->find($id);
 		if(!$naplata->rezervacija)
@@ -29,9 +26,8 @@ class RezervacijaController extends \BaseController {
 
 		$naplata->stvarnaMjera = $naplata->rezervacija->mjera;
 		$naplata->stvarna_kolicina = $naplata->rezervacija->kolicina;
-		$this->layout->content = View::make('Rezervacija.Naplata.create')
+		return View::make('Rezervacija.Naplata.create')
 		->with('naplata', $naplata);
-		return $this->layout;
 	}
 
 	public function store_naplata($id){
@@ -116,18 +112,15 @@ class RezervacijaController extends \BaseController {
 	 */
 	public function create()
 	{
-		$this->layout->title = "Nova rezervacija";
 		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
 		foreach ($rows as $row) {
 			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
 		}
 
-		$this->layout->content =
-		$v = View::make('Rezervacija.create')
+		return View::make('Rezervacija.create')
 		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm'))
 		->with('predmet', View::make('Kategorija.select'));
-		return $this->layout;
 	}
 
 
@@ -172,18 +165,12 @@ class RezervacijaController extends \BaseController {
 			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
 		}
 
-		if(!$rezervacija->predmet)
-			$this->layout->title = 'Nepoznato';
-		else $this->layout->title = $rezervacija->predmet->ime;
-		$this->layout->title .= " - Uredi rezervaciju";
-		$this->layout->content =
-		View::make('Rezervacija.create')
+		return View::make('Rezervacija.create')
 		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm')
 			->with('klijenti', $rezervacija->klijenti))
 		->with('predmet', View::make('Kategorija.select')
-			->with('predmet_id', $rezervacija->predmet_id));;
-		return $this->layout;
+			->with('predmet_id', $rezervacija->predmet_id));
 	}
 
 	/**
@@ -210,19 +197,13 @@ class RezervacijaController extends \BaseController {
 			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
 		}
 
-		if(!$rezervacija->predmet)
-			$this->layout->title = 'Nepoznato';
-		else $this->layout->title = $rezervacija->predmet->ime;
-		$this->layout->title .= " - Uredi rezervaciju";
-		$this->layout->content =
-		View::make('Rezervacija.create')
+		return View::make('Rezervacija.create')
 		->with('rezervacija', $rezervacija)
 		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm')
 			->with('klijenti', $rezervacija->klijenti))
 		->with('predmet', View::make('Kategorija.select')
 			->with('predmet_id', $rezervacija->predmet_id));;
-		return $this->layout;
 	}
 
 
@@ -266,11 +247,8 @@ class RezervacijaController extends \BaseController {
 		$rezervacija = Rezervacija::with('naplata', 'predmet', 'mjera', 'klijenti')->find($id);
 		if(!$rezervacija)
 			return $this->itemNotFound();
-		$this->layout->title = "Prikaz rezervacije";
-		$this->layout->content =
-		View::make('Rezervacija.show')
+		return View::make('Rezervacija.show')
 		->with('rezervacija', $rezervacija);
-		return $this->layout;
 	}
 
 

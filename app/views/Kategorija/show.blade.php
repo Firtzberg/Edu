@@ -1,3 +1,10 @@
+@extends('layouts.master')
+
+@section('title')
+Kategorija {{ $kategorija->ime }}
+@endsection
+
+@section('content')
 <?php $requiredName = array(
 'class' => 'form-control',
 'required' => 'required',
@@ -78,3 +85,4 @@ skrivena
 	@endif
 	{{ link_to_route('Predmet.create', 'Dodaj predmet', array('kategorija_id' => $kategorija->id), array('class' => 'btn btn-primary'))}}
 </div>
+@endsection

@@ -70,7 +70,7 @@ var klijentManager = {
 
 		var removeButton = document.createElement('button');
 		removeButton.type = 'button';
-		removeButton.innerHTML = 'Remove';
+		removeButton.innerHTML = 'Ukloni';
 		removeButton.id = key + klijentManager.removeSufix;
 		removeButton.className = 'btn btn-default col-xs-3';
 		elementDiv.appendChild(removeButton);

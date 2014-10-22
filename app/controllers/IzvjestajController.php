@@ -2,8 +2,6 @@
 
 class IzvjestajController extends BaseController {
 
-	protected $layout = 'layouts.master';
-
 	public function __construct()
     {
     	$this->beforeFilter('admin', array('only' =>
@@ -19,19 +17,13 @@ class IzvjestajController extends BaseController {
 			Session::flash(BaseController::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
-		$this->layout->title = $instruktor->name." - Tjedni izvještaj";
-		$this->layout->content =
-			$this->t_izvjestaj($id, $tjedan, $godina)
+		return $this->t_izvjestaj($id, $tjedan, $godina)
 			->with('instruktor', $instruktor);
-		return $this->layout;
 	}
 
 	public function ukupni_tjedni_izvjestaj($tjedan = null, $godina = null)
 	{
-		$this->layout->title = "Tjedni izvještaj";
-		$this->layout->content =
-			$this->t_izvjestaj(null, $tjedan, $godina);
-		return $this->layout;
+		return $this->t_izvjestaj(null, $tjedan, $godina);
 	}
 
 	private function t_izvjestaj($id, $tjedan, $godina)
@@ -104,10 +96,7 @@ class IzvjestajController extends BaseController {
 
 	public function ukupni_godisnji_izvjestaj($godina = null)
 	{
-		$this->layout->title = "Godišnji izvještaj";
-		$this->layout->content =
-			$this->g_izvjestaj(null, $godina);
-		return $this->layout;
+		return $this->g_izvjestaj(null, $godina);
 	}
 
 	public function godisnji_izvjestaj($id, $godina = null)
@@ -117,11 +106,8 @@ class IzvjestajController extends BaseController {
 			Session::flash(BaseController::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
 			return Redirect::route('Instruktor.show', Auth::id());
 		}
-		$this->layout->title = $instruktor->name." - Godišnji izvještaj";
-		$this->layout->content =
-			$this->g_izvjestaj($id, $godina)
+		return $this->g_izvjestaj($id, $godina)
 			->with('instruktor', $instruktor);
-		return $this->layout;
 	}
 
 	private function g_izvjestaj($id, $godina)

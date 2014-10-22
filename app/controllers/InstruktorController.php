@@ -2,8 +2,6 @@
 
 class InstruktorController extends \BaseController {
 
-	protected $layout = "layouts.master";
-
 	public function __construct()
     {
     	$this->beforeFilter('admin', array('only' =>
@@ -19,6 +17,8 @@ class InstruktorController extends \BaseController {
 
 	public function signIn()
 	{
+		if(Auth::check())
+			return Redirect::route('Instruktor.show', Auth::id());
 		return View::make('signIn');
 	}
 
@@ -48,27 +48,29 @@ class InstruktorController extends \BaseController {
 
 	public function changePassword($id)
 	{
-		$this->layout->title = "Promjena zaporke";
-		$this->layout->content =
-		View::make('Instruktor.changePassword')
-		->with('instruktor', User::find($id));
-		return $this->layout;
+		$instruktor = User::find($id);
+		if(!$instruktor)
+			return $this->itemNotFound();
+		return View::make('Instruktor.changePassword')
+		->with('instruktor', $instruktor);
 	}
 
 	public function postChangePassword($id)
 	{
+		$instruktor = User::find($id);
+		if(!$instruktor)
+			return $this->itemNotFound();
 		if(!(Input::has('oldpass')||Auth::user()->is_admin)||!Input::has('newpass')||!Input::has('rep'))
 			return Redirect::route('Instruktor.changePassword', $id)
 		->with(self::SUCCESS_MESSAGE_KEY, 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
-		$u = User::find($id);
-		if($newpass != $rep||!(Hash::check($oldpass, $u->lozinka)||Auth::user()->is_admin))
+		if($newpass != $rep||!(Hash::check($oldpass, $instruktor->lozinka)||Auth::user()->is_admin))
 			return Redirect::route('Instruktor.changePassword', $id)
 		->with(self::SUCCESS_MESSAGE_KEY, 'Kriv unos!');
-		$u->lozinka = Hash::make($newpass);
-		$u->save();
+		$instruktor->lozinka = Hash::make($newpass);
+		$instruktor->save();
 		return Redirect::route('Instruktor.show', $id)
 		->with(self::SUCCESS_MESSAGE_KEY, 'Uspješna promjena zaporke!');
 	}
@@ -80,10 +82,8 @@ class InstruktorController extends \BaseController {
 	 */
 	public function index()
 	{
-		$this->layout->title = "Popis Instruktora";
-		$this->layout->content = View::make('Instruktor.index')
+		return View::make('Instruktor.index')
 		->with('list', $this->_list());
-		return $this->layout;
 	}
 
 	public function _list($page = 1, $searchString = null){
@@ -111,10 +111,7 @@ class InstruktorController extends \BaseController {
 	 */
 	public function create()
 	{
-		$this->layout->title = "Dodaj instruktora";
-		$this->layout->content =
-		View::make('Instruktor.create');
-		return $this->layout;
+		return View::make('Instruktor.create');
 	}
 
 
@@ -133,7 +130,7 @@ class InstruktorController extends \BaseController {
 		if($validator->fails())
 		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
-	  	->with(self::SUCCESS_MESSAGE_KEY, $validator->messages()->first());
+	  	->with(self::DANGER_MESSAGE_KEY, $validator->messages()->first());
 
 		$s = new User();
 		$s->name = Input::get('name');
@@ -142,7 +139,7 @@ class InstruktorController extends \BaseController {
 		$s->lozinka = Hash::make(Input::get('lozinka'));
 		$s->save();
 		return Redirect::route('Instruktor.index')
-	  	->with('flash', 'Instruktor je uspješno dodan.');
+	  	->with(BaseController::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
 	}
 
 
@@ -154,15 +151,12 @@ class InstruktorController extends \BaseController {
 	 */
 	public function show($id, $tjedan = null, $godina = null)
 	{
-		$i =  User::find($id);
-		if(!$i)
+		$instruktor =  User::find($id);
+		if(!$instruktor)
 			return $this->itemNotFound();
-		$this->layout->title = $i->name." - Instruktor";
-		$this->layout->content =
-		View::make('Instruktor.show')
-		->with('instruktor',$i)
+		return View::make('Instruktor.show')
+		->with('instruktor',$instruktor)
 		->with('raspored', $this->raspored($id, $tjedan, $godina));
-		return $this->layout;
 	}
 
 
@@ -174,14 +168,11 @@ class InstruktorController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$i =  User::find($id);
-		if(!$i)
+		$instruktor =  User::find($id);
+		if(!$instruktor)
 			return $this->itemNotFound();
-		$this->layout->title = $i->name." - Uredi instruktora";
-		$this->layout->content =
-		View::make('Instruktor.create')
-		->with('instruktor', $i);
-		return $this->layout;
+		return View::make('Instruktor.create')
+		->with('instruktor', $instruktor);
 	}
 
 
@@ -193,14 +184,14 @@ class InstruktorController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$i = User::find($id);
-		if(!$i)
+		$instruktor = User::find($id);
+		if(!$instruktor)
 			return $this->itemNotFound();
-		$i->email = Input::get('email');
-		$i->broj_mobitela= Input::get('broj_mobitela');
+		$instruktor->email = Input::get('email');
+		$instruktor->broj_mobitela= Input::get('broj_mobitela');
 		if(Input::has('name'))
-			$i->name = Input::get('name');
-		$i->save();
+			$instruktor->name = Input::get('name');
+		$instruktor->save();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
 		return Redirect::route('Instruktor.show', $id);
 	}
@@ -214,13 +205,13 @@ class InstruktorController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		$u = User::find($id);
-		if(!$u)
+		$instruktor = User::find($id);
+		if(!$instruktor)
 			return $this->itemNotFound();
-		elseif($u->is_admin)
+		elseif($instruktor->is_admin)
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće ukloniti administratora.');
 		else{
-			$u->delete();
+			$instruktor->delete();
 			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno uklonjen!');
 		}
 		return Redirect::route('Instruktor.index');

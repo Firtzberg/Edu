@@ -2,8 +2,6 @@
 
 class UcionicaController extends \BaseController {
 
-	protected $layout = 'layouts.master';
-
 	public function __construct()
     {
     	$this->beforeFilter('admin', array('only' =>
@@ -21,11 +19,8 @@ class UcionicaController extends \BaseController {
 	 */
 	public function index()
 	{
-		$this->layout->title = "Popis učionica";
-		$this->layout->content =
-		View::make('Ucionica.index')
+		return View::make('Ucionica.index')
 		->with('list', $this->_list());
-		return $this->layout;
 	}
 
 	public function _list($page = 1, $searchString = null){
@@ -53,10 +48,7 @@ class UcionicaController extends \BaseController {
 	 */
 	public function create()
 	{
-		$this->layout->title = "Dodaj ucionicu";
-		$this->layout->content =
-		View::make('Ucionica.create');
-		return $this->layout;
+		return View::make('Ucionica.create');
 	}
 
 
@@ -88,15 +80,12 @@ class UcionicaController extends \BaseController {
 	 */
 	public function show($id, $tjedan = null, $godina = null)
 	{
-		$u = Ucionica::find($id);
-		if(!$u)
+		$ucionica = Ucionica::find($id);
+		if(!$ucionica)
 			return $this->itemNotFound();
-		$this->layout->title = $u->naziv." - Učionica";
-		$this->layout->content =
-		View::make('Ucionica.show')
-		->with('ucionica', $u)
+		return View::make('Ucionica.show')
+		->with('ucionica', $ucionica)
 		->with('raspored', $this->raspored($id, $tjedan, $godina));
-		return $this->layout;
 	}
 
 
@@ -108,14 +97,11 @@ class UcionicaController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$u = Ucionica::find($id);
-		if(!$u)
+		$ucionica = Ucionica::find($id);
+		if(!$ucionica)
 			return $this->itemNotFound();
-		$this->layout->title = $u->naziv." - Uredi učionicu";
-		$this->layout->content =
-		View::make('Ucionica.create')
-		->with('ucionica', $u);
-		return $this->layout;
+		return View::make('Ucionica.create')
+		->with('ucionica', $ucionica);
 	}
 
 
@@ -127,10 +113,10 @@ class UcionicaController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		$u = Ucionica::find($id);
-		if(!$u)
+		$ucionica = Ucionica::find($id);
+		if(!$ucionica)
 			return $this->itemNotFound();
-		$u->update(Input::all());
+		$ucionica->update(Input::all());
 		if(true)
 		{
 			Session::flash(self::SUCCESS_MESSAGE_KEY,'Učionica uspješno uređena');
@@ -139,7 +125,7 @@ class UcionicaController extends \BaseController {
 
 		return Redirect('ucionica.edit')
 		->withInput()
-		->withErrors($u->errors());
+		->withErrors($ucionica->errors());
 	}
 
 
@@ -151,10 +137,10 @@ class UcionicaController extends \BaseController {
 	 */
 	public function destroy($id)
 	{
-		$u = Ucionica::find($id);
-		if(!$u)
+		$ucionica = Ucionica::find($id);
+		if(!$ucionica)
 			return $this->itemNotFound();
-		$u->delete();
+		$ucionica->delete();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica je uspješno uklonjena!');
 		return Redirect::route('Ucionica.index');
 	}

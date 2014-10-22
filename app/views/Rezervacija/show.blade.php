@@ -1,3 +1,10 @@
+@extends('layouts.master')
+
+@section('title')
+Prikaz rezervacije
+@endsection
+
+@section('content')
 <h2>Prikaz rezervacije</h2>
 <div class="row">
 <div class="col-sm-6">
@@ -59,3 +66,4 @@ array('class' => 'btn btn-danger')) }}
 @endforeach
 </dl>
 </div>
+@endsection

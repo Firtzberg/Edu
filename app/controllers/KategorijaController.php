@@ -2,8 +2,6 @@
 
 class KategorijaController extends \BaseController {
 
-	protected $layout = 'layouts.master';
-
 	private function itemNotFound(){
 		Session::flash(BaseController::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
 		return View::make('Kategorija.index');
@@ -19,10 +17,8 @@ class KategorijaController extends \BaseController {
 		$kategorija = Kategorija::whereRaw('id = nadkategorija_id')
 		->with('podkategorije', 'predmeti')
 		->first();
-		$this->layout->title = 'Kategorije';
-		$this->layout->content = View::make('Kategorija.show')
+		return View::make('Kategorija.show')
 		->with('kategorija', $kategorija);
-		return $this->layout;
 	}
 
 	/**
@@ -71,10 +67,8 @@ class KategorijaController extends \BaseController {
 		$kategorija = Kategorija::with('predmeti', 'podkategorije')->find($id);
 		if(!$kategorija)
 			return $this->itemNotFound();
-		$this->layout->title = $kategorija->ime.' - Kategorija';
-		$this->layout->content = View::make('Kategorija.show')
+		return View::make('Kategorija.show')
 		->with('kategorija', $kategorija);
-		return $this->layout;
 	}
 
 

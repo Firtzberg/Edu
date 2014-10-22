@@ -1,20 +1,14 @@
-<h2>Instruktori</h2>
-<div class = "form-group">
-<input type="hidden" name="_token" value="{{ csrf_token() }}">
-{{ Form::text('searchString', null,
-array(
-	'class' => 'form-control',
-	'required' => 'required',
-	'placeholder' => 'Pretraži',
-	'autofocus' => 'autofocus',
-	'autocomplete' => 'off',
-	'style' => 'max-width:200px'
-)) }}
-</div>
-<div id="collection-list">
-@yield('list')
-</div>
-@if(Auth::user()->is_admin)
-{{ link_to_route('Instruktor.create', 'Dodaj instruktora', null, array('class' => 'btn btn-secondary')) }}
-@endif
-{{ HTML::script('js/search.js') }}
+@extends('layouts.index')
+
+@section('naslov')
+Instruktori
+@endsection
+
+@section('list')
+{{ $list }}
+@endsection
+
+
+@section('create_button')
+{{ link_to_route('Instruktor.create', 'Dodaj instruktora', null, array('class' => 'btn btn-primary')) }}
+@endsection

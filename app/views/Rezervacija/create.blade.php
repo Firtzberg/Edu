@@ -1,3 +1,14 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($rezervacija))
+Uređivanje rezervacije
+@else
+Rezerviranje
+@endif
+@endsection
+
+@section('content')
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
@@ -18,7 +29,7 @@ $requiredPositive = array(
 {{ HTML::script('js/errorManager.js') }}
 <?php $value = null; ?>
 <div class = "row">
-	<div class = "col-xs-12 col-sm-6 col-lg-8 row">
+	<div class = "col-xs-12 col-sm-5 col-lg-7 row">
 		<div class = "col-xs-12 col-lg-6">
 			<div class = "form-group">
 				<?php
@@ -82,7 +93,7 @@ $requiredPositive = array(
 			@yield('predmet-select')
 		</div>
 	</div>
-	<div class = "col-xs-12 col-sm-6 col-lg-4">
+	<div class = "col-xs-12 col-sm-7 col-lg-5">
 		@yield('klijent-input')
 		<div class = "form-group">
 		{{ Form::label('Učionica') }}
@@ -102,3 +113,4 @@ $requiredPositive = array(
 	'style' => 'margin:auto;max-width:330px')) }}
 </div>
 {{ Form::close() }}
+@endsection

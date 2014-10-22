@@ -1,3 +1,10 @@
+@extends('layouts.master')
+
+@section('title')
+Naplaćivanje
+@endsection
+
+@section('content')
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
@@ -83,3 +90,4 @@ if($poOsobi < $cijena->pivot->minimalno)
 	'style' => 'margin:auto;max-width:330px')) }}
 	</div>
 {{ Form::close() }}
+@endsection

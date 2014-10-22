@@ -1,4 +1,3 @@
-
 <table class = "table table-striped table-bordered table-condensed text-center">
 <tbody>
 	<tr>

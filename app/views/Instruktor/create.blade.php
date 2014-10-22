@@ -1,3 +1,14 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($instruktor))
+{{ $instruktor->name }} - Uređivanje
+@else
+Dodavanje instruktora
+@endif
+@endsection
+
+@section('content')
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
@@ -48,8 +59,8 @@ $optional) }}
 $optional) }}
 </div>
 <div class = "form-group">
-@endif
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
+@endsection

@@ -1,3 +1,14 @@
+@extends('layouts.master')
+
+@section('title')
+@if(isset($klijent))
+{{ $klijent->ime }} - Uređivanje
+@else
+Dodavanje Klijenta
+@endif
+@endsection
+
+@section('content')
 <?php
 $optional = array('class' =>'form-control');
 $required = array(
@@ -45,3 +56,4 @@ $optional) }}
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 {{ Form::close() }}
+@endsection

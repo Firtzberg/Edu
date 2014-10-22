@@ -2,8 +2,6 @@
 
 class KlijentController extends \BaseController {
 
-	protected $layout = "layouts.master";
-
 	private function itemNotFound(){
 		Session::flash(BaseController::DANGER_MESSAGE_KEY, Klijent::NOT_FOUND_MESSAGE);
 		return Redirect::route('Klijent.index');
@@ -16,10 +14,8 @@ class KlijentController extends \BaseController {
 	 */
 	public function index()
 	{
-		$this->layout->title = 'Popis Klijenata';
-		$this->layout->content = View::make('klijent.index')
+		return View::make('klijent.index')
 		->with('list', $this->_list());
-		return $this->layout;
 	}
 
 	public function _list($page = 1, $searchString = null){
@@ -77,10 +73,7 @@ class KlijentController extends \BaseController {
 	 */
 	public function create()
 	{
-		$this->layout->title = "Dodaj klijenta";
-		$this->layout->content =
-		View::make('Klijent.create');
-		return $this->layout;
+		return View::make('Klijent.create');
 	}
 
 
@@ -113,16 +106,16 @@ class KlijentController extends \BaseController {
 	  		->withInput();
 	  	}
 
-		$k = new Klijent();
-		$k->broj_mobitela = $k->getStorableBrojMobitela($broj_mobitela);
-		$k->ime =  Input::get('ime');
-		$k->facebook = Input::get('facebook');
-		$k->email = Input::get('email');
-		$k->save();
+		$klijent = new Klijent();
+		$klijent->broj_mobitela = $klijent->getStorableBrojMobitela($broj_mobitela);
+		$klijent->ime =  Input::get('ime');
+		$klijent->facebook = Input::get('facebook');
+		$klijent->email = Input::get('email');
+		$klijent->save();
 		if(true)
 		{
 			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Klijent je uspješno dodan.');
-	  		return Redirect::route('Klijent.index');
+	  		return Redirect::route('Klijent.show', $klijent->broj_mobitela);
 	  	}
 	  	return Redirect::route('Klijent.create')
 	  	->withInput()
@@ -138,14 +131,11 @@ class KlijentController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		$k = Klijent::find($id);
-		if(!$k)
+		$klijent = Klijent::find($id);
+		if(!$klijent)
 			return $this->itemNotFound();
-		$this->layout->title = $k->ime." - Kijent";
-		$this->layout->content =
-		View::make('Klijent.show')
-		->with('klijent', $k);
-		return $this->layout;
+		return View::make('Klijent.show')
+		->with('klijent', $klijent);
 	}
 
 
@@ -157,14 +147,11 @@ class KlijentController extends \BaseController {
 	 */
 	public function edit($id)
 	{
-		$k = Klijent::find($id);
-		if(!$k)
+		$klijent = Klijent::find($id);
+		if(!$klijent)
 			return $this->itemNotFound();
-		$this->layout->title = $k->ime." - Uredi klijenta";
-		$this->layout->content =
-		View::make('Klijent.create')
-		->with('klijent', $k);
-		return $this->layout;
+		return View::make('Klijent.create')
+		->with('klijent', $klijent);
 	}
 
 
@@ -191,20 +178,16 @@ class KlijentController extends \BaseController {
 
 		$broj_mobitela = Input::get('broj_mobitela');
 
-		$k = Klijent::find($id);
-		if(!$k)
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Uređivani klijent je uklonjen iz sustava.');
-	  		return Redirect::route('Klijent.create')
-	  		->withInput();
-	  	}
+		$klijent = Klijent::find($id);
+		if(!$klijent)
+			return $this->itemNotFound();
 
 	  	if($broj_mobitela != $id)
-	  		$k->broj_mobitela = $k->getStorableBrojMobitela($broj_mobitela);
-		$k->ime =  Input::get('ime');
-		$k->facebook = Input::get('facebook');
-		$k->email = Input::get('email');
-		$k->save();
+	  		$klijent->broj_mobitela = $klijent->getStorableBrojMobitela($broj_mobitela);
+		$klijent->ime =  Input::get('ime');
+		$klijent->facebook = Input::get('facebook');
+		$klijent->email = Input::get('email');
+		$klijent->save();
 		if(true)
 		{
 			Session::flash(self::SUCCESS_MESSAGE_KEY,'Klijent uspješno uređen');
@@ -213,7 +196,7 @@ class KlijentController extends \BaseController {
 
 		return Redirect('Klijent.edit')
 		->withInput()
-		->withErrors($k->errors());
+		->withErrors($klijent->errors());
 	}
 
 }
