@@ -19,4 +19,20 @@ class Naplata extends Eloquent {
 		return $this->belongsTo('Rezervacija','rezervacija_id');
 	}
 
+	public function stvarnaMjera(){
+		return $this->belongsTo('Mjera', 'stvarna_mjera');
+	}
+
+	public function getSatnicaZaInstruktora($ukupno){
+		$pravedni = floor($ukupno/30);
+		$za_instruktora = $pravedni*20;
+		$ukupno -= $pravedni * 30;
+		if($ukupno < 10)
+			$za_instruktora += $ukupno;
+		elseif($ukupno < 20)
+			$za_instruktora += 10;
+		else $za_instruktora += $ukupno - 10;
+		return $za_instruktora;
+	}
+
 }

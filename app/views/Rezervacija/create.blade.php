@@ -18,8 +18,8 @@ $requiredPositive = array(
 {{ HTML::script('js/errorManager.js') }}
 <?php $value = null; ?>
 <div class = "row">
-	<div class = "col-xs-12 col-sm-6 col-md-8 row">
-		<div class = "col-xs-12 col-md-6">
+	<div class = "col-xs-12 col-sm-6 col-lg-8 row">
+		<div class = "col-xs-12 col-lg-6">
 			<div class = "form-group">
 				<?php
 					if(isset($rezervacija))
@@ -78,11 +78,11 @@ $requiredPositive = array(
 				</div>
 			</div>
 		</div>
-		<div class = "col-xs-12 col-md-6">
+		<div class = "col-xs-12 col-lg-6">
 			@yield('predmet-select')
 		</div>
 	</div>
-	<div class = "col-xs-12 col-sm-6 col-md-4">
+	<div class = "col-xs-12 col-sm-6 col-lg-4">
 		@yield('klijent-input')
 		<div class = "form-group">
 		{{ Form::label('Učionica') }}

@@ -14,12 +14,24 @@ class IzvjestajController extends BaseController {
 
 	public function tjedni_izvjestaj($id, $tjedan = null, $godina = null)
 	{
-		return $this->t_izvjestaj($id, $tjedan, $godina);
+		$instruktor = User::find($id);
+		if(!$instruktor){
+			Session::flash(BaseController::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
+			return Redirect::route('Instruktor.show', Auth::id());
+		}
+		$this->layout->title = $instruktor->name." - Tjedni izvještaj";
+		$this->layout->content =
+			$this->t_izvjestaj($id, $tjedan, $godina)
+			->with('instruktor', $instruktor);
+		return $this->layout;
 	}
 
 	public function ukupni_tjedni_izvjestaj($tjedan = null, $godina = null)
 	{
-		return $this->t_izvjestaj(null, $tjedan, $godina);
+		$this->layout->title = "Tjedni izvještaj";
+		$this->layout->content =
+			$this->t_izvjestaj(null, $tjedan, $godina);
+		return $this->layout;
 	}
 
 	private function t_izvjestaj($id, $tjedan, $godina)
@@ -84,30 +96,32 @@ class IzvjestajController extends BaseController {
 			'za_tvrtku' => $za_tvrtku,
 			'ukupno_uplaceno' => $ukupno_uplaceno);
 
-		$this->layout->content =
-		View::make('Izvjestaj.tjedni_izvjestaj')
+		return View::make('Izvjestaj.tjedni_izvjestaj')
 		->with('tjedan', $tjedan)
 		->with('godina', $godina)
 		->with('zarada', $zarada);
-		if(is_null($id))
-			$this->layout->title = "Tjedni izvještaj";
-		else
-		{
-		$i = User::find($id);
-			$this->layout->title = $i->name." - Tjedni izvještaj";
-			$this->layout->content->with('instruktor', $i);
-		}
-		return $this->layout;
 	}
 
 	public function ukupni_godisnji_izvjestaj($godina = null)
 	{
-		return $this->g_izvjestaj(null, $godina);
+		$this->layout->title = "Godišnji izvještaj";
+		$this->layout->content =
+			$this->g_izvjestaj(null, $godina);
+		return $this->layout;
 	}
 
 	public function godisnji_izvjestaj($id, $godina = null)
 	{
-		return $this->g_izvjestaj($id, $godina);
+		$instruktor = User::find($id);
+		if(!$instruktor){
+			Session::flash(BaseController::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
+			return Redirect::route('Instruktor.show', Auth::id());
+		}
+		$this->layout->title = $instruktor->name." - Godišnji izvještaj";
+		$this->layout->content =
+			$this->g_izvjestaj($id, $godina)
+			->with('instruktor', $instruktor);
+		return $this->layout;
 	}
 
 	private function g_izvjestaj($id, $godina)
@@ -157,18 +171,8 @@ class IzvjestajController extends BaseController {
 			'za_tvrtku' => $za_tvrtku,
 			'ukupno_uplaceno' => $ukupno_uplaceno);
 
-		$this->layout->content =
-		View::make('Izvjestaj.godisnji_izvjestaj')
+		return View::make('Izvjestaj.godisnji_izvjestaj')
 		->with('godina', $godina)
 		->with('zarada', $zarada);
-		if(is_null($id))
-			$this->layout->title = "Godišnji izvještaj";
-		else
-		{
-		$i = User::find($id);
-			$this->layout->title = $i->name." - Godišnji izvještaj";
-			$this->layout->content->with('instruktor', $i);
-		}
-		return $this->layout;
 	}
 }

@@ -1,7 +1,8 @@
 <?php
 $required = array(
 'class' =>'form-control',
-'required' => 'required');
+'required' => 'required',
+'style' => 'max-width:200px');
 $requiredPositive = array(
 'class' =>'form-control',
 'required' => 'required',

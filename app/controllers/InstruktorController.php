@@ -240,7 +240,16 @@ class InstruktorController extends \BaseController {
 			$tjedan = $t->format('W');
 			$godina = $t->format('o');
 		}
+		return View::make('Instruktor.raspored')
+		->with('tjedan', $tjedan)
+		->with('godina', $godina)
+		->with('instruktor', User::find($id))
+		->with('strana_rasporeda', $this->strana_rasporeda($id, $tjedan, $godina));
+	}
 
+	public function strana_rasporeda($id, $tjedan, $godina){
+		$t = new DateTime();
+		$t->setISODate($godina, $tjedan);
 		$grid = array();
 		$dani = array(1 => 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja');
 		for($i = 1; $i < 8; $i++)
@@ -252,8 +261,6 @@ class InstruktorController extends \BaseController {
 
 		$rezervacije = $this->getRezervacije($tjedan, $godina, $id);
 		foreach ($rezervacije as $r) {
-			if(empty($r->predmet))
-				$r->predmet = "Nema predmeta";
 			$pocetak = strtotime($r->pocetak_rada);
 			$kraj = strtotime($r->kraj_rada());
 			$d = $dani[date('N',$pocetak)];
@@ -289,11 +296,8 @@ class InstruktorController extends \BaseController {
 			}
 		}
 
-		return View::make('Instruktor.raspored')
+		return View::make('Instruktor.strana_rasporeda')
 		->with('instruktor', User::find($id))
-		->with('tjedan', $tjedan)
-		->with('godina', $godina)
-		->with('rezervacije', $rezervacije)
 		->with('grid', $grid);
 	}
 

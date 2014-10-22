@@ -42,14 +42,7 @@ class KlijentController extends \BaseController {
 	public function getSuggestionedKlijents(){
 		if(Input::has('broj'))
 		{
-			$broj = Input::get('broj');
-			if(strlen($broj) > 1)
-				if($broj[0] == '0' && $broj[1] != '0')
-					$broj = '00385'.substr($broj, 1);
-			$broj = str_replace('+', '00', $broj);
-			$chars = str_split($broj);
-			$chars = array_filter($chars, function($char){return ($char >='0' && $char <= '9');});
-			$broj = implode($chars);
+			$broj = (new Klijent())->getStorableBrojMobitela(Input::get('broj'));
 		}
 		$query = Auth::user()->klijenti();
 		if(isset($broj)){

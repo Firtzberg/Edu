@@ -1,6 +1,5 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-</head>
 <head>
 	<meta charset="UTF-8">
 	<title>{{ $title }}</title>
@@ -8,6 +7,7 @@
 	<link href = "{{URL::to('css/bootstrap.min.css')}}" rel="stylesheet">
 	<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
+</head>
 <body>
 	<div class = "navbar navbar-inverse">
 		<div class = "container">
@@ -21,7 +21,10 @@
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
 					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
+					@if(Auth::user()->is_admin)
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
+					<li>{{ link_to_route('Klijent.index', 'Klijenti') }}</li>
+					@endif
 					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>
 					<li>{{ link_to_route('logout', 'Odjava') }}</li>
 				</ul>
@@ -37,6 +40,6 @@
 		@endif
 		{{ $content }}
 	</div>
-	<script src = "{{ URL::to('js/bootstrap.min.js') }}"></script>
+	{{ HTML::script('js/bootstrap.min.js') }}
 </body>
 </html>

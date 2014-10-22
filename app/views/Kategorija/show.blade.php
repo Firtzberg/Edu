@@ -29,15 +29,13 @@ skrivena
 	<table id="podkategorije-table" class="table"><tbody>
 		<tr>
 			<th>Ime podkategorije</th>
-			<th>Broj podkategorija</th>
-			<th>Broj predmeta</th>
+			<th>Vidljivost</th>
 			<th></th>
 		</tr>
 		@foreach($kategorija->podkategorije as $podkategorija)
 		<tr>
 			<td>{{ link_to_route('Kategorija.show', $podkategorija->ime, array('id' => $podkategorija->id)) }}</td>
-			<td>:P</td>
-			<td>(:</td>
+			<td>{{ $podkategorija->enabled?'Vidljiv':'Skriven' }}</td>
 			<td>
 				{{ Form::open(array('route' => array('Kategorija.destroy', 'id' => $podkategorija->id), 'method' => 'delete')) }}
 				{{ Form::submit('Izbriši', array('class' => 'btn btn-danger')) }}
@@ -62,11 +60,13 @@ skrivena
 	<table class="table"><tbody>
 		<tr>
 			<th>Ime predmeta</th>
+			<th>Vidljivost</th>
 			<th></th>
 		</tr>
 		@foreach($kategorija->predmeti as $predmet)
 		<tr>
 			<td>{{ link_to_route('Predmet.show', $predmet->ime, array('id' => $predmet->id)) }}</td>
+			<td>{{ $predmet->enabled?'Vidljiv':'Skriven' }}</td>
 			<td>
 				{{ Form::open(array('route' => array('Predmet.destroy', 'id' => $predmet->id), 'method' => 'delete')) }}
 				{{ Form::submit('Izbriši', array('class' => 'btn btn-danger')) }}

@@ -173,6 +173,18 @@ class UcionicaController extends \BaseController {
 			$godina = $t->format('o');
 		}
 
+		$ucionica = Ucionica::find($id);
+
+		return View::make('Ucionica.raspored')
+		->with('tjedan', $tjedan)
+		->with('godina', $godina)
+		->with('ucionica', $ucionica)
+		->with('strana_rasporeda', $this->strana_rasporeda($id, $tjedan, $godina));
+	}
+
+	private function strana_rasporeda($id, $tjedan, $godina){
+		$t = new DateTime();
+		$t->setISODate($godina, $tjedan);
 		$grid = array();
 		$dani = array(1 => 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja');
 		for($i = 1; $i < 8; $i++)
@@ -184,8 +196,6 @@ class UcionicaController extends \BaseController {
 
 		$rezervacije = $this->getRezervacije($tjedan, $godina, $id);
 		foreach ($rezervacije as $r) {
-			if(empty($r->predmet))
-				$r->predmet = "Nema predmeta";
 			$pocetak = strtotime($r->pocetak_rada);
 			$kraj = strtotime($r->kraj_rada());
 			$d = $dani[date('N',$pocetak)];
@@ -221,10 +231,8 @@ class UcionicaController extends \BaseController {
 			}
 		}
 
-		return View::make('Ucionica.raspored')
+		return View::make('Ucionica.strana_rasporeda')
 		->with('ucionica', Ucionica::find($id))
-		->with('tjedan', $tjedan)
-		->with('godina', $godina)
 		->with('grid', $grid);
 	}
 
@@ -235,7 +243,7 @@ class UcionicaController extends \BaseController {
 		$time->setISODate($year, $week);
 	    $min = $time->format('Y-m-d H:i:s');
 	    $max = $time->modify('+1 week')->format('Y-m-d H:i:s');
-	    return Rezervacija::with('mjera')
+	    return Rezervacija::with('mjera', 'predmet')
 	    ->where('ucionica_id', '=', $id)
 	    ->whereBetween('pocetak_rada', array($min, $max))
 	    ->with('instruktor')

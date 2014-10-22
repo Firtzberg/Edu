@@ -15,6 +15,100 @@ class RezervacijaController extends \BaseController {
 		return Redirect::route('Instruktor.show', Auth::id());
 	}
 
+	public function create_naplata($id){
+		$this->layout->title = "Naplata";
+		$naplata =  new Naplata();
+		$naplata->rezervacija = Rezervacija::with('predmet', 'predmet.cijene', 'mjera', 'klijenti')->find($id);
+		if(!$naplata->rezervacija)
+			return $this->itemNotFound();
+		if(strtotime($naplata->rezervacija->pocetak_rada) > time())
+		{
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
+			return Redirect::route('Rezervacija.show', $id);
+		}
+
+		$naplata->stvarnaMjera = $naplata->rezervacija->mjera;
+		$naplata->stvarna_kolicina = $naplata->rezervacija->kolicina;
+		$this->layout->content = View::make('Rezervacija.Naplata.create')
+		->with('naplata', $naplata);
+		return $this->layout;
+	}
+
+	public function store_naplata($id){
+		$naplata = new Naplata();
+		$rezervacija = Rezervacija::with('predmet', 'klijenti')
+		->find($id);
+		if($rezervacija == null)
+			return $this->itemNotFound();
+
+		if(strtotime($rezervacija->pocetak_rada) > time())
+		{
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
+			return Redirect::route('Rezervacija.show', $id);
+		}
+
+		$naplata->rezervacija_id = $rezervacija->id;
+		$naplata->stvarna_kolicina = $rezervacija->kolicina;
+		$naplata->stvarna_mjera = $rezervacija->mjera_id;
+		if(Input::get('mjerechanged') == 'yes'){
+			$stvarna_kolicina = Input::get('stvarna_kolicina');
+			if($stvarna_kolicina){
+				if($stvarna_kolicina < 1)
+				{
+					Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Količina ne može biti manja od 1.');
+					return Redirect::route('Test', $rezervacija->id)
+					->withInput();
+				}
+				$naplata->stvarna_kolicina = $stvarna_kolicina;
+			}
+			$stvarna_mjera = Input::get('stvarna_mjera');
+			if($stvarna_mjera)
+			{
+				$mjera = Mjera::find($stvarna_mjera);
+				if(!$mjera){
+					Session::flash(BaseController::DANGER_MESSAGE_KEY, Mjera::NOT_FOUND_MESSAGE);
+					return Redirect::route('Test', $rezervacija->id)
+					->withInput();
+				}
+				$naplata->stvarna_mjera = $stvarna_mjera;
+			}
+		}
+		//
+		$polaznici = $rezervacija->klijenti;
+		$changes = array();
+		$missed_count = 0;
+		foreach ($polaznici as $polaznik) {
+			if(Input::has('polaznicichanged') && Input::has('klijent-came-'.$polaznik->broj_mobitela)){
+				$changes[$polaznik->broj_mobitela] = array('missed' => 1);
+				$missed_count++;
+			}
+			else
+				$changes[$polaznik->broj_mobitela] = array('missed' => 0);
+		}
+		//obracun iznosa
+		$broj_polaznika = $polaznici->count() - $missed_count;
+		$cijena = $rezervacija->predmet
+		->cijene()
+		->where('id', '=', $naplata->stvarna_mjera)
+		->first()->pivot;
+
+		$ukupno_satnica_po_polazniku = $cijena->individualno - $cijena->popust * ($broj_polaznika - 1);
+		if($ukupno_satnica_po_polazniku < $cijena->minimalno)
+			$ukupno_satnica_po_polazniku = $cijena->minimalno;
+		$satnica_instruktora = $naplata->getSatnicaZaInstruktora($ukupno_satnica_po_polazniku) * $broj_polaznika;
+		$ukupno_satnica = $ukupno_satnica_po_polazniku*$broj_polaznika;
+
+		$naplata->ukupno_uplaceno = $ukupno_satnica * $naplata->stvarna_kolicina;
+		$naplata->za_instruktora = $satnica_instruktora * $naplata->stvarna_kolicina;
+		$naplata->za_tvrtku = $naplata->ukupno_uplaceno - $naplata->za_instruktora;
+
+		$naplata->save();
+		if(count($changes) > 0)
+			$rezervacija->klijenti()->sync($changes);
+		Session::flush(BaseController::SUCCESS_MESSAGE_KEY, 'Uspješno ste naplatili');
+		return Redirect::route('Rezervacija.show', $id);
+	}
+
 	/**
 	 * Show the form for creating a new resource.
 	 *
@@ -52,11 +146,11 @@ class RezervacijaController extends \BaseController {
 		$errorMessage = $rezervacija->getErrorOrSync($input);
 		if($errorMessage != null){
 			Session::flash(self::DANGER_MESSAGE_KEY, $errorMessage);
-			return Redirect::route('Rezervacija.create', $id)
+			return Redirect::route('Rezervacija.create')
 			->withInput();
 		}
 
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacia je uspješno dodana.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je uspješno dodana.');
 		return Redirect::route('Rezervacija.show', array('id' => $rezervacija->id));
 	}
 
@@ -156,7 +250,7 @@ class RezervacijaController extends \BaseController {
 			->withInput();
 		}
 
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacia je uspješno promijenjena.');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je uspješno promijenjena.');
 		return Redirect::route('Rezervacija.show', array('id' => $rezervacija->id));
 	}
 
@@ -199,72 +293,5 @@ class RezervacijaController extends \BaseController {
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
 		return Redirect::route('Instruktor.show', Auth::id());
 	}
-
-	public function naplati($id)
-	{
-		$r = Rezervacija::find($id);
-		if(strtotime($r->pocetak_rada) > time())
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
-			return Redirect::route('Rezervacija.show', $id);
-		}
-		$this->layout->title = "Naplata";
-		$v = View::make('Rezervacija.naplati')
-		->with('rezervacija', $r);
-		if(!is_null($r->naplata))
-			$v->with('naplata', $r->naplata);
-		$this->layout->content = $v;
-		return $this->layout;
-	}
-
-	public function naplata($id)
-	{
-		$r = Rezervacija::find($id);
-		$n = $r->naplata;
-		if(strtotime($r->pocetak_rada) > time())
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
-			return Redirect::route('Rezervacija.show', $id);
-		}
-
-		if(!(Input::has('za_tvrtku')&& Input::has('ukupno_uplaceno')&&Input::get('za_instruktora')))
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Niste unijeli sve potrebne podatke.');
-			return Redirect::route('Rezervacija.naplati', $id)
-			->withInput();
-		}
-
-
-		if(Input::get('za_tvrtku') < 0 || Input::get('za_instruktora') < 0)
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nepravilan unos. Iznosi en mogu biti negativni.');
-			return Redirect::route('Rezervacija.naplati', $id)
-			->withInput();
-		}
-
-		if(Input::get('za_tvrtku') + Input::get('za_instruktora') != Input::get('ukupno_uplaceno'))
-		{
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nepravilan unos. Ukupni iznos se dijeli na tvrtku i instruktora.');
-			return Redirect::route('Rezervacija.naplati', $id)
-			->withInput();
-		}
-
-		if(is_null($n))
-		{
-			$n = Naplata::create(Input::all());
-			$n->save();
-		}
-		else $n->update(Input::all());
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Naplata je uspješna.');
-		return Redirect::route('Rezervacija.show', $id);
-	}
-
-	public function destroy_naplata($id)
-	{
-		Rezervacija::find($id)->naplata->delete();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Naplata je uspješno uklonjena');
-		return Redirect::route('Rezervacija.show', $id);
-	}
-
 
 }

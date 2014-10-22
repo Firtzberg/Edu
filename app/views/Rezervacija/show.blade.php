@@ -1,29 +1,7 @@
 <h2>Prikaz rezervacije</h2>
 <div class="row">
 <div class="col-sm-6">
-@if(is_null($rezervacija->naplata))
-@if(strtotime($rezervacija->pocetak_rada)>time())
-<h4>Nije moguće naplatiti prije odrade instrukcija.</h4>
-@else
-<h4>Naplata nije izvršena.</h4>
-{{ link_to_route('Rezervacija.naplati', 'Naplati', array($rezervacija->id),
-array('class' => 'btn btn-primary')) }}
-@endif
-@else
-<h4>Naplata je izvršena</h4>
-<dl class="dl-horizontal">
-<dt>Vrijeme naplate</dt><dd>{{ $rezervacija->naplata->updated_at }}</dd>
-<dt>Ukupan iznos</dt><dd>{{ $rezervacija->naplata->ukupno_uplaceno }}</dd>
-<dt>Za instruktora</dt><dd>{{ $rezervacija->naplata->za_instruktora }}</dd>
-<dt>Za tvrtku</dt><dd>{{ $rezervacija->naplata->za_tvrtku }}</dd>
-</dl>
-{{ Form::open(array('action' => array('Rezervacija.destroy_naplata', $rezervacija->id), 'method' => 'delete')) }}
-{{ link_to_route('Rezervacija.naplati', 'Uredi naplatu', array($rezervacija->id),
-array('class' => 'btn btn-primary')) }}
- {{ Form::submit('Ukloni naplatu',
-array('class' => 'btn btn-warning')) }}
-{{ Form::close() }}
-@endif
+	@include('Rezervacija.Naplata.show')
 </div>
 
 <div class="col-sm-6">
@@ -43,7 +21,11 @@ Uklonjena
 </dd>
 <dt>Predmet</dt><dd>
 @if($rezervacija->predmet)
+@if(Auth::user()->is_admin)
+{{ link_to_action('Predmet.show', $rezervacija->predmet->ime, $rezervacija->predmet->id) }}
+@else
 {{ $rezervacija->predmet->ime }}
+@endif
 @else
 Nije definiran
 @endif
@@ -69,7 +51,11 @@ array('class' => 'btn btn-danger')) }}
 @foreach($rezervacija->klijenti as $klijent)
 <br/>
 <dt>{{ $klijent->broj_mobitela }}</dt>
-<dd>{{ link_to_route('Klijent.show', $klijent->ime, array('id' => $klijent->broj_mobitela)) }}</dd>
+<dd>{{ $klijent->ime }}
+@if($klijent->pivot->missed)
+<small> izostao</small>
+@endif
+</dd>
 @endforeach
 </dl>
 </div>
