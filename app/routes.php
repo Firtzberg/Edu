@@ -39,6 +39,7 @@ Route::resource('Rezervacija', 'RezervacijaController', array('except' => array(
 Route::get('/Rezervacija/{id}/copy', array('as' => 'Rezervacija.copy', 'uses' => 'RezervacijaController@copy'));
 Route::get('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@create_naplata', 'as' => 'Naplata.create'));
 Route::put('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@store_naplata', 'as' => 'Naplata.store'));
+Route::delete('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Naplata.destroy'));
 
 Route::group(array('before' => 'admin'), function(){
 Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));

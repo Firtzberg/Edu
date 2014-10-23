@@ -11,7 +11,7 @@
 		{{ Form::open(array('route' => 'login',
 		'class' => 'form-signin',
 		'style' => 'max-width:330px;padding:15px;margin:auto')) }}
-		<h2 class="form-signin-heading">Za nastavak popunite obrazac</h2>
+		<h2 class="form-signin-heading">Registracija</h2>
 		<div class = "form-group">
 			{{ Form::text('userName', null,
 			array(

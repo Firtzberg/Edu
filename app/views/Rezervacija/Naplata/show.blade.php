@@ -17,4 +17,9 @@ array('class' => 'btn btn-primary')) }}
 <dt>Za instruktora</dt><dd>{{ $naplata->za_instruktora }}</dd>
 <dt>Za tvrtku</dt><dd>{{ $naplata->za_tvrtku }}</dd>
 </dl>
+@if(Auth::check() && Auth::user()->is_admin)
+{{ Form::open(array('route' => array('Naplata.destroy', $rezervacija->id), 'method' => 'delete')) }}
+{{ Form::submit('Poništi naplatu') }}
+{{ Form::close() }}
+@endif
 @endif
