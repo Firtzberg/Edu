@@ -136,7 +136,7 @@ class Rezervacija extends Eloquent {
 			//provjera dozvoljene vrijednosti za vrijeme pocetka
 				$dto = new DateTime($datum);
 				$dto = $dto->setTime($startHour, $startMinute);
-				if($dto < new DateTime())
+				if($dto < new DateTime() && !(Auth::check() && Auth::user()->is_admin))
 					return 'Zadani početak rada je prošao. Nije moguće napraviti rezervaciju u prošlosti.';
 				$pocetak_rada = $dto->format('Y-m-d H:i:s');
 			//kraj provjere dozvoljene vrijednosti za vrijeme pocetka

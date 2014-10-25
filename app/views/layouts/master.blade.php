@@ -6,7 +6,8 @@
 		@yield('title')
 	</title>
 	<meta name = "viewport" content="width=device-width, initial-scale=1.0">
-	<link href = "{{URL::to('css/bootstrap.min.css')}}" rel="stylesheet">
+	{{ HTML::style('css/bootstrap.min.css') }}
+	{{ HTML::style('css/raspored.css') }}
 	<script src = "http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.1/jquery-ui.min.js"></script>
 </head>

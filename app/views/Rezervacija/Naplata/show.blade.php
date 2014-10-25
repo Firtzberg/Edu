@@ -19,7 +19,7 @@ array('class' => 'btn btn-primary')) }}
 </dl>
 @if(Auth::check() && Auth::user()->is_admin)
 {{ Form::open(array('route' => array('Naplata.destroy', $rezervacija->id), 'method' => 'delete')) }}
-{{ Form::submit('Poništi naplatu') }}
+{{ Form::submit('Poništi naplatu', array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}
 @endif
 @endif

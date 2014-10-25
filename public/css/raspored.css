@@ -1,0 +1,10 @@
+td.vrijeme{
+	background-color: #e4e4e4;
+}
+table.table{
+	border-spacing: 0px;
+	border-collapse: separate;
+}
+td.reserved{
+	border: 1px solid #333333 !important;
+}

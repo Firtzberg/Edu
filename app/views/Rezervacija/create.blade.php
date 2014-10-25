@@ -36,13 +36,14 @@ $requiredPositive = array(
 					if(isset($rezervacija))
 						$value = date('Y-m-d', strtotime($rezervacija->pocetak_rada));
 					else $value = date('Y-m-d');
+					$attributes = array(
+						'class' =>'form-control',
+						'required' => 'required');
+					if(!Auth::user()->is_admin)
+						$attributes['min'] = date('Y-m-d');
 				?>
 				{{ Form::label('Datum') }}
-				{{ Form::input('date', 'datum', $value,
-				array(
-				'class' =>'form-control',
-				'required' => 'required',
-				'min' => date('Y-m-d'))) }}
+				{{ Form::input('date', 'datum', $value, $attributes) }}
 			</div>
 			<div class = "form-group">
 				{{ Form::label('Vrijeme početka') }}
