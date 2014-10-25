@@ -14,12 +14,12 @@ class CreateNaplateTable extends Migration {
 	{
 		Schema::create('naplate', function(Blueprint $table)
 		{
-			$table->integer('ukupno_uplaceno');
-			$table->integer('za_instruktora');
-			$table->integer('za_tvrtku');
 			$table->integer('rezervacija_id')
 			->unsigned()
 			->index();
+			$table->integer('ukupno_uplaceno');
+			$table->integer('za_instruktora');
+			$table->integer('za_tvrtku');
 			$table->integer('stvarna_kolicina')
 			->unsigned();
 			$table->integer('stvarna_mjera')
@@ -35,6 +35,10 @@ class CreateNaplateTable extends Migration {
 			->references('id')->on('rezervacije')
 			->onDelete('cascade')
 			->onUpdate('cascade');
+			
+			$table->foreign('stvarna_mjera')
+			->references('id')->on('mjere')
+			->onUpdate('cascade');
 		});	
 	}
 
@@ -48,6 +52,7 @@ class CreateNaplateTable extends Migration {
 		Schema::table('naplate', function(Blueprint $table)
 		{
 			$table->dropForeign('naplate_rezervacija_id_foreign');
+			$table->dropForeign('naplate_stvarna_mjera_foreign');
 		});
 
 		Schema::drop('naplate');
