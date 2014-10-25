@@ -92,4 +92,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		});
 	}
 
+	public function link(){
+		return link_to_route('Instruktor.show', $this->name, array('id' => $this->id));
+	}
+
 }

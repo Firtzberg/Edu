@@ -12,7 +12,7 @@ Godišnji izvještaj
 Godišnji izvjestaj
 @if(isset($instruktor))
  instruktora
-{{ link_to_route('Instruktor.show', $instruktor->name, array('id' => $instruktor->id)) }}
+{{ $instruktor->link() }}
 @endif
  za {{ $godina }}. godinu</p>
 <ul class="pager">

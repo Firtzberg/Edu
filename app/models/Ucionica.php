@@ -17,4 +17,8 @@ class Ucionica extends Eloquent {
 		return $this->hasMany('Rezervacija');
 	}
 
+	public function link(){
+		return link_to_route('Ucionica.show', $this->naziv, array('id' => $this->id));
+	}
+
 }

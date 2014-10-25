@@ -8,7 +8,7 @@
 @foreach($instruktori as $i)
 <tr>
 	<td>
-		{{ link_to_route('Instruktor.show', $i->name, $parameters = array($i->id)) }}
+		{{ $i->link() }}
 	</td>
 </tr>
 @endforeach

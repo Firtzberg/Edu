@@ -12,7 +12,7 @@ Tjedni izvještaj
 Tjedni izvjestaj
 @if(isset($instruktor))
  instruktora
-{{ link_to_route('Instruktor.show', $instruktor->name, array('id' => $instruktor->id)) }}
+{{ $instruktor->link() }}
 @endif
  za {{$tjedan}}. tjedan u {{ $godina }}. godini</p>
 <ul class="pager">

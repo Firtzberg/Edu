@@ -13,7 +13,7 @@ Prikaz rezervacije
 
 <div class="col-sm-6">
 <dl class="dl-horizontal">
-<dt>Instruktor</dt><dd>{{ link_to_route('Instruktor.show', $rezervacija->instruktor->name, array('id' => $rezervacija->instruktor->id)) }}</dd>
+<dt>Instruktor</dt><dd>{{ $rezervacija->instruktor->link() }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
 <dt>Trajanje</dt><dd>{{ $rezervacija->kolicina.' '.$rezervacija->mjera->znacenje }}</dd>
 <dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>
@@ -29,7 +29,7 @@ Uklonjena
 <dt>Predmet</dt><dd>
 @if($rezervacija->predmet)
 @if(Auth::user()->is_admin)
-{{ link_to_action('Predmet.show', $rezervacija->predmet->ime, $rezervacija->predmet->id) }}
+{{ $rezervacija->predmet->link() }}
 @else
 {{ $rezervacija->predmet->ime }}
 @endif

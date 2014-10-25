@@ -10,7 +10,7 @@
 @foreach($ucionice as $ucionica)
 <tr>
 	<td>
-{{ link_to_route('Ucionica.show', $ucionica->naziv, $parameters = array($ucionica->id)) }}
+{{ $ucionica->link() }}
 	</td>
 	<td>{{ $ucionica->adresa }}</td>
 	<td>{{ $ucionica->max_broj_ucenika }}</td>

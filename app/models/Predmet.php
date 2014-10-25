@@ -69,4 +69,8 @@ class Predmet extends Eloquent {
 		//kraj obilaska za svaku mjeru u sustavu
 		return $syncArray;
 	}
+
+	public function link(){
+		return link_to_route('Predmet.show', $this->ime, array('id' => $this->id));
+	}
 }

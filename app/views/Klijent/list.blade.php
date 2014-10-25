@@ -5,10 +5,10 @@
 	<tr>
 		<th>Ime</th>
 	</tr>
-@foreach($klijenti as $k)
+@foreach($klijenti as $klijent)
 <tr>
 	<td>
-		{{ link_to_route('Klijent.show', $k->ime, array($k->broj_mobitela)) }}
+		{{ $klijent->link() }}
 	</td>
 </tr>
 @endforeach

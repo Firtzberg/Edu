@@ -65,4 +65,8 @@ class Kategorija extends Eloquent {
 		}, $this->path());
 		return implode('/', $links);
 	}
+
+	public function link(){
+		return link_to_route('Kategorija.show', $this->ime, array('id' => $this->id));
+	}
 }

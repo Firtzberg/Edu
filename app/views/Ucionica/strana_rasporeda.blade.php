@@ -35,15 +35,11 @@
 				>
 				@if(isset($podatak[$key]['rezervacija']))
 @if(Auth::user()->is_admin||Auth::id() == $podatak[$key]['instruktor']->id)
-				{{ link_to_route('Rezervacija.show',
-				$podatak[$key]['rezervacija']->predmet?$podatak[$key]['rezervacija']->predmet->ime:'Nema predmeta',
-				array('id' => $podatak[$key]['rezervacija']->id)) }}<br>
+				{{ $podatak[$key]['rezervacija']->link() }}<br>
 @else
 {{$podatak[$key]['rezervacija']->predmet?$podatak[$key]['rezervacija']->predmet->ime:'Nema predmeta'}}<br>
 @endif
-				{{ link_to_route('Instruktor.show',
-				$podatak[$key]['instruktor']->name,
-				array('id' => $podatak[$key]['instruktor']->id)) }}
+				{{ $podatak[$key]['instruktor']->link() }}
 				@endif
 			</td>
 			@endif

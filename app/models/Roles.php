@@ -68,4 +68,8 @@ class Role extends Eloquent
 
         return true;
     }
+
+    public function link(){
+        return link_to_route('Role.show', $this->ime, array('id' => $this->id));
+    }
 }

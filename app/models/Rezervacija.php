@@ -50,6 +50,13 @@ class Rezervacija extends Eloquent {
 		->withPivot('missed');
 	}
 
+	public function link(){
+		$ime = 'Uklonjen predmet';
+		if($this->predmet)
+			$ime = $this->predmet->ime;
+		return link_to_route('Rezervacija.show', $ime, array('id' => $this->id));
+	}
+
 	public function getErrorOrSync($input){
 		if(!is_array($input))
 			return 'Wrong Input';

@@ -48,4 +48,8 @@ class Klijent extends Eloquent{
 		$broj_mobitela = implode($chars);
 		return $broj_mobitela;
     }
+
+	public function link(){
+		return link_to_route('Klijent.show', $this->ime, array('id' => $this->broj_mobitela));
+	}
 }
