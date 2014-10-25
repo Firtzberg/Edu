@@ -3,7 +3,7 @@
 class KategorijaController extends \BaseController {
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
+		Session::flash(self::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
 		return View::make('Kategorija.index');
 	}
 

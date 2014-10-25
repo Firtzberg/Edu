@@ -2,6 +2,8 @@
 
 class Role extends Eloquent
 {
+
+    const NOT_FOUND_MESSAGE = 'Zadana uloga nije pronađena u sustavu.';
     /**
      * The table associated with the model.
      *

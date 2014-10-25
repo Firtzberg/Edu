@@ -3,7 +3,7 @@
 class KlijentController extends \BaseController {
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, Klijent::NOT_FOUND_MESSAGE);
+		Session::flash(self::DANGER_MESSAGE_KEY, Klijent::NOT_FOUND_MESSAGE);
 		return Redirect::route('Klijent.index');
 	}
 

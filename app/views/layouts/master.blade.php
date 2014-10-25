@@ -26,6 +26,7 @@
 					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
 					@if(Auth::user()->is_admin)
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
+					<li>{{ link_to_route('Role.index', 'Uloge') }}</li>
 					<li>{{ link_to_route('Klijent.index', 'Klijenti') }}</li>
 					@endif
 					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>

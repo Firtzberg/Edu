@@ -127,11 +127,14 @@ class InstruktorController extends \BaseController {
 				'name' => 'required|min:3|unique:users',
 				'lozinka' => 'required|min:5|same:ponovljena',
 				'email' => 'email',
-				'boja' => 'required'));
+				'boja' => 'required',
+				'role_id' => 'required|exists:roles,id'));
 		if($validator->fails())
 		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
 	  	->with(self::DANGER_MESSAGE_KEY, $validator->messages()->first());
+
+
 
 		$s = new User();
 		$s->name = Input::get('name');
@@ -139,9 +142,10 @@ class InstruktorController extends \BaseController {
 		$s->email = Input::get('email');
 		$s->lozinka = Hash::make(Input::get('lozinka'));
 		$s->boja = substr(Input::get('boja'), 1);
+		$s->role_id = Input::get('role_id');
 		$s->save();
 		return Redirect::route('Instruktor.index')
-	  	->with(BaseController::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
+	  	->with(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
 	}
 
 

@@ -3,7 +3,7 @@
 class PredmetController extends \BaseController {
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, Predmet::NOT_FOUND_MESSAGE);
+		Session::flash(self::DANGER_MESSAGE_KEY, Predmet::NOT_FOUND_MESSAGE);
 		return Redirect::route('Kategorija.index');
 	}
 

@@ -42,6 +42,7 @@ Route::put('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@s
 Route::delete('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Naplata.destroy'));
 
 Route::group(array('before' => 'admin'), function(){
+Route::resource('Role', 'RoleController');
 Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
 Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));
 Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));

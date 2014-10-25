@@ -9,7 +9,7 @@ class RezervacijaController extends \BaseController {
     }
 
 	private function itemNotFound(){
-		Session::flash(BaseController::DANGER_MESSAGE_KEY, Rezervacija::NOT_FOUND_MESSAGE);
+		Session::flash(self::DANGER_MESSAGE_KEY, Rezervacija::NOT_FOUND_MESSAGE);
 		return Redirect::route('Instruktor.show', Auth::id());
 	}
 
@@ -20,7 +20,7 @@ class RezervacijaController extends \BaseController {
 			return $this->itemNotFound();
 		if(!$naplata->rezervacija->predmet)
 			return Redirect::route('Rezervacija.show', $id)
-			->with(BaseController::DANGER_MESSAGE_KEY, 'Predmet rezervacije se više ne nalazi u sustavu. Nije moguća naplata.');
+			->with(self::DANGER_MESSAGE_KEY, 'Predmet rezervacije se više ne nalazi u sustavu. Nije moguća naplata.');
 		if(strtotime($naplata->rezervacija->pocetak_rada) > time())
 		{
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
@@ -54,7 +54,7 @@ class RezervacijaController extends \BaseController {
 			if($stvarna_kolicina){
 				if($stvarna_kolicina < 1)
 				{
-					Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Količina ne može biti manja od 1.');
+					Session::flash(self::DANGER_MESSAGE_KEY, 'Količina ne može biti manja od 1.');
 					return Redirect::route('Test', $rezervacija->id)
 					->withInput();
 				}
@@ -65,7 +65,7 @@ class RezervacijaController extends \BaseController {
 			{
 				$mjera = Mjera::find($stvarna_mjera);
 				if(!$mjera){
-					Session::flash(BaseController::DANGER_MESSAGE_KEY, Mjera::NOT_FOUND_MESSAGE);
+					Session::flash(self::DANGER_MESSAGE_KEY, Mjera::NOT_FOUND_MESSAGE);
 					return Redirect::route('Test', $rezervacija->id)
 					->withInput();
 				}
@@ -104,14 +104,14 @@ class RezervacijaController extends \BaseController {
 		$naplata->save();
 		if(count($changes) > 0)
 			$rezervacija->klijenti()->sync($changes);
-		Session::flush(BaseController::SUCCESS_MESSAGE_KEY, 'Uspješno ste naplatili');
+		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Uspješno ste naplatili');
 		return Redirect::route('Rezervacija.show', $id);
 	}
 
 	public function destroy_naplata($id){
 		if(!Auth::user()->is_admin)
 			return Redirect::route('Rezervacija.show', $id)
-		->with(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupa.');
+		->with(self::DANGER_MESSAGE_KEY, 'Nemate pravo pristupa.');
 		$naplata = Naplata::find($id)->delete();
 		$rezervacija = Rezervacija::with('klijenti')->find($id);
 		$updates = array();
@@ -120,7 +120,7 @@ class RezervacijaController extends \BaseController {
 		}
 		$rezervacija->klijenti()->sync($updates);
 		return Redirect::route('Rezervacija.show', $id)
-		->with(BaseController::SUCCESS_MESSAGE_KEY, 'Naplata je uspješno poništena');
+		->with(self::SUCCESS_MESSAGE_KEY, 'Naplata je uspješno poništena');
 	}
 
 	/**

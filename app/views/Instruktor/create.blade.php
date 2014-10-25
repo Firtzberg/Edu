@@ -52,6 +52,16 @@ $required) }}
 <?php $color = '#'.$instruktor->boja;?>
 @endif
 <div class = "form-group">
+{{ Form::label('Uloga') }}
+{{ Form::select('role_id', Role::select('ime')->get()->lists('ime'),null,
+$required) }}
+</div>
+<div class = "form-group">
+{{ Form::label('Boja') }}
+{{ Form::input('color', 'boja', $color,
+$required) }}
+</div>
+<div class = "form-group">
 {{ Form::label('broj_mobitela') }}
 {{ Form::text('broj_mobitela', null,
 $optional) }}
@@ -60,11 +70,6 @@ $optional) }}
 {{ Form::label('Email') }}
 {{ Form::email('email', null,
 $optional) }}
-</div>
-<div class = "form-group">
-{{ Form::label('Boja') }}
-{{ Form::input('color', 'boja', $color,
-$required) }}
 </div>
 <div class = "form-group">
 {{ Form::submit('Pohrani', array(
