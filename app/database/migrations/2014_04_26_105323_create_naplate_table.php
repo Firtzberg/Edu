@@ -20,6 +20,11 @@ class CreateNaplateTable extends Migration {
 			$table->integer('rezervacija_id')
 			->unsigned()
 			->index();
+			$table->integer('stvarna_kolicina')
+			->unsigned();
+			$table->integer('stvarna_mjera')
+			->unsigned()
+			->index();
 			$table->timestamps();
 		});
 

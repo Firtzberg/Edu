@@ -12,14 +12,6 @@ class AddKolicinaAndMjeraToRezervacijeTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('mjere', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->string('simbol', 5);
-			$table->string('znacenje');
-			$table->integer('trajanje')
-			->unsigned();
-		});
 		Schema::table('rezervacije', function(Blueprint $table)
 		{
 			$table->integer('mjera_id')
@@ -51,8 +43,6 @@ class AddKolicinaAndMjeraToRezervacijeTable extends Migration {
 			$table->dateTime('kraj_rada');
 			$table->dropColumn(array('mjera_id', 'kolicina'));
 		});
-
-		Schema::drop('mjere');
 	}
 
 }

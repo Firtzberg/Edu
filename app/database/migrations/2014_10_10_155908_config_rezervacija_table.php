@@ -14,11 +14,6 @@ class ConfigRezervacijaTable extends Migration {
 	{
 		Schema::table('naplate', function(Blueprint $table)
 		{
-			$table->integer('stvarna_kolicina')
-			->unsigned();
-			$table->integer('stvarna_mjera')
-			->unsigned()
-			->index();
 			$table->foreign('stvarna_mjera')
 			->references('id')->on('mjere')
 			->onUpdate('cascade');
@@ -47,8 +42,6 @@ class ConfigRezervacijaTable extends Migration {
 		Schema::table('naplate', function(Blueprint $table)
 		{
 			$table->dropForeign('naplate_stvarna_mjera_foreign');
-			$table->dropColumn('stvarna_mjera');
-			$table->dropColumn('stvarna_kolicina');
 		});
 
 		Schema::table('rezervacije', function(Blueprint $table)
