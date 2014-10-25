@@ -55,6 +55,7 @@ class ConfigRezervacijaTable extends Migration {
 	{	
 		Schema::table('naplate', function(Blueprint $table)
 		{
+			$table->dropForeign('naplate_rezervacija_id_foreign');
 			$table->dropPrimary();
 			$table->dropForeign('naplate_stvarna_mjera_foreign');
 			$table->dropColumn('stvarna_mjera');
@@ -64,6 +65,10 @@ class ConfigRezervacijaTable extends Migration {
 		Schema::table('naplate', function(Blueprint $table)
 		{
 			$table->increments('id');
+			$table->foreign('rezervacija_id')
+			->references('id')->on('rezervacije')
+			->onUpdate('cascade')
+			->onDelete('cascade');
 		});
 
 		Schema::table('klijent_rezervacija', function(Blueprint $table)

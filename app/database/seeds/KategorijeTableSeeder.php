@@ -13,6 +13,6 @@ class KategorijeTableSeeder extends Seeder {
 				'nadkategorija_id' => 1,
 				)
 			);
-		$Kategorija->save();
+		$kategorija->save();
 	}
 }
