@@ -124,26 +124,21 @@ class InstruktorController extends \BaseController {
 	{
 		$validator = Validator::make(Input::all(),
 			array(
-				'name' => 'required|min:3|unique:users',
+				'name' => 'required|min:3',
 				'lozinka' => 'required|min:5|same:ponovljena',
-				'email' => 'email',
-				'boja' => 'required',
-				'role_id' => 'required|exists:roles,id'));
+				'email' => 'email'));
 		if($validator->fails())
 		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
 	  	->with(self::DANGER_MESSAGE_KEY, $validator->messages()->first());
 
-
-
 		$s = new User();
-		$s->name = Input::get('name');
-		$s->broj_mobitela = Input::get('broj_mobitela');
-		$s->email = Input::get('email');
-		$s->lozinka = Hash::make(Input::get('lozinka'));
-		$s->boja = substr(Input::get('boja'), 1);
-		$s->role_id = Input::get('role_id');
-		$s->save();
+		$error = $s->getErrorOrSync(Input::all());
+		if($error)
+			return Redirect::route('Instruktor.create')
+			->withInput()
+			->with(self::DANGER_MESSAGE_KEY, $error);
+
 		return Redirect::route('Instruktor.index')
 	  	->with(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
 	}
@@ -193,12 +188,13 @@ class InstruktorController extends \BaseController {
 		$instruktor = User::find($id);
 		if(!$instruktor)
 			return $this->itemNotFound();
-		$instruktor->email = Input::get('email');
-		$instruktor->broj_mobitela= Input::get('broj_mobitela');
-		if(Input::has('name'))
-			$instruktor->name = Input::get('name');
-		$instruktor->boja = substr(Input::get('boja'), 1);
-		$instruktor->save();
+
+		$error = $instruktor->getErrorOrSync(Input::all());
+		if($error)
+			return Redirect::route('Instruktor.create')
+			->withInput()
+			->with(self::DANGER_MESSAGE_KEY, $error);
+
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
 		return Redirect::route('Instruktor.show', $id);
 	}

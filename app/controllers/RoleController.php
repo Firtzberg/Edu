@@ -54,6 +54,13 @@ class RoleController extends \BaseController {
 	 */
 	public function store()
 	{
+		$role = new Role();
+		$error =  $role->getErrorOrSync(Input::all());
+		if($error != null)
+			return Redirect::route('Role.create')
+			->withInput()
+			->with(self::DANGER_MESSAGE_KEY, $error);
+		return Redirect::route('Role.show', array('id' => $role->id));
 	}
 
 
@@ -97,7 +104,17 @@ class RoleController extends \BaseController {
 	 */
 	public function update($id)
 	{
-		//
+		$role = Role::find($id);
+		if(!$role)
+			return $this->itemNotFound();
+
+		$error =  $role->getErrorOrSync(Input::all());
+		if($error != null)
+			return Redirect::route('Role.edit', array('id' => $id))
+			->withInput()
+			->with(self::DANGER_MESSAGE_KEY, $error);
+
+		return Redirect::route('Role.show', array('id' => $role->id));
 	}
 
 

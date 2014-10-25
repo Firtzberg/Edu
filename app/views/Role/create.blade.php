@@ -2,7 +2,7 @@
 
 @section('title')
 @if(isset($role))
-{{ $role->name }} - Uređivanje
+{{ $role->ime }} - Uređivanje
 @else
 Dodavanje uloge
 @endif
@@ -38,6 +38,21 @@ array(
 {{ Form::label('Opis') }}
 {{ Form::textarea('opis', null,
 $optional) }}
+</div>
+<div class = "form-group">
+	{{ Form::label('Dozvole') }}
+	<?php $permissions = Permission::all();
+	$allowed = array();
+	if(isset($role))$allowed = $role->permissions->lists('id');
+	$value = false;?>
+	@foreach($permissions as $permission)
+	<?php if(isset($role))$value = in_array($permission->id, $allowed);?>
+	<div class = "checkbox">
+		<label>
+			{{ Form::checkbox('allowed[]', $permission->id, $value) }} {{ $permission->ime }}
+		</label>
+	</div>
+	@endforeach
 </div>
 <div class = "form-group">
 {{ Form::submit('Pohrani', array(

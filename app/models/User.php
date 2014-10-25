@@ -96,4 +96,46 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return link_to_route('Instruktor.show', $this->name, array('id' => $this->id));
 	}
 
+	public function getErrorOrSync($input){
+		if(!is_array($input))
+			return "Wrong input";
+
+		//provjera prisutnosti potrebnih podataka
+		$name = $this->name;
+		if(!$name && !isset($input['name']))
+			return "Ime je obvezno.";
+		if(isset($input['name']))
+			$name = $input['name'];
+
+		if(!isset($input['role_id']))
+			return "Odaberite ulogu.";
+		$role_id = $input['role_id'];
+		//kraj provjere prisutnosti potrebnih podataka
+
+		//provjera jedinstvenosti imena
+		$query = User::where('name', '=', $name);
+		if($this->id > 0)
+			$query = $query->where('id', '!=', $this->id);
+		if($query->count() > 0)
+			return 'Već postoji osoba s odabranim imenom.';
+		//kraj provjere jedinstvenosti imena
+
+		//provjera postojanja uloge
+		if(Role::where('id', '=', $role_id)->count() < 1)
+			return 'Odabrana uloga nije pronađena u sustavu.';
+		//kraj provjere postojanja uloge
+
+		$this->name = $name;
+		$this->role_id = $role_id;
+		if(isset($input['boja']))
+			$this->boja = substr($input['boja'], 1);
+		if(isset($input['broj_mobitela']))
+			$this->broj_mobitela = $input['broj_mobitela'];
+		if(isset($input['email']))
+			$this->email = $input['email'];
+		if(isset($input['facebook']))
+			$this->facebook = $input['facebook'];
+		$this->save();
+	}
+
 }

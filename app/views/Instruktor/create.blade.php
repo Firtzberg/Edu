@@ -53,7 +53,7 @@ $required) }}
 @endif
 <div class = "form-group">
 {{ Form::label('Uloga') }}
-{{ Form::select('role_id', Role::select('ime')->get()->lists('ime'),null,
+{{ Form::select('role_id', Role::select('id', 'ime')->get()->lists('ime', 'id'),null,
 $required) }}
 </div>
 <div class = "form-group">
