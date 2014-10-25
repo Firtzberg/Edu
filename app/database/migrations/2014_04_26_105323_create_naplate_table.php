@@ -14,17 +14,18 @@ class CreateNaplateTable extends Migration {
 	{
 		Schema::create('naplate', function(Blueprint $table)
 		{
-			$table->increments('id');
 			$table->integer('ukupno_uplaceno');
 			$table->integer('za_instruktora');
 			$table->integer('za_tvrtku');
 			$table->integer('rezervacija_id')
-			->unsigned();
+			->unsigned()
+			->index();
 			$table->timestamps();
 		});
 
 		Schema::table('naplate', function(Blueprint $table)
 		{
+			$table->primary('rezervacija_id');
 			$table->foreign('rezervacija_id')
 			->references('id')->on('rezervacije')
 			->onDelete('cascade')

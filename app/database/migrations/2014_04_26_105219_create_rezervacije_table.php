@@ -17,16 +17,10 @@ class CreateRezervacijeTable extends Migration {
 			$table->increments('id');
 			$table->dateTime('pocetak_rada');
 			$table->dateTime('kraj_rada');
-			$table->integer('broj_ucenika')
-			->unsigned();
 			$table->integer('instruktor_id')
 			->unsigned();
 			$table->integer('ucionica_id')
 			->unsigned()
-			->nullable();
-			$table->string('usmjerenje')
-			->nullable();
-			$table->string('predmet')
 			->nullable();
 			$table->timestamps();
 		});

@@ -19,8 +19,6 @@ class ConfigRezervacijaTable extends Migration {
 			$table->integer('stvarna_mjera')
 			->unsigned()
 			->index();
-			$table->dropColumn('id');
-			$table->primary('rezervacija_id');
 			$table->foreign('stvarna_mjera')
 			->references('id')->on('mjere')
 			->onUpdate('cascade');
@@ -28,8 +26,6 @@ class ConfigRezervacijaTable extends Migration {
 
 		Schema::table('rezervacije', function(Blueprint $table)
 		{
-			$table->dropColumn('usmjerenje');
-			$table->dropColumn('predmet');
 			$table->integer('predmet_id')
 			->unsigned()
 			->nullable()
@@ -38,11 +34,6 @@ class ConfigRezervacijaTable extends Migration {
 			->references('id')->on('predmeti')
 			->onDelete('set null')
 			->onUpdate('cascade');
-		});
-
-		Schema::table('klijent_rezervacija', function(Blueprint $table)
-		{
-			$table->boolean('missed');
 		});
 	}
 
@@ -55,33 +46,15 @@ class ConfigRezervacijaTable extends Migration {
 	{	
 		Schema::table('naplate', function(Blueprint $table)
 		{
-			$table->dropForeign('naplate_rezervacija_id_foreign');
-			$table->dropPrimary();
 			$table->dropForeign('naplate_stvarna_mjera_foreign');
 			$table->dropColumn('stvarna_mjera');
 			$table->dropColumn('stvarna_kolicina');
-		});
-		
-		Schema::table('naplate', function(Blueprint $table)
-		{
-			$table->increments('id');
-			$table->foreign('rezervacija_id')
-			->references('id')->on('rezervacije')
-			->onUpdate('cascade')
-			->onDelete('cascade');
-		});
-
-		Schema::table('klijent_rezervacija', function(Blueprint $table)
-		{
-			$table->dropColumn('missed');
 		});
 
 		Schema::table('rezervacije', function(Blueprint $table)
 		{
 			$table->dropForeign('rezervacije_predmet_id_foreign');
 			$table->dropColumn('predmet_id');
-			$table->string('usmjerenje');
-			$table->string('predmet');
 		});
 	}
 

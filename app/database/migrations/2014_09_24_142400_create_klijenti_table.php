@@ -30,6 +30,7 @@ class CreateKlijentiTable extends Migration {
 			$table->integer('rezervacija_id')
 			->unsigned()
 			->index();
+			$table->boolean('missed');
 		});
 
 		Schema::table('klijent_rezervacija', function(Blueprint $table){
