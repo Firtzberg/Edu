@@ -25,7 +25,19 @@ class CreateUsersTable extends Migration {
 			$table->string('lozinka');
 			$table->char('boja', 6)
 			->default('ffffff');
+			$table->integer('role_id')
+			->unsigned()
+			->nullable()
+			->index();
 			$table->timestamps();
+		});
+
+		Schema::table('users', function(Blueprint $table)
+		{
+			$table->foreign('role_id')
+			->references('id')->on('roles')
+			->onUpdate('cascade')
+			->onDelete('set null');
 		});
 	}
 
@@ -36,6 +48,10 @@ class CreateUsersTable extends Migration {
 	 */
 	public function down()
 	{
+		Schema::table('users', function(Blueprint $table)
+		{
+			$table->dropForeign('users_role_id_foreign');
+		});
 		Schema::drop('users');
 	}
 

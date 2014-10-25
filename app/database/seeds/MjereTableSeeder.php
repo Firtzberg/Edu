@@ -6,7 +6,7 @@ class MjereTableSeeder extends Seeder {
 	{
 		DB::table('mjere')->delete();
 
-		$mjera = mjera::create(
+		$mjera = Mjera::create(
 			array(
 				'simbol' => 'PS',
 				'znacenje' => 'Puni sat',
@@ -14,7 +14,7 @@ class MjereTableSeeder extends Seeder {
 				)
 			);
 		$mjera->save();
-		$mjera = mjera::create(
+		$mjera = Mjera::create(
 			array(
 				'simbol' => 'ŠS',
 				'znacenje' => 'Školski sat',
