@@ -38,6 +38,7 @@ array(
 <br>{{ Form::label($instruktor->name)}}
 @endif
 </div>
+<?php $color = '#ffffff';?>
 @if(!isset($instruktor))
 <div class = "form-group">
 {{ Form::label('Zaporka') }}
@@ -47,6 +48,8 @@ $required) }}
 {{ Form::password('ponovljena',
 $required) }}
 </div>
+@else
+<?php $color = '#'.$instruktor->boja;?>
 @endif
 <div class = "form-group">
 {{ Form::label('broj_mobitela') }}
@@ -57,6 +60,11 @@ $optional) }}
 {{ Form::label('Email') }}
 {{ Form::email('email', null,
 $optional) }}
+</div>
+<div class = "form-group">
+{{ Form::label('Boja') }}
+{{ Form::input('color', 'boja', $color,
+$required) }}
 </div>
 <div class = "form-group">
 {{ Form::submit('Pohrani', array(

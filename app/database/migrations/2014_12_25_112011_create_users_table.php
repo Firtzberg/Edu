@@ -23,15 +23,9 @@ class CreateUsersTable extends Migration {
 			$table->string('broj_mobitela');
 			$table->string('email');
 			$table->string('lozinka');
+			$table->char('boja', 6)
+			->default('ffffff');
 			$table->timestamps();
-		});
-
-		Schema::table('rezervacije', function(Blueprint $table)
-		{
-			$table->foreign('instruktor_id')
-			->references('id')->on('users')
-			->onDelete('cascade')
-			->onUpdate('cascade');
 		});
 	}
 
@@ -42,11 +36,6 @@ class CreateUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('rezervacije', function(Blueprint $table)
-		{
-			$table->dropForeign('rezervacije_instruktor_id_foreign');
-		});
-		
 		Schema::drop('users');
 	}
 

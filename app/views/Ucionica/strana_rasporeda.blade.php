@@ -30,7 +30,7 @@
 			@if(isset($podatak[$key]))
 			<td rowspan='{{ $podatak[$key]['span'] }}'
 				@if(isset($podatak[$key]['rezervacija']))
-				class = "reserved"
+				class = "reserved" style="background-color: #{{ $podatak[$key]['instruktor']->boja }}"
 				@endif
 				>
 				@if(isset($podatak[$key]['rezervacija']))

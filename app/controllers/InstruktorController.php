@@ -126,7 +126,8 @@ class InstruktorController extends \BaseController {
 			array(
 				'name' => 'required|min:3|unique:users',
 				'lozinka' => 'required|min:5|same:ponovljena',
-				'email' => 'email'));
+				'email' => 'email',
+				'boja' => 'required'));
 		if($validator->fails())
 		  	return Redirect::route('Instruktor.create')
 	  	->withInput()
@@ -137,6 +138,7 @@ class InstruktorController extends \BaseController {
 		$s->broj_mobitela = Input::get('broj_mobitela');
 		$s->email = Input::get('email');
 		$s->lozinka = Hash::make(Input::get('lozinka'));
+		$s->boja = substr(Input::get('boja'), 1);
 		$s->save();
 		return Redirect::route('Instruktor.index')
 	  	->with(BaseController::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
@@ -191,6 +193,7 @@ class InstruktorController extends \BaseController {
 		$instruktor->broj_mobitela= Input::get('broj_mobitela');
 		if(Input::has('name'))
 			$instruktor->name = Input::get('name');
+		$instruktor->boja = substr(Input::get('boja'), 1);
 		$instruktor->save();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
 		return Redirect::route('Instruktor.show', $id);

@@ -130,13 +130,7 @@ class RezervacijaController extends \BaseController {
 	 */
 	public function create()
 	{
-		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
-		foreach ($rows as $row) {
-			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
-		}
-
 		return View::make('Rezervacija.create')
-		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm'))
 		->with('predmet', View::make('Kategorija.select'));
 	}
@@ -178,13 +172,7 @@ class RezervacijaController extends \BaseController {
 		if(!$rezervacija)
 			return $this->itemNotFound();
 
-		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
-		foreach ($rows as $row) {
-			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
-		}
-
 		return View::make('Rezervacija.create')
-		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm')
 			->with('klijenti', $rezervacija->klijenti))
 		->with('predmet', View::make('Kategorija.select')
@@ -210,14 +198,8 @@ class RezervacijaController extends \BaseController {
 			return Redirect::route('Rezervacija.show', $id);
 		}
 
-		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
-		foreach ($rows as $row) {
-			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
-		}
-
 		return View::make('Rezervacija.create')
 		->with('rezervacija', $rezervacija)
-		->with('ucionice', $ucionice)
 		->with('klijent', View::make('Klijent.listForm')
 			->with('klijenti', $rezervacija->klijenti))
 		->with('predmet', View::make('Kategorija.select')

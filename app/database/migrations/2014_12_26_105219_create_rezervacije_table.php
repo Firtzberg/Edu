@@ -17,11 +17,13 @@ class CreateRezervacijeTable extends Migration {
 			$table->increments('id');
 			$table->dateTime('pocetak_rada');
 			$table->integer('mjera_id')
-			->unsigned();
+			->unsigned()
+			->index();
 			$table->integer('kolicina')
 			->unsigned();
 			$table->integer('instruktor_id')
-			->unsigned();
+			->unsigned()
+			->index();
 			$table->integer('predmet_id')
 			->unsigned()
 			->nullable()
@@ -39,11 +41,16 @@ class CreateRezervacijeTable extends Migration {
 			->references('id')->on('mjere')
 			->onUpdate('cascade');
 
+			$table->foreign('instruktor_id')
+			->references('id')->on('users')
+			->onDelete('cascade')
+			->onUpdate('cascade');
+
 			$table->foreign('predmet_id')
 			->references('id')->on('predmeti')
 			->onDelete('set null')
 			->onUpdate('cascade');
-			
+
 			$table->foreign('ucionica_id')
 			->references('id')->on('ucionice')
 			->onDelete('set null')
@@ -64,6 +71,7 @@ class CreateRezervacijeTable extends Migration {
 			$table->dropForeign('rezervacije_mjera_id_foreign');
 			$table->dropForeign('rezervacije_predmet_id_foreign');
 			$table->dropForeign('rezervacije_ucionica_id_foreign');
+			$table->dropForeign('rezervacije_instruktor_id_foreign');
 		});
 
 		Schema::drop('rezervacije');

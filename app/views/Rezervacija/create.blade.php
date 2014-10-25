@@ -97,6 +97,13 @@ $requiredPositive = array(
 	<div class = "col-xs-12 col-sm-7 col-lg-5">
 		@yield('klijent-input')
 		<div class = "form-group">
+			<?php
+		$rows = Ucionica::select('id', 'naziv', 'max_broj_ucenika')->get();
+		$ucionice = array();
+		foreach ($rows as $row) {
+			$ucionice[$row->id] = $row->naziv.'('.$row->max_broj_ucenika.')';
+		}
+			?>
 		{{ Form::label('Učionica') }}
 		{{ Form::select('ucionica_id', $ucionice, null,
 		$required) }}
