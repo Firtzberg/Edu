@@ -100,6 +100,7 @@ class RezervacijaController extends \BaseController {
 		$naplata->ukupno_uplaceno = $ukupno_satnica * $naplata->stvarna_kolicina;
 		$naplata->za_instruktora = $satnica_instruktora * $naplata->stvarna_kolicina;
 		$naplata->za_tvrtku = $naplata->ukupno_uplaceno - $naplata->za_instruktora;
+		$naplata->napomena = Input::get('napomena', '');
 
 		$naplata->save();
 		if(count($changes) > 0)

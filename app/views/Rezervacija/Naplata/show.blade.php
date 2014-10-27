@@ -16,6 +16,9 @@ array('class' => 'btn btn-primary')) }}
 <dt>Ukupan iznos</dt><dd>{{ $naplata->ukupno_uplaceno }}</dd>
 <dt>Za instruktora</dt><dd>{{ $naplata->za_instruktora }}</dd>
 <dt>Za tvrtku</dt><dd>{{ $naplata->za_tvrtku }}</dd>
+@if($naplata->napomena && !empty($naplata->napomena))
+<dt>Napomena</dt><dd>{{ $naplata->napomena }}</dd>
+@endif
 </dl>
 @if(Auth::check() && Auth::user()->is_admin)
 {{ Form::open(array('route' => array('Naplata.destroy', $rezervacija->id), 'method' => 'delete')) }}

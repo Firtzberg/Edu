@@ -32,6 +32,8 @@ class CreateRezervacijeTable extends Migration {
 			->unsigned()
 			->nullable()
 			->index();
+			$table->text('napomena')
+			->nullable();
 			$table->timestamps();
 		});
 

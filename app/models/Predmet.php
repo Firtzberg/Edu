@@ -17,10 +17,66 @@ class Predmet extends Eloquent {
 		return $this->belongsTo('Kategorija','kategorija_id');
 	}
 
+	public function users()
+	{
+		return $this->belongsToMany('User','predmet_user');
+	}
+
 	public function cijene(){
 		return $this->belongsToMany('Mjera', 'cijene')
 		->withPivot('individualno', 'popust', 'minimalno')
 		->withTimestamps();
+	}
+
+	public function getErrorOrSync($input){
+		$ime = $this->ime;
+		if(isset($input['ime']))
+			$ime = $input['ime'];
+		if(!$ime)
+			return 'Ime predmeta je obvezno.';
+
+		$kategorija_id = $this->kategorija_id;
+		if(isset($input['kategorija_id']))
+			$kategorija_id = $input['kategorija_id'];
+		if(!$kategorija_id)
+			return 'Nije zadana kategorija predmeta.';
+
+		$kategorija = Kategorija::find($kategorija_id);
+		if(!$kategorija)
+			return Kategorija::NOT_FOUND_MESSAGE;
+
+        //provjera zauzetosti imena
+        $query = $kategorija->predmeti()->where('ime', '=', $ime);
+        if($this->id > 0)
+            $query = $query->where('id', '!=', $this->id);
+        if($query->count() > 0)
+            return 'U kategoriji '.$kategorija->ime.' već postoji predmet s imenom '.$ime.'.';
+        //kraj provjere zauzetosti imena
+
+		$mjereSyncronizator = $this->getErrorOrCijenaSyncArray($input);
+		if(!is_array($mjereSyncronizator))
+			return $mjereSyncronizator;
+
+        if(isset($input['allowed']))
+            $user_ids = $input['allowed'];
+        else $user_ids = array();
+        if(!$user_ids || !is_array($user_ids))
+            $user_ids = array();
+
+        if(count($user_ids) > 0)
+            $user_ids = User::select('id')
+            ->whereIn('id', $user_ids)
+            ->get()
+            ->lists('id');
+
+		$this->ime = $ime;
+
+		$kategorija->predmeti()->save($this);
+		$this->cijene()->sync($mjereSyncronizator);
+            
+        if(count($user_ids) > 0)
+            $this->users()->sync($user_ids);
+        else $this->users()->detach();
 	}
 
 	public function getErrorOrCijenaSyncArray($input){

@@ -39,6 +39,9 @@ Nije definiran
 </dd>
 <dt>Rezervacija obavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
 <dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
+@if($rezervacija->napomena && !empty($rezervacija->napomena))
+<dt>Napomena</dt><dd>{{ $rezervacija->napomena }}</dd>
+@endif
 </dl>
 @if(strtotime($rezervacija->pocetak_rada) > time() || Auth::user()->is_admin)
 {{ Form::open(array('route' => array('Rezervacija.destroy', $rezervacija->id), 'method' => 'delete')) }}

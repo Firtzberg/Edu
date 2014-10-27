@@ -137,6 +137,12 @@ class Rezervacija extends Eloquent {
 					return 'Učionica je obvezna.';
 				$ucionica_id = $input['ucionica_id'];
 			//kraj provjere postojanja podataka za učionicu
+
+			//provjer postojanja napomene
+				if(isset($input['napomena']))
+					$napomena = $input['napomena'];
+				else $napomena = '';
+			//kraj provjere postojanja napomene
 		//kraj provjere postojanja potrebnih podataka
 
 		//provjera dozvoljenih vrijednosti podataka koji se ne odnose na relacije
@@ -234,6 +240,7 @@ class Rezervacija extends Eloquent {
 		$this->mjera_id = $mjera_id;
 		$this->predmet_id = $predmet_id;
 		$this->ucionica_id = $ucionica_id;
+		$this->napomena = $napomena;
 		//kraj pridruživanja
 
 		//pohrana vrijednosti

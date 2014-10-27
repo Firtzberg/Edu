@@ -25,40 +25,15 @@ class PredmetController extends \BaseController {
 	 */
 	public function store()
 	{
-		$ime = Input::get('ime');
-		$kategorija_id = Input::get('kategorija_id');
-		$kategorija = Kategorija::find($kategorija_id);
-		if(!$kategorija_id){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije zadana kategorija predmeta.');
-			return Redirect::route('Kategorija.index');
-		}
-		if(!$kategorija){
-			Session::flash(self::DANGER_MESSAGE_KEY, Kategorija::NOT_FOUND_MESSAGE);
-			return Redirect::route('Kategorija.index');
-		}
-		if(empty($ime)){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Ime predmeta je obvezno.');
-			return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-			->withInput();
-		}
-		if($kategorija->predmeti()->where('ime', '=', $ime)->count() > 0){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'U kategoriji '.$kategorija->ime.' već postoji predmet s imenom '.$ime.'.');
-			return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-			->withInput();
-		}
-
 		$predmet = new Predmet();
-		$predmet->ime = $ime;
-
-		$mjereSyncronizator = $predmet->getErrorOrCijenaSyncArray(Input::all());
-		if(!is_array($mjereSyncronizator)){
-			Session::flash(self::DANGER_MESSAGE_KEY, $mjereSyncronizator);
-			return Redirect::route('Predmet.create', array('kategorija_id' => $kategorija_id))
-			->withInput();
+		$error = $predmet->getErrorOrSync(Input::all());
+		if($error){
+			Session::flash(self::DANGER_MESSAGE_KEY, $error);
+			if(Input::has('kategorija_id'))
+				return Redirect::route('Predmet.create', array('kategorija_id' => Input::get('kategorija_id')))
+					->withInput();
+			else return Redirect::route('Kategorija.index');
 		}
-
-		$kategorija->predmeti()->save($predmet);
-		$predmet->cijene()->sync($mjereSyncronizator);-
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno dodan.');
 		return Redirect::route('Predmet.show', array('id' => $predmet->id));
 	}
@@ -107,29 +82,13 @@ class PredmetController extends \BaseController {
 		if(!$predmet)
 			return $this->itemNotFound();
 
-		$ime = Input::get('ime');
-		if(empty($ime)){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Ime predmeta je obvezno.');
+		$error = $predmet->getErrorOrSync(Input::all());
+		if($error){
+			Session::flash(self::DANGER_MESSAGE_KEY, $error);
 			return Redirect::route('Predmet.edit', array('id' => $id))
 			->withInput();
 		}
-		if($predmet->kategorija->predmeti()->where('ime', '=', $ime)->where('id', '!=', $id)->count() > 0){
-			Session::flash(self::DANGER_MESSAGE_KEY, 'U kategoriji '.$predmet->kategorija->ime.' već postoji predmet s imenom '.$ime.'.');
-			return Redirect::route('Predmet.edit', array('id' => $id))
-			->withInput();
-		}
-
-		$predmet->ime = $ime;
-
-		$mjereSyncronizator = $predmet->getErrorOrCijenaSyncArray(Input::all());
-		if(!is_array($mjereSyncronizator)){
-			Session::flash(self::DANGER_MESSAGE_KEY, $mjereSyncronizator);
-			return Redirect::route('Predmet.edit', array('id' => $id))
-			->withInput();
-		}
-
-		$predmet->save();
-		$predmet->cijene()->sync($mjereSyncronizator);
+		
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uređen.');
 		return Redirect::route('Predmet.show', array('id' => $id));
 	}

@@ -18,13 +18,14 @@ $required = array(
 @if(isset($instruktor))
 {{ Form::model($instruktor, array('route' => array('Instruktor.update', $instruktor->id),
 'method' => 'put',
-'style' => 'max-width:330px;padding:15px;margin:auto')) }}
+'class' => 'form row')) }}
 <h2 class="form-heading">Uređivaje instruktora</h2>
 @else
 {{ Form::open(array('route' => 'Instruktor.store',
-'style' => 'max-width:330px;padding:15px;margin:auto'))}}
+'class' => 'form row'))}}
 <h2 class="form-heading">Dodavanje instruktora</h2>
 @endif
+<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 <div class = "form-group">
 {{ Form::label('Ime') }}
 @if(Auth::user()->is_admin)
@@ -74,6 +75,24 @@ $optional) }}
 <div class = "form-group">
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
+</div>
+</div>
+<div class="col-xs-12 col-sm-6 col-md-8 col-lg-9">
+	<h3>Dozvoljeni predmeti</h3>
+	<?php $predmeti = Predmet::orderBy('ime')->get();
+	$allowed = array();
+	if(isset($instruktor))$allowed = $instruktor->predmeti->lists('id');
+	$value = false;?>
+	<div class = "row">
+		@foreach($predmeti as $predmet)
+		<?php if(isset($instruktor))$value = in_array($predmet->id, $allowed);?>
+			<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+				<div class="checkbox">
+					<label>{{ Form::checkbox('allowed[]', $predmet->id, $value) }} {{ $predmet->ime }}</label>
+				</div>
+			</div>
+		@endforeach
+	</div>
 </div>
 {{ Form::close() }}
 @endsection

@@ -25,6 +25,8 @@ class CreateNaplateTable extends Migration {
 			$table->integer('stvarna_mjera')
 			->unsigned()
 			->index();
+			$table->text('napomena')
+			->nullable();
 			$table->timestamps();
 		});
 

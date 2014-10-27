@@ -43,4 +43,14 @@ skriven
 	</tbody></table>
 </div>
 {{ link_to_route('Predmet.edit', 'Uredi', array('id' => $predmet->id), array('class' => 'btn btn-default')) }}
+@if(Auth::user()->is_admin)
+<h3>Predavači</h3>
+<div clas="container">
+	<div class = "row">
+		@foreach($predmet->users as $user)
+			<div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">{{ $user->link() }}</div>
+		@endforeach
+	</div>
+</div>
+@endif
 @endsection

@@ -152,7 +152,7 @@ class InstruktorController extends \BaseController {
 	 */
 	public function show($id, $tjedan = null, $godina = null)
 	{
-		$instruktor =  User::find($id);
+		$instruktor =  User::with('predmeti', 'role')->find($id);
 		if(!$instruktor)
 			return $this->itemNotFound();
 		return View::make('Instruktor.show')

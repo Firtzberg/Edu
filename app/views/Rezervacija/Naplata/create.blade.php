@@ -83,7 +83,10 @@ if($poOsobi < $cijena->pivot->minimalno)
 	</div>
 </div>
 	<p>Ukupno za platiti <strong class = "total_display">{{ $poOsobi*$rezervacija->kolicina*$brojPolaznika }}</strong></p>
-
+	<div class = "form-group">
+		{{ Form::label('Napomena') }}
+		{{ Form::textarea('napomena', null, array('class' => 'form-control', 'rows' => '2', 'style' => 'max-width:400px')) }}
+	</div>
 	<div class = "form-group">
 		{{ Form::submit('Naplati', array(
 		'class' => 'btn btn-lg btn-primary btn-block',

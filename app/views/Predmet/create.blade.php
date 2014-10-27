@@ -73,6 +73,29 @@ $requiredPositive = array(
 		@endif
 	</tbody></table>
 </div>
+<div class="form-group">
 {{ Form::submit('Pohrani', array('class' => 'btn btn-primary')) }}
+</div>
+<div class ="form-group">
+	<h3>Predavači</h3>
+	<div class="container">
+	<div class="row">
+		<?php $users = User::orderBy('name')->get();
+		$allowed = array();
+		if(isset($predmet))$allowed = $predmet->users->lists('id');
+		$value = false;?>
+		@foreach($users as $user)
+			<?php if(isset($predmet))$value = in_array($user->id, $allowed);?>
+			<div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">
+				<div class="checkbox">
+				<label>
+					{{ Form::checkbox('allowed[]', $user->id, $value) }} {{ $user->name }}
+				</label>
+				</div>
+			</div>
+		@endforeach
+	</div>
+</div>
+</div>
 {{ Form::close() }}
 @endsection

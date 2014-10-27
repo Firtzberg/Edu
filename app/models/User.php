@@ -92,6 +92,14 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		});
 	}
 
+	public function role(){
+		return $this->belongsTo('Role', 'role_id');
+	}
+
+	public function predmeti(){
+		return $this->belongsToMany('Predmet', 'predmet_user');
+	}
+
 	public function link(){
 		return link_to_route('Instruktor.show', $this->name, array('id' => $this->id));
 	}
@@ -125,6 +133,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			return 'Odabrana uloga nije pronađena u sustavu.';
 		//kraj provjere postojanja uloge
 
+		//pridruživanje vrijednosti
 		$this->name = $name;
 		$this->role_id = $role_id;
 		if(isset($input['boja']))
@@ -135,7 +144,27 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$this->email = $input['email'];
 		if(isset($input['facebook']))
 			$this->facebook = $input['facebook'];
+		//kraj pridruživanja vrijednosti
+
+		//odabir predmeta
+        if(isset($input['allowed']))
+            $predmet_ids = $input['allowed'];
+        else $predmet_ids = array();
+        if(!$predmet_ids || !is_array($predmet_ids))
+            $predmet_ids = array();
+
+        if(count($predmet_ids) > 0)
+            $predmet_ids = Predmet::select('id')
+            ->whereIn('id', $predmet_ids)
+            ->get()
+            ->lists('id');
+        //kraj odabira predmeta
+
 		$this->save();
+            
+        if(count($predmet_ids) > 0)
+            $this->predmeti()->sync($predmet_ids);
+        else $this->predmeti()->detach();
 	}
 
 }

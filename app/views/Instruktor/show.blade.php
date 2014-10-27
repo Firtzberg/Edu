@@ -1,11 +1,22 @@
 @extends('layouts.master')
 
 @section('title')
-Instruktor {{ $instruktor->name }}
+@if($instruktor->role)
+{{ $instruktor->role->ime }}
+@else
+Djelatnik
+@endif
+ {{ $instruktor->name }}
 @endsection
 
 @section('content')
-<h2>Instruktor {{ $instruktor->name }}</h2>
+<h2>
+@if($instruktor->role)
+{{ $instruktor->role->ime }}
+@else
+Djelatnik
+@endif
+ {{ $instruktor->name }}</h2>
 <dl class="dl-horizontal">
 @if(!empty($instruktor->broj_mobitela))
 <dt>Broj mobitela</dt><dd> {{ $instruktor->broj_mobitela }}</dd>
@@ -27,4 +38,15 @@ Instruktor {{ $instruktor->name }}
 'class' => 'btn btn-warning')) }}
 @endif
 {{ Form::close() }}
+
+@if(Auth::user()->is_admin)
+<div>
+	{{ Form::label('Dozvoljeni predmeti')}}
+	<div class = "row">
+		@foreach($instruktor->predmeti as $predmet)
+			<div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">{{ $predmet->link() }}</div>
+		@endforeach
+	</div>
+</div>
+@endif
 @endsection
