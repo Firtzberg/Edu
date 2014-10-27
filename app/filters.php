@@ -82,7 +82,7 @@ Route::filter('csrf', function()
 Route::filter('admin', function(){
 	if(!Auth::check()||!Auth::user()->is_admin)
 	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupiti zahtjevanom resursu.');
 		return Redirect::to('logout')
 		->with('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
 	}
@@ -93,7 +93,7 @@ Route::filter('myProfile', function($route){
 		$id = $route->getParameter('Instruktor');
 	if(!Auth::check()||!(Auth::user()->is_admin||Auth::id()==$id))
 	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupiti zahtjevanom resursu.');
 		return Redirect::to('logout');
 	}
 });
@@ -104,7 +104,7 @@ Route::filter('myRezervacija', function($route){
 	if(!Auth::check()||!(Auth::user()->is_admin||
 		Auth::id()==Rezervacija::find($id)->instruktor_id))
 	{
-		Session::flash('poruka', 'Nemate pravo pristupiti zahtjevanom resursu.');
+		Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupiti zahtjevanom resursu.');
 		return Redirect::to('logout');
 	}
 });

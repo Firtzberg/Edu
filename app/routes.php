@@ -42,6 +42,8 @@ Route::put('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@s
 Route::delete('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Naplata.destroy'));
 
 Route::group(array('before' => 'admin'), function(){
+Route::get('/Excel', array('uses' => 'ExcelController@index', 'as' => 'Excel.index'));
+Route::post('/Excel/download', array('uses' => 'ExcelController@download', 'as' => 'Excel.download'));
 Route::resource('Role', 'RoleController');
 Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
 Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));

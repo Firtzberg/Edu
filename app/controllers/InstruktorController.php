@@ -35,14 +35,14 @@ class InstruktorController extends \BaseController {
 			return Redirect::route('Instruktor.show', Auth::id());
 		return Redirect::route('signIn')
 		->withInput()
-		->with(self::SUCCESS_MESSAGE_KEY, 'Kriv unos!');
+		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
 	}
 
 	public function logout()
 	{
 		Auth::logout();
-		if(Session::has(self::SUCCESS_MESSAGE_KEY))
-			Session::flash(self::SUCCESS_MESSAGE_KEY, Session::get(self::SUCCESS_MESSAGE_KEY));
+		if(Session::has(self::DANGER_MESSAGE_KEY))
+			Session::flash(self::DANGER_MESSAGE_KEY, Session::get(self::DANGER_MESSAGE_KEY));
 		return Redirect::route('signIn');
 	}
 
@@ -62,13 +62,13 @@ class InstruktorController extends \BaseController {
 			return $this->itemNotFound();
 		if(!(Input::has('oldpass')||Auth::user()->is_admin)||!Input::has('newpass')||!Input::has('rep'))
 			return Redirect::route('Instruktor.changePassword', $id)
-		->with(self::SUCCESS_MESSAGE_KEY, 'Nedovoljan unos!');
+		->with(self::DANGER_MESSAGE_KEY, 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
 		if($newpass != $rep||!(Hash::check($oldpass, $instruktor->lozinka)||Auth::user()->is_admin))
 			return Redirect::route('Instruktor.changePassword', $id)
-		->with(self::SUCCESS_MESSAGE_KEY, 'Kriv unos!');
+		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
 		$instruktor->lozinka = Hash::make($newpass);
 		$instruktor->save();
 		return Redirect::route('Instruktor.show', $id)

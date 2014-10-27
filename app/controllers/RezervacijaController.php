@@ -104,7 +104,7 @@ class RezervacijaController extends \BaseController {
 		$naplata->save();
 		if(count($changes) > 0)
 			$rezervacija->klijenti()->sync($changes);
-		Session::flush(self::SUCCESS_MESSAGE_KEY, 'Uspješno ste naplatili');
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Uspješno ste naplatili');
 		return Redirect::route('Rezervacija.show', $id);
 	}
 

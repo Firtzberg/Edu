@@ -16,7 +16,7 @@ class Role extends Eloquent
      *
      * @var array
      */
-    protected $with = ['permissions'];
+    //protected $with = ['permissions'];
 
     /**
      * The attributes that are mass assignable.
