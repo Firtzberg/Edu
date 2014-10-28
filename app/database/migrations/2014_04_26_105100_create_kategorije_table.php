@@ -17,7 +17,6 @@ class CreateKategorijeTable extends Migration {
 			$table->string('ime');
 			$table->integer('nadkategorija_id')
 			->unsigned();
-			$table->boolean('enabled');
 			$table->timestamps();
 		});
 		Schema::table('kategorije', function(Blueprint $table){

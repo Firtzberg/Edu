@@ -34,13 +34,11 @@ class Kategorija extends Eloquent {
 		$data = array();
 		$kategorije = Kategorija::select('id', 'ime')
 		->where('nadkategorija_id', '=', $this->id)
-		->where('enabled', '=', true)
 		->whereRaw('nadkategorija_id != id')
 		->get()
 		->toArray();
 		$predmeti = Predmet::select('id', 'ime')
 		->where('kategorija_id', '=', $this->id)
-		->where('enabled', '=', true)
 		->get()
 		->toArray();
 		return array(

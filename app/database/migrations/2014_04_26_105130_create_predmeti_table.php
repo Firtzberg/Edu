@@ -17,7 +17,6 @@ class CreatePredmetiTable extends Migration {
 			$table->string('ime');
 			$table->integer('kategorija_id')
 			->unsigned();
-			$table->boolean('enabled');
 			$table->timestamps();
 		});
 		Schema::table('predmeti', function(Blueprint $table)

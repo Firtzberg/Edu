@@ -49,11 +49,6 @@ Route::resource('Klijent', 'KlijentController', array('except' => array('destroy
 Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));
 Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
 Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
-//disable and enable category/subject
-Route::post('/Predmet/{id}/enable', array('as' => 'Predmet.enable', 'uses' => 'PredmetController@enable'));
-Route::post('/Predmet/{id}/disable', array('as' => 'Predmet.disable', 'uses' => 'PredmetController@disable'));
-Route::post('/Kategorija/{id}/enable', array('as' => 'Kategorija.enable', 'uses' => 'KategorijaController@enable'));
-Route::post('/Kategorija/{id}/disable', array('as' => 'Kategorija.disable', 'uses' => 'KategorijaController@disable'));
 });
 
 Route::get('/Kategorija/{id}/Children', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));

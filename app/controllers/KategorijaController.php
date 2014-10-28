@@ -112,38 +112,6 @@ class KategorijaController extends \BaseController {
 		return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
 	}
 
-	/**
-	 * Enable category.
-	 *
-	 * @return Response
-	 */
-	public function enable($id)
-	{
-		$kategorija = Kategorija::find($id);
-		if(!$kategorija)
-			return $this->itemNotFound();
-		$kategorija->enabled = true;
-		$kategorija->save();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je vidljiva.');
-		return Redirect::route('Kategorija.show', array('id' => $id));
-	}
-
-	/**
-	 * Disable category.
-	 *
-	 * @return Response
-	 */
-	public function disable($id)
-	{
-		$kategorija = Kategorija::find($id);
-		if(!$kategorija)
-			return $this->itemNotFound();
-		$kategorija->enabled = false;
-		$kategorija->save();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno skrivena.');
-		return Redirect::route('Kategorija.show', array('id' => $id));
-	}
-
 	public function getChildren($id){
 		$kategorija = Kategorija::find($id);
 		if(!$kategorija)

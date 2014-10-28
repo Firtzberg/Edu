@@ -12,22 +12,6 @@ Kategorija {{ $kategorija->ime }}
 'placeholder' => 'Ime')?>
 {{ $kategorija->getBreadCrumbs() }}
 <h2>{{ $kategorija->ime }}</h2>
-<p>Kategorija je 
-@if($kategorija->enabled)
-vidljiva
-@else
-skrivena
-@endif
-.
-@if($kategorija->enabled)
-{{ Form::open(array('route' => array('Kategorija.disable', 'id' => $kategorija->id))) }}
-{{ Form::submit('Sakrij', array('class' => 'btn btn-default')) }}
-@else
-{{ Form::open(array('route' => array('Kategorija.enable', 'id' => $kategorija->id))) }}
-{{ Form::submit('Omogući', array('class' => 'btn btn-default')) }}
-@endif
-{{ Form::close() }}
-</p>
 <h3>Podkategorje</h3>
 <div id="list-podkategorije" class="container">
 	@if($kategorija->podkategorije->count() < 1)

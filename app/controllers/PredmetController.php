@@ -110,36 +110,4 @@ class PredmetController extends \BaseController {
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uklonjen!');
 		return Redirect::route('Kategorija.show', array('id' => $kategorija_id));
 	}
-
-	/**
-	 * Display root category.
-	 *
-	 * @return Response
-	 */
-	public function enable($id)
-	{
-		$predmet = Predmet::find($id);
-		if(!$predmet)
-			return $this->itemNotFound();
-		$predmet->enabled = true;
-		$predmet->save();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je vidljiv.');
-		return Redirect::route('Predmet.show', array('id' => $id));
-	}
-
-	/**
-	 * Display root category.
-	 *
-	 * @return Response
-	 */
-	public function disable($id)
-	{
-		$predmet = Predmet::find($id);
-		if(!$predmet)
-			return $this->itemNotFound();
-		$predmet->enabled = false;
-		$predmet->save();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno skriven.');
-		return Redirect::route('Predmet.show', array('id' => $id));
-	}
 }
