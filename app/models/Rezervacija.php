@@ -1,5 +1,35 @@
 <?php
 
+/**
+ * Rezervacija
+ *
+ * @property integer $id
+ * @property string $pocetak_rada
+ * @property integer $mjera_id
+ * @property integer $kolicina
+ * @property integer $instruktor_id
+ * @property integer $predmet_id
+ * @property integer $ucionica_id
+ * @property string $napomena
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \User $instruktor
+ * @property-read \Ucionica $ucionica
+ * @property-read \Predmet $predmet
+ * @property-read \Naplata $naplata
+ * @property-read \Mjera $mjera
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Klijent[] $klijenti
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePocetakRada($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereMjeraId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereKolicina($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereInstruktorId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePredmetId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUcionicaId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereNapomena($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereCreatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUpdatedAt($value) 
+ */
 class Rezervacija extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana rezervacija nije pronađena u sustavu.';
 

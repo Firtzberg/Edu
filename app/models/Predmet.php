@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * Predmet
+ *
+ * @property integer $id
+ * @property string $ime
+ * @property integer $kategorija_id
+ * @property boolean $enabled
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Kategorija $kategorija
+ * @property-read \Illuminate\Database\Eloquent\Collection|\User[] $users
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Mjera[] $cijene
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereIme($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereKategorijaId($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereEnabled($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereCreatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereUpdatedAt($value) 
+ */
 class Predmet extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadani predmet nije pronađen u sustavu.';
 

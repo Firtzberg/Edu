@@ -3,6 +3,34 @@
 use Illuminate\Auth\UserInterface;
 use Illuminate\Auth\Reminders\RemindableInterface;
 
+/**
+ * User
+ *
+ * @property-read \Role $role
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Predmet[] $predmeti
+ * @property integer $id
+ * @property string $name
+ * @property string $remember_token
+ * @property boolean $is_admin
+ * @property string $broj_mobitela
+ * @property string $email
+ * @property string $lozinka
+ * @property string $boja
+ * @property integer $role_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @method static \Illuminate\Database\Query\Builder|\User whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereRememberToken($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereIsAdmin($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereBrojMobitela($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereEmail($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereLozinka($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereBoja($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereRoleId($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\User whereUpdatedAt($value)
+ */
 class User extends Eloquent implements UserInterface, RemindableInterface {
 	const NOT_FOUND_MESSAGE = 'Zadani instruktor nije pronađen u sustavu.';
 

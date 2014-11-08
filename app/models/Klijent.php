@@ -1,5 +1,22 @@
 <?php
 
+/**
+ * Klijent
+ *
+ * @property string $broj_mobitela
+ * @property string $ime
+ * @property string $email
+ * @property string $facebook
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\Rezervacija[] $rezervacije
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereBrojMobitela($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereIme($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereEmail($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereFacebook($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereCreatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Klijent whereUpdatedAt($value) 
+ */
 class Klijent extends Eloquent{
 	const NOT_FOUND_MESSAGE = 'Zadani klijent nije pronađen u sustavu.';
 
