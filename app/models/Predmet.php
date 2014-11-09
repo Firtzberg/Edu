@@ -48,8 +48,22 @@ class Predmet extends Eloquent {
 		->withPivot('individualno', 'popust', 'minimalno')
 		->withTimestamps();
 	}
-
+        
         /**
+     * 
+     * @param \Illuminate\Database\Query\Builder $query
+     * @param int $user_id
+     */
+    public function scopeWithUser($query, $user_id) {
+        return $query->whereExists(function($query) use ($user_id) {
+                    $query->select(DB::Raw('1'))
+                            ->from('predmet_user')
+                            ->whereRaw('predmet_user.predmet_id = predmeti.id')
+                            ->where('predmet_user.user_id', '=', $user_id);
+                });
+    }
+
+    /**
          * 
          * @param array $input
          * @return null|string

@@ -57,12 +57,42 @@ class Naplata extends Eloquent {
 		$pravedni = floor($ukupno/30);
 		$za_instruktora = $pravedni*20;
 		$ukupno -= $pravedni * 30;
-		if($ukupno < 10)
-			$za_instruktora += $ukupno;
-		elseif($ukupno < 20)
-			$za_instruktora += 10;
-		else $za_instruktora += $ukupno - 10;
-		return $za_instruktora;
+		if ($ukupno < 10) {
+            $za_instruktora += $ukupno;
+        } elseif ($ukupno < 20) {
+            $za_instruktora += 10;
+        } else {
+            $za_instruktora += $ukupno - 10;
+        }
+        return $za_instruktora;
 	}
+        
+        /**
+         * 
+         * @param int $kolicina Stvarna kolicina za naplatu
+         * @param int $mjera_id stvarna mjera za naplatu
+         * @return string|void
+         */
+        public function setStvarneVrijednosti($kolicina, $mjera_id){
+            if($kolicina && is_int($kolicina)){
+                if($kolicina < 1)
+                {
+                    return 'Količina ne može biti manja od 1.';
+                }
+                $this->stvarna_kolicina = $kolicina;
+            }
+            elseif($this->rezervacija){
+                $this->stvarna_kolicina = $this->rezervacija->kolicina;
+            }
+            if($mjera_id && is_int($mjera_id)){
+                $mjera = Mjera::find($mjera_id);
+                if(!$mjera)
+                {return Mjera::NOT_FOUND_MESSAGE;}
+                $this->stvarna_mjera = $mjera_id;
+            }
+            elseif($this->rezervacija){
+                $this->stvarna_mjera = $this->rezervacija->mjera_id;
+            }
+        }
 
 }

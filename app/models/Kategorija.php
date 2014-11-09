@@ -49,33 +49,99 @@ class Kategorija extends Eloquent {
 		return $this->hasMany('Predmet')
 		->orderBy('ime');
 	}
-
-	public function getEnabledChildren(){
-		$kategorije = Kategorija::select('id', 'ime')
-		->where('nadkategorija_id', '=', $this->id)
-		->whereRaw('nadkategorija_id != id')
-		->get()
-		->toArray();
-		$predmeti = Predmet::select('id', 'ime')
-		->where('kategorija_id', '=', $this->id)
-		->get()
-		->toArray();
-		return array(
-				'kategorije' => $kategorije,
-				'predmeti' => $predmeti
-			);
-	}
-
+        
         /**
+     * 
+     * @param int $instruktor_id
+     * @return boolean
+     */
+    private function hasChildrenFor($instruktor_id) {
+        if (Predmet::select('id', 'ime')
+                        ->where('kategorija_id', '=', $this->id)
+                        ->withUser($instruktor_id)
+                        ->count() > 0) {
+            return true;
+        }
+        $kategorije = Kategorija
+                ::where('nadkategorija_id', '=', $this->id)
+                ->whereRaw('nadkategorija_id != id')
+                ->get();
+        foreach ($kategorije as $kategorija){
+            if ($kategorija->hasChildrenFor($instruktor_id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 
+     * @param int $instruktor_id
+     * @return array Array with 'predmeti' and 'kategorije' keys
+     */
+    public function getChildrenFor($instruktor_id = null) {
+        if (!$instruktor_id) {
+            return array();
+        }
+        $kategorije = Kategorija::select('id', 'ime')
+                ->where('nadkategorija_id', '=', $this->id)
+                ->whereRaw('nadkategorija_id != id')
+                ->get()
+                ->filter(function($kategorija)use($instruktor_id){
+                    return $kategorija->hasChildrenFor($instruktor_id);
+                });
+        $predmeti = Predmet::select('id', 'ime')
+                ->where('kategorija_id', '=', $this->id)
+                ->withUser($instruktor_id)
+                ->get();
+        if(count($kategorije) + count($predmeti) == 1){
+            if(count($predmeti) == 1){
+                return array(
+                    array(
+                        'content'=>array(
+                            'predmeti' => $predmeti->toArray()
+                        ),
+                        'selected' => array(
+                            'type' => 'predmet',
+                            'id' => $predmeti[0]->id
+                        )
+                    )
+                );
+            }
+            return array_merge(array(
+                array(
+                    'content' => array(
+                        'kategorije' => $kategorije->toArray(),
+                    ),
+                    'selected' => array(
+                        'type' => 'kategorija',
+                        'id' => $kategorije[0]->id
+                    )
+                )
+                    ), $kategorije[0]->getChildrenFor($instruktor_id));
+        }
+        return array(
+            array(
+                'content' => array(
+                    'kategorije' => $kategorije->toArray(),
+                    'predmeti' => $predmeti->toArray()
+                )
+            )
+        );
+    }
+
+    /**
          * 
          * @return array
          */
 	public function path(){
 		$nadkategorija = $this->nadkategorija()->first();
-		if($nadkategorija->id == $this->id)
-			$path = array();
-		else $path = $this->nadkategorija->path();
-		$path[] = $this;
+		if ($nadkategorija->id == $this->id) {
+            $path = array();
+        } else {
+            $path = $this->nadkategorija->path();
+        }
+        $path[] = $this;
 		return $path;
 	}
 

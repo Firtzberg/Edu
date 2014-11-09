@@ -209,6 +209,12 @@ class Rezervacija extends Eloquent {
 				if(count($polaznici) < 1)
 					return 'Potreban je barem 1 polaznik.';
 			//kraj provjere broja polaznika
+                        
+                        //provjera duljine napomene
+                            if (strlen($napomena) > 255) {
+                                    return 'Napomena treba biti kraća od 255 znakova. Trenutna ima ' . strlen($napomena) . '.';
+                            }
+                     //kraj porvjere duljine napomene
 		//kraj provjere dozvoljenih vrijednosti podataka koji se ne odnose na relacije
 
 		//provjera postojanja referenciranih unosa
@@ -275,6 +281,11 @@ class Rezervacija extends Eloquent {
 				if($preklapanja > 0)
 					return 'U zadanome vremenu ste već zauzeti. Provjerite raspored.';
 			//kraj provjere zauzetosti instruktora
+                        
+                        //Provjera dozvole predavanja zadanog predmeta
+                                if($instruktor->predmeti()->where('predmeti.id', '=', $predmet_id)->count() < 1)
+					return 'Odabrani instruktor nema dozvolu predavati zadani predmet.';
+                        //Kraj provjere dozvole predavanja zadanog predmeta
 		//kraj ostalih provjera relacija
 
 		//sve provjere su uspješno obavljene

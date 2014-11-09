@@ -8,6 +8,7 @@ var selectManager ={
 	selected: false,
 	subjectInputSelector: 'input[type=hidden][name=predmet_id]',
 	divContainerSelector: 'div#predmet-select',
+        userInputSelector: '[name=instruktor_id]',
 	onChange: function(select){
 		var selectedOption = jQuery(select.options[select.selectedIndex]);
 		var grupa = selectedOption.closest('optgroup').prop('label');
@@ -20,6 +21,9 @@ var selectManager ={
 		jQuery(selectManager.subjectInputSelector).val(subjectId);
 		selectManager.selected = true;
 	},
+        getUserId: function(){
+            return jQuery(selectManager.userInputSelector).val();
+        },
 	onCategoryChosen: function (select, categoryId) {
 		selectManager.selected = false;
 		jQuery(selectManager.subjectInputSelector).val('');
@@ -28,9 +32,11 @@ var selectManager ={
 		divElement.className = 'sub';
 		var sibling = jQuery(divElement);
 		select.parent().append(sibling);
+                var userId = selectManager.getUserId();
 
 		jQuery.ajax({
-			url: selectManager.urlPrefix + categoryId + selectManager.urlSufix,
+			url: selectManager.urlPrefix + userId
+                                + selectManager.urlSufix + '/' + categoryId,
 			dataType: 'json',
 			type: 'get',
 			beforeSend: function(){
@@ -40,6 +46,89 @@ var selectManager ={
 				sibling.html(selectManager.errorMessage);
 			},
 			success: function(data){
+                            var divElement = sibling.parent();
+                            var level;
+                            var dropdown;
+                            var predmetIdInput = jQuery(selectManager.subjectInputSelector);
+                            sibling.remove();
+                            for(var key in data){
+                                level = data[key];
+                                dropdown = selectManager.dataToDropDown(level.content);
+
+                                if(typeof level.selected != 'undefined')
+                                {
+                                        if(level.selected.type == 'kategorija')
+                                                dropdown.find('optgroup[label='+selectManager.categoryLabel+'] option[value='+
+                                                        level.selected.id+']').attr('selected', 'selected');
+                                        else{
+                                                dropdown.find('optgroup[label='+selectManager.subjectLabel+'] option[value='+
+                                                        level.selected.id+']').attr('selected', 'selected');
+                                                predmetIdInput.val(level.selected.id);
+                                                selectManager.selected = true;
+                                        }
+                                }
+                                nestedDiv = document.createElement('div');
+                                nestedDiv.className = 'sub';
+                                nestedDiv = jQuery(nestedDiv);
+                                nestedDiv.append(dropdown);
+
+                                divElement.append(nestedDiv);
+                                divElement = nestedDiv;
+                            }
+				sibling.html(selectManager.dataToDropDown(data));
+			}
+		});
+	},
+	onUserChosen: function (select, userId) {
+		selectManager.selected = false;
+		jQuery(selectManager.subjectInputSelector).val('');
+		jQuery(selectManager.divContainerSelector).children('div.sub').remove();
+		divElement = document.createElement('div');
+		divElement.className = 'sub';
+		var sibling = jQuery(divElement);
+		jQuery(selectManager.divContainerSelector).append(sibling);
+
+		jQuery.ajax({
+			url: selectManager.urlPrefix + userId
+                                + selectManager.urlSufix,
+			dataType: 'json',
+			type: 'get',
+			beforeSend: function(){
+				sibling.html(selectManager.waitMessage);
+			},
+			error: function(){
+				sibling.html(selectManager.errorMessage);
+			},
+			success: function(data){
+                            var divElement = sibling.parent();
+                            var level;
+                            var dropdown;
+                            var predmetIdInput = jQuery(selectManager.subjectInputSelector);
+                            sibling.remove();
+                            for(var key in data){
+                                level = data[key];
+                                dropdown = selectManager.dataToDropDown(level.content);
+
+                                if(typeof level.selected != 'undefined')
+                                {
+                                        if(level.selected.type == 'kategorija')
+                                                dropdown.find('optgroup[label='+selectManager.categoryLabel+'] option[value='+
+                                                        level.selected.id+']').attr('selected', 'selected');
+                                        else{
+                                                dropdown.find('optgroup[label='+selectManager.subjectLabel+'] option[value='+
+                                                        level.selected.id+']').attr('selected', 'selected');
+                                                predmetIdInput.val(level.selected.id);
+                                                selectManager.selected = true;
+                                        }
+                                }
+                                nestedDiv = document.createElement('div');
+                                nestedDiv.className = 'sub';
+                                nestedDiv = jQuery(nestedDiv);
+                                nestedDiv.append(dropdown);
+
+                                divElement.append(nestedDiv);
+                                divElement = nestedDiv;
+                            }
 				sibling.html(selectManager.dataToDropDown(data));
 			}
 		});
@@ -132,5 +221,10 @@ var selectManager ={
 			divElement.append(nestedDiv);
 			divElement = nestedDiv;
 		}
+                jQuery(function(){
+                    jQuery(selectManager.userInputSelector).change(function(){
+                        selectManager.onUserChosen(this, jQuery(this).val());
+                    });
+                });
 	}
 };

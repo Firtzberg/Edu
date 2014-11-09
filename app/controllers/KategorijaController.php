@@ -1,12 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
 class KategorijaController extends \ResourceController {
     
     public function __construct() {
@@ -77,17 +70,16 @@ class KategorijaController extends \ResourceController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function show($id)
-	{
-		$kategorija = Kategorija::with('predmeti', 'podkategorije')->find($id);
-		if(!$kategorija)
-			return $this->itemNotFound();
-		return View::make('Kategorija.show')
-		->with('kategorija', $kategorija);
-	}
+    public function show($id) {
+        $kategorija = Kategorija::with('predmeti', 'podkategorije')->find($id);
+        if (!$kategorija) {
+            return $this->itemNotFound();
+        }
+        return View::make('Kategorija.show')
+                        ->with('kategorija', $kategorija);
+    }
 
-
-	/**
+    /**
 	 * Update the specified resource in storage.
 	 *
 	 * @param  int  $id
@@ -127,11 +119,22 @@ class KategorijaController extends \ResourceController {
 		return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
 	}
 
-	public function getChildren($id){
-		$kategorija = Kategorija::find($id);
-		if(!$kategorija)
-			return $this->itemNotFound();
-		return Response::json($kategorija->getEnabledChildren());
-	}
+        /**
+         * 
+         * @param int $id
+         * @return Response
+         */
+	public function getChildren($user_id, $id = null) {
+        if ($id) {
+            $kategorija = Kategorija::find($id);
+        } else {
+            $kategorija = Kategorija::whereRaw('id = nadkategorija_id')
+                    ->first();
+        }
+        if (!$kategorija) {
+            return $this->itemNotFound();
+        }
+        return Response::json($kategorija->getChildrenFor($user_id));
+    }
 
 }

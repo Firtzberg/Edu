@@ -16,6 +16,7 @@ Route::pattern('tjedan', '[0-9]+');
 Route::pattern('godina', '[0-9]+');
 Route::pattern('page', '[0-9]+');
 Route::pattern('kategorija_id', '[0-9]+');
+Route::pattern('user_id', '[0-9]+');
 Route::when('*', 'csrf', array('post', 'put', 'delete', 'update'));
 
 Route::get('/signin', array('as' => 'signIn', 'uses' => 'InstruktorController@signIn'));
@@ -51,7 +52,7 @@ Route::resource('Predmet', 'PredmetController', array('except' => array('index',
 Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
 });
 
-Route::get('/Kategorija/{id}/Children', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
+Route::get('/Kategorija/{user_id}/Children/{id?}', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
 
 Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
 Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));
