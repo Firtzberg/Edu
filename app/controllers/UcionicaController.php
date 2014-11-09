@@ -1,11 +1,20 @@
 <?php
 
-class UcionicaController extends \BaseController {
+namespace App\Controller;
 
-	public function __construct()
-    {
-    	$this->beforeFilter('admin', array('only' =>
-    		array('create', 'store', 'edit', 'update', 'destroy')));
+use App\Model\Permission;
+use App\Model\Ucionica;
+use App\Model\Rezervacija;
+use Redirect;
+use Session;
+
+class UcionicaController extends App\Controller\ResourceController {
+    
+    public function __construct() {
+        parent::__construct();
+        
+        $this->requireManagePermission(Permission::PERMISSION_MANAGE_UCIONICA);
+        $this->requireDeletePermission(Permission::PERMISSION_REMOVE_UCIONICA);
     }
 
     private function itemNotFound(){

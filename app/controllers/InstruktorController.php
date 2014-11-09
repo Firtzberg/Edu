@@ -1,21 +1,40 @@
 <?php
+namespace App\Controller;
 
-class InstruktorController extends \BaseController {
+use App\Model\Permission;
+use App\Model\User;
+use Auth;
+use Redirect;
+use Session;
 
-	public function __construct()
-    {
-    	$this->beforeFilter('admin', array('only' =>
-    		array('create', 'store', 'destroy')));
-    	$this->beforeFilter('myProfile', array('only' =>
-    		array('changePassword', 'postChangePassword', 'edit', 'update')));
+class InstruktorController extends App\Controller\ResourceController {
+    
+    public function __construct() {
+        parent::__construct();
+
+        $this->requireDeletePermission(Permission::PERMISSION_REMOVE_USER);
+        $this->beforeFilter(function() {
+            if (!Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER)) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('create', 'store')));
+
+        $this->beforeFilter('myProfile', array('only' =>
+            array('changePassword', 'postChangePassword', 'edit', 'update')));
+
+        $this->beforeFilter(function($route) {
+            if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) || Auth::id() == $route->getParameter('id'))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('changePassword', 'postChangePassword')));
     }
 
-    private function itemNotFound(){
-		Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
-  		return Redirect::route('Instruktor.index');
+    private function itemNotFound() {
+        Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
+        return Redirect::route('Instruktor.index');
     }
 
-	public function signIn()
+    public function signIn()
 	{
 		if(Auth::check())
 			return Redirect::route('Instruktor.show', Auth::id());

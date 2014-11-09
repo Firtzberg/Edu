@@ -16,6 +16,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Role whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Role whereUpdatedAt($value) 
  */
+namespace App\Model;
 class Role extends Eloquent
 {
 
@@ -75,7 +76,7 @@ class Role extends Eloquent
             : $perms;
 
         // Roles permissions list
-        $permissions = $this->permissions->lists('name');
+        $permissions = $this->permissions->lists('ime');
 
         // Check for permission
         foreach ($perms as $perm)

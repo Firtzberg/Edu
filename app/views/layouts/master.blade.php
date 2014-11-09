@@ -21,13 +21,22 @@
 			</button>
 			<div class = "collapse navbar-collapse navHeaderCollapse">
 				<ul class = "nav navbar-nav navbar-right">
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
+					@endif
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
 					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
-					@if(Auth::user()->is_admin)
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
+					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_ROLE))
 					<li>{{ link_to_route('Role.index', 'Uloge') }}</li>
+					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
 					<li>{{ link_to_route('Klijent.index', 'Klijenti') }}</li>
+					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_DOWNLOAD_DATA))
+					<li>{{ link_to_route('Excel.index', 'Preuzimanje') }}</li>
 					@endif
 					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>
 					<li>{{ link_to_route('logout', 'Odjava') }}</li>

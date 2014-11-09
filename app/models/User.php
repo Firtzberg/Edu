@@ -31,6 +31,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @method static \Illuminate\Database\Query\Builder|\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\User whereUpdatedAt($value)
  */
+namespace App\Model;
 class User extends Eloquent implements UserInterface, RemindableInterface {
 	const NOT_FOUND_MESSAGE = 'Zadani instruktor nije pronađen u sustavu.';
 

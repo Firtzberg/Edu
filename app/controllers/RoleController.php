@@ -1,8 +1,22 @@
 <?php
 
-class RoleController extends \BaseController {
+namespace App\Controller;
 
+use App\Model\Permission;
+use App\Model\Role;
+use Redirect;
+use Session;
 
+class RoleController extends App\Controller\ResourceController {
+    
+    public function __construct() {
+        parent::__construct();
+        
+        $this->requireManagePermission(Permission::PERMISSION_MANAGE_ROLE);
+        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_ROLE);
+        $this->requireDeletePermission(Permission::PERMISSION_REMOVE_ROLE);
+    }
+    
     private function itemNotFound(){
 		Session::flash(self::DANGER_MESSAGE_KEY, Role::NOT_FOUND_MESSAGE);
   		return Redirect::route('Role.index');

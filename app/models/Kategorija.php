@@ -19,6 +19,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Kategorija whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Kategorija whereUpdatedAt($value) 
  */
+namespace App\Model;
 class Kategorija extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana kategorija nije pronađena u sustavu.';
 

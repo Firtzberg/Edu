@@ -1,6 +1,21 @@
 <?php
 
-class PredmetController extends \BaseController {
+namespace App\Controller;
+
+use App\Model\Permission;
+use App\Model\Predmet;
+use Redirect;
+use Session;
+
+class PredmetController extends App\Controller\ResourceController {
+    
+    public function __construct() {
+        parent::__construct();
+        
+        $this->requireManagePermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA);
+        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA);
+        $this->requireDeletePermission(Permission::PERMISSION_REMOVE_PREDMET_KATEGORIJA);
+    }
 
 	private function itemNotFound(){
 		Session::flash(self::DANGER_MESSAGE_KEY, Predmet::NOT_FOUND_MESSAGE);

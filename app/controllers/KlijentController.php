@@ -1,6 +1,19 @@
 <?php
 
-class KlijentController extends \BaseController {
+namespace App\Controller;
+
+use App\Model\Permission;
+use App\Model\Klijent;
+use Auth;
+use Redirect;
+use Session;
+
+class KlijentController extends App\Controller\ResourceController {
+    public function __construct() {
+        parent::__construct();
+        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_KLIJENT);
+        $this->requireManagePermission(Permission::PERMISSION_MANAGE_KLIJENT);
+    }
 
 	private function itemNotFound(){
 		Session::flash(self::DANGER_MESSAGE_KEY, Klijent::NOT_FOUND_MESSAGE);
@@ -20,16 +33,16 @@ class KlijentController extends \BaseController {
 
 	public function _list($page = 1, $searchString = null){
 		if(!empty($searchString)){
-			$ucionice = Klijent::where('ime', 'like', '%'.$searchString.'%')
+			$klijenti = Klijent::where('ime', 'like', '%'.$searchString.'%')
 			->orderBy('ime');
 		}
 		else
-			$ucionice = Klijent::orderBy('ime');
+			$klijenti = Klijent::orderBy('ime');
 		if($page != 1)
 			Paginator::setCurrentPage($page);
-		$ucionice = $ucionice->paginate(10);
+		$klijenti = $klijenti->paginate(10);
 		$v = View::make('Klijent.list')
-		->with('klijenti', $ucionice);
+		->with('klijenti', $klijenti);
 		if(Request::ajax())
 			return $v->renderSections()['list'];
 		return $v;
@@ -117,9 +130,6 @@ class KlijentController extends \BaseController {
 			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Klijent je uspješno dodan.');
 	  		return Redirect::route('Klijent.show', $klijent->broj_mobitela);
 	  	}
-	  	return Redirect::route('Klijent.create')
-	  	->withInput()
-	  	->withErrors($k->errors());
 	}
 
 

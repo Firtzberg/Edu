@@ -77,6 +77,7 @@ $optional) }}
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>
 </div>
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 <div class="col-xs-12 col-sm-6 col-md-8 col-lg-9">
 	<h3>Dozvoljeni predmeti</h3>
 	<?php $predmeti = Predmet::orderBy('ime')->get();
@@ -94,5 +95,6 @@ $optional) }}
 		@endforeach
 	</div>
 </div>
+@endif
 {{ Form::close() }}
 @endsection

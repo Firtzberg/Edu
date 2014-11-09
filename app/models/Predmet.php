@@ -19,6 +19,8 @@
  * @method static \Illuminate\Database\Query\Builder|\Predmet whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Predmet whereUpdatedAt($value) 
  */
+namespace App\Model;
+
 class Predmet extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadani predmet nije pronađen u sustavu.';
 

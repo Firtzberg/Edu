@@ -1,6 +1,20 @@
 <?php
 
-class ExcelController extends \BaseController {
+namespace App\Controller;
+
+use App\Model\Permission;
+use App\Model\User;
+use App\Model\Ucionica;
+use App\Model\Kategorija;
+use App\Model\Predmet;
+use App\Model\Rezervacija;
+use App\Model\Role;
+use App\Model\Mjera;
+use Auth;
+use Redirect;
+use Excel;
+
+class ExcelController extends App\Controller\BaseController {
 
 	const SHEET_NAME_USERS = 'Djelatnici';
 	const SHEET_NAME_ROLES = 'Uloge';
@@ -13,8 +27,16 @@ class ExcelController extends \BaseController {
 	const SHEET_NAME_NAPLATE = 'Naplate';
 	const SHEET_NAME_KLIJENTI = 'Klijenti';
 	const SHEET_NAME_KLIJENT_REZERVACIJA = 'KlijentRezervacija';
+        
+    public function __construct() {
+        $this->beforeFilter(function() {
+            if (!Auth::user()->hasPermission(Permission::PERMISSION_DOWNLOAD_DATA)) {
+                return Redirect::to('logout');
+            }
+        });
+    }
 
-	/**
+    /**
 	 * Display a listing of the resource.
 	 *
 	 * @return Response
@@ -24,6 +46,14 @@ class ExcelController extends \BaseController {
 		return View::make('Excel.index');
 	}
 
+        /**
+         * 
+         * @param string $sheet Name of referenced sheet
+         * @param int $totalCount Number of rows in sheet (without heading)
+         * @param string $cellName Name of cell to reference
+         * @param string $displayColumn Name of cell for hiperlink name
+         * @return string
+         */
 	public static function getHyperlink($sheet, $totalCount, $cellName, $displayColumn = 'B'){
 		return '=INDEX('.$sheet.'!$'.$displayColumn.'$2:$'.$displayColumn.'$'.($totalCount+1).
 				',MATCH('.$cellName.','.$sheet.'!$A$2:$A$'.($totalCount+1).'))';

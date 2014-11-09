@@ -1,14 +1,51 @@
 <?php
 
-class RezervacijaController extends \BaseController {
+namespace App\Controller;
 
-	public function __construct()
-    {
-    	$this->beforeFilter('myRezervacija', array('except' =>
-    		array('create', 'store')));
+use App\Model\Permission;
+use App\Model\Rezervacija;
+use App\Model\Naplata;
+use Auth;
+use Redirect;
+use Session;
+
+class RezervacijaController extends App\Controller\ResourceController {
+
+	public function __construct() {
+        parent::__construct();
+        
+        $this->beforeFilter(function(){
+            if (!(Auth::check() && Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_NALATA))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('destroy_naplata')));
+        
+        $this->beforeFilter(function() {
+            if (!(Auth::check() && (
+                    Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) ||
+                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('create', 'store')));
+        
+        $this->beforeFilter(function($route) {
+            $id = $route->getParameter('id');
+            $rezervacija = Rezervacija::find($id);
+            if (!(Auth::check() && (
+                    (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
+                    $rezervacija->instruktor_id == Auth::id()) ||
+                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('copy',
+            'create_naplata', 'store_napata',
+            'edit', 'update', 'destroy')));
+        
+        $this->beforeFilter('myRezervacija', array('except' =>
+            array('create', 'store')));
     }
 
-	private function itemNotFound(){
+    private function itemNotFound(){
 		Session::flash(self::DANGER_MESSAGE_KEY, Rezervacija::NOT_FOUND_MESSAGE);
 		return Redirect::route('Instruktor.show', Auth::id());
 	}
@@ -259,18 +296,19 @@ class RezervacijaController extends \BaseController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function destroy($id)
-	{
-		$rezervacija = Rezervacija::find($id);
-		if(!$rezervacija)
-			return $this->itemNotFound();
-		if(strtotime($rezervacija->pocetak_rada) < time() && !Auth::user()->is_admin) {
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Samo je administratoru dozvoljeno ukloniti započetu rezervaciju.');
-			return Redirect::route('Rezervacija.show', $id);
-		}
-		$rezervacija->delete();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
-		return Redirect::route('Instruktor.show', Auth::id());
-	}
+	public function destroy($id) {
+        $rezervacija = Rezervacija::find($id);
+        if (!$rezervacija) {
+            return $this->itemNotFound();
+        }
+        if (strtotime($rezervacija->pocetak_rada) < time() &&
+                !Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_STARTED_REZERVACIJA)) {
+            Session::flash(self::DANGER_MESSAGE_KEY, 'Morate imati odgovarajuću dozvolu za uklonjanje započete rezervacije.');
+            return Redirect::route('Rezervacija.show', $id);
+        }
+        $rezervacija->delete();
+        Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
+        return Redirect::route('Instruktor.show', Auth::id());
+    }
 
 }

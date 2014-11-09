@@ -12,7 +12,7 @@ Djelatnik
 @section('content')
 <h2>
 @if($instruktor->role)
-{{ $instruktor->role->ime }}
+{{ $instruktor->role->link() }}
 @else
 Djelatnik
 @endif
@@ -39,7 +39,6 @@ Djelatnik
 @endif
 {{ Form::close() }}
 
-@if(Auth::user()->is_admin)
 @if(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))
 <div>
 	{{ Form::label('Dozvoljeni predmeti')}}
@@ -49,6 +48,5 @@ Djelatnik
 		@endforeach
 	</div>
 </div>
-@endif
 @endif
 @endsection
