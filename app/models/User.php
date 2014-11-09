@@ -31,7 +31,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @method static \Illuminate\Database\Query\Builder|\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\User whereUpdatedAt($value)
  */
-namespace App\Model;
+
 class User extends Eloquent implements UserInterface, RemindableInterface {
 	const NOT_FOUND_MESSAGE = 'Zadani instruktor nije pronađen u sustavu.';
 
@@ -138,6 +138,23 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
         
         /**
+         * Select users which have the required permission
+         * @param \Illuminate\Database\Query\Builder $query
+         * @param string $permission Permission to check
+         */
+        public function scopeWithPermission($query, $permission) {
+        $query->whereExists(function($query) use ($permission) {
+            $query->select(DB::Raw('1'))
+                    ->from('permission_role')
+                    ->whereRaw('permission_role.role_id = users.role_id')
+                    ->where('permission_role.permission_id', '=', function($query) use ($permission) {
+                        $query->select('id')->from('permissions')
+                        ->where('ime', '=', $permission);
+                    });
+        });
+    }
+
+    /**
          * 
          * @param string|array $permission
          * @return boolean

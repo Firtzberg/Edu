@@ -16,7 +16,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Role whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Role whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Role extends Eloquent
 {
 

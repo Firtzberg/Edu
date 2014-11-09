@@ -1,5 +1,16 @@
 @section('predmet-select')
 {{ HTML::script('js/Kategorija/predmetSelector.js') }}
+@if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
+<div class = 'form-group'>
+    {{ Form::label('Odaberite predavača...') }}
+    {{ Form::select('instruktor_id',
+                User::withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
+                ->get()->lists('name', 'id'),
+                null,
+                array('class' => 'form-control',
+        'required' => 'required')) }}
+</div>
+@endif
 <div id="predmet-select" class = 'form-group'>
 	{{ Form::label('Odaberite predmet...') }}
 	<script type="text/javascript">

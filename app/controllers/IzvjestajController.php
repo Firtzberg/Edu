@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Rezervacija;
-use App\Model\User;
-use Auth;
-use Redirect;
-use Session;
 
-class IzvjestajController extends App\Controller\BaseController {
+
+
+
+
+
+
+
+class IzvjestajController extends \BaseController {
 
     public function __construct() {
         $this->beforeFilter(function() {

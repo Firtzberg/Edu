@@ -30,7 +30,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Rezervacija extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana rezervacija nije pronađena u sustavu.';
 

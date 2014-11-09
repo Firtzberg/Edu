@@ -15,7 +15,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Permission whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Permission whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Permission extends Eloquent
 {
     const PERMISSION_MANAGE_UCIONICA = 'Upravljanje učionicama';

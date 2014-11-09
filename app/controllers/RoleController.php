@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Role;
-use Redirect;
-use Session;
 
-class RoleController extends App\Controller\ResourceController {
+
+
+
+
+
+class RoleController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();

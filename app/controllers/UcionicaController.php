@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Ucionica;
-use App\Model\Rezervacija;
-use Redirect;
-use Session;
 
-class UcionicaController extends App\Controller\ResourceController {
+
+
+
+
+
+
+class UcionicaController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();

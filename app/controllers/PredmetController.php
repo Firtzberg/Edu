@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Predmet;
-use Redirect;
-use Session;
 
-class PredmetController extends App\Controller\ResourceController {
+
+
+
+
+
+class PredmetController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();

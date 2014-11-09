@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Kategorija;
-use Redirect;
-use Session;
 
-class KategorijaController extends App\Controller\ResourceController {
+
+
+
+
+
+class KategorijaController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();

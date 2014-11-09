@@ -17,7 +17,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Klijent whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Klijent whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Klijent extends Eloquent{
 	const NOT_FOUND_MESSAGE = 'Zadani klijent nije pronađen u sustavu.';
 

@@ -12,7 +12,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Mjera whereZnacenje($value) 
  * @method static \Illuminate\Database\Query\Builder|\Mjera whereTrajanje($value) 
  */
-namespace App\Model;
+
 class Mjera extends Eloquent{
 	const NOT_FOUND_MESSAGE = 'Zadana mjera nije pronađena u sustavu.';
 

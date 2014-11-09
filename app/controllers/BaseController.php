@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+
 class BaseController extends Controller {
 
 	const DANGER_MESSAGE_KEY = 'greska';

@@ -1,11 +1,6 @@
 <?php
 
-namespace App\Controller;
-
-use Auth;
-use Redirect;
-
-class ResourceController extends App\Controller\BaseController {
+class ResourceController extends \BaseController {
 
     public function __construct() {
         $this->beforeFilter(function() {

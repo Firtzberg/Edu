@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Klijent;
-use Auth;
-use Redirect;
-use Session;
 
-class KlijentController extends App\Controller\ResourceController {
+
+
+
+
+
+
+class KlijentController extends \ResourceController {
     public function __construct() {
         parent::__construct();
         $this->requireWatchPermission(Permission::PERMISSION_MANAGE_KLIJENT);

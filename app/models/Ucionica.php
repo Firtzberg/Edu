@@ -21,7 +21,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Ucionica whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Ucionica whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Ucionica extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana učionica nije pronađena u sustavu.';
 

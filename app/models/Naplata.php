@@ -24,7 +24,7 @@
  * @method static \Illuminate\Database\Query\Builder|\Naplata whereCreatedAt($value) 
  * @method static \Illuminate\Database\Query\Builder|\Naplata whereUpdatedAt($value) 
  */
-namespace App\Model;
+
 class Naplata extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana naplata nije pronađena u sustavu.';
 

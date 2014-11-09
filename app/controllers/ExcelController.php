@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\User;
-use App\Model\Ucionica;
-use App\Model\Kategorija;
-use App\Model\Predmet;
-use App\Model\Rezervacija;
-use App\Model\Role;
-use App\Model\Mjera;
-use Auth;
-use Redirect;
-use Excel;
 
-class ExcelController extends App\Controller\BaseController {
+
+
+
+
+
+
+
+
+
+
+
+
+class ExcelController extends \BaseController {
 
 	const SHEET_NAME_USERS = 'Djelatnici';
 	const SHEET_NAME_ROLES = 'Uloge';

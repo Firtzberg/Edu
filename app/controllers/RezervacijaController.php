@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\Rezervacija;
-use App\Model\Naplata;
-use Auth;
-use Redirect;
-use Session;
 
-class RezervacijaController extends App\Controller\ResourceController {
+
+
+
+
+
+
+
+class RezervacijaController extends \ResourceController {
 
 	public function __construct() {
         parent::__construct();

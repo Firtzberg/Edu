@@ -1,13 +1,13 @@
 <?php
-namespace App\Controller;
 
-use App\Model\Permission;
-use App\Model\User;
-use Auth;
-use Redirect;
-use Session;
 
-class InstruktorController extends App\Controller\ResourceController {
+
+
+
+
+
+
+class InstruktorController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();
