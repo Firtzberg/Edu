@@ -40,6 +40,7 @@ Djelatnik
 {{ Form::close() }}
 
 @if(Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))
 <div>
 	{{ Form::label('Dozvoljeni predmeti')}}
 	<div class = "row">
@@ -48,5 +49,6 @@ Djelatnik
 		@endforeach
 	</div>
 </div>
+@endif
 @endif
 @endsection

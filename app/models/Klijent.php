@@ -41,6 +41,10 @@ class Klijent extends Eloquent{
     	->withPivot('missed');
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getReadableBrojMobitela(){
     	$broj_mobitela = $this->broj_mobitela;
 		if(substr($broj_mobitela, 0, 5) == '00385')
@@ -53,6 +57,11 @@ class Klijent extends Eloquent{
 		return $broj_mobitela;
     }
 
+    /**
+     * 
+     * @param string $broj_mobitela
+     * @return stirng
+     */
     public function getStorableBrojMobitela($broj_mobitela){
     	if(strlen($broj_mobitela) > 0 && $broj_mobitela[0] == '+')
     		$broj_mobitela = '00'.substr($broj_mobitela, 1);
@@ -66,7 +75,14 @@ class Klijent extends Eloquent{
 		return $broj_mobitela;
     }
 
+    /**
+     * 
+     * @return string
+     */
 	public function link(){
-		return link_to_route('Klijent.show', $this->ime, array('id' => $this->broj_mobitela));
+            if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT)) {
+            return link_to_route('Klijent.show', $this->ime, array('id' => $this->broj_mobitela));
+        }
+        return $this->ime;
 	}
 }

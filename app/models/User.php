@@ -128,10 +128,28 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Predmet', 'predmet_user');
 	}
 
+        /**
+         * 
+         * @return string
+         */
 	public function link(){
 		return link_to_route('Instruktor.show', $this->name, array('id' => $this->id));
 	}
+        
+        /**
+         * 
+         * @param string|array $permission
+         * @return boolean
+         */
+        public function hasPermission($permission){
+            return $this->role->has($permission);
+        }
 
+        /**
+         * 
+         * @param array $input
+         * @return null|string
+         */
 	public function getErrorOrSync($input){
 		if(!is_array($input))
 			return "Wrong input";

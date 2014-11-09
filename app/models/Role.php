@@ -87,10 +87,22 @@ class Role extends Eloquent
         return true;
     }
 
-    public function link(){
-        return link_to_route('Role.show', $this->ime, array('id' => $this->id));
+    /**
+     * 
+     * @return stirng
+     */
+    public function link() {
+        if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_ROLE)) {
+            return link_to_route('Role.show', $this->ime, array('id' => $this->id));
+        }
+        return $this->ime;
     }
 
+    /**
+     * 
+     * @param array $input
+     * @return string|null
+     */
     public function getErrorOrSync($input){
         if(!is_array($input))
             return "Wrong input";

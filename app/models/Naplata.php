@@ -47,6 +47,11 @@ class Naplata extends Eloquent {
 		return $this->belongsTo('Mjera', 'stvarna_mjera');
 	}
 
+        /**
+         * 
+         * @param int $ukupno
+         * @return int|float
+         */
 	public function getSatnicaZaInstruktora($ukupno){
 		$pravedni = floor($ukupno/30);
 		$za_instruktora = $pravedni*20;

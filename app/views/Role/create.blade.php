@@ -18,13 +18,15 @@ $required = array(
 @if(isset($role))
 {{ Form::model($role, array('route' => array('Role.update', $role->id),
 'method' => 'put',
-'style' => 'max-width:330px;padding:15px;margin:auto')) }}
-<h2 class="form-heading">Uređivaje uloge</h2>
+'class' => 'form')) }}
+<h2 class="form-heading">Uređivanje uloge</h2>
 @else
 {{ Form::open(array('route' => 'Role.store',
-'style' => 'max-width:330px;padding:15px;margin:auto'))}}
+'class' => 'form'))}}
 <h2 class="form-heading">Dodavanje uloge</h2>
 @endif
+<div class="row">
+    <div class="col-xs-12 col-sm-6">
 <div class = "form-group">
 {{ Form::label('Ime') }}
 {{ Form::text('ime', null,
@@ -39,6 +41,8 @@ array(
 {{ Form::textarea('opis', null,
 $optional) }}
 </div>
+</div>
+<div class="col-xs-12 col-sm-6">
 <div class = "form-group">
 	{{ Form::label('Dozvole') }}
 	<?php $permissions = Permission::all();
@@ -49,12 +53,15 @@ $optional) }}
 	<?php if(isset($role))$value = in_array($permission->id, $allowed);?>
 	<div class = "checkbox">
 		<label>
-			{{ Form::checkbox('allowed[]', $permission->id, $value) }} {{ $permission->ime }}
-		</label>
+                    {{ Form::checkbox('allowed[]', $permission->id, $value) }} <strong>{{ $permission->ime }}</strong>
+                </label><br>
+                {{ $permission->opis }}
 	</div>
 	@endforeach
 </div>
-<div class = "form-group">
+</div>
+</div>
+    <div class = "form-group" style="max-width: 330px; margin: auto">
 {{ Form::submit('Pohrani', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 </div>

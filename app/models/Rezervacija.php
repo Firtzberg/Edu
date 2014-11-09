@@ -80,13 +80,28 @@ class Rezervacija extends Eloquent {
 		->withPivot('missed');
 	}
 
-	public function link(){
-		$ime = 'Uklonjen predmet';
-		if($this->predmet)
-			$ime = $this->predmet->ime;
-		return link_to_route('Rezervacija.show', $ime, array('id' => $this->id));
-	}
+        /**
+     * 
+     * @return string
+     */
+    public function link() {
+        $ime = 'Uklonjen predmet';
+        if ($this->predmet) {
+            $ime = $this->predmet->ime;
+        }
+        if (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)||
+                (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
+                && $this->instruktor_id == Auth::id())) {
+            return link_to_route('Rezervacija.show', $ime, array('id' => $this->id));
+        }
+        return $ime;
+    }
 
+    /**
+         * 
+         * @param array $input
+         * @return string|null
+         */
 	public function getErrorOrSync($input){
 		if(!is_array($input))
 			return 'Wrong Input';

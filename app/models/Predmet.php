@@ -47,6 +47,11 @@ class Predmet extends Eloquent {
 		->withTimestamps();
 	}
 
+        /**
+         * 
+         * @param array $input
+         * @return null|string
+         */
 	public function getErrorOrSync($input){
 		$ime = $this->ime;
 		if(isset($input['ime']))
@@ -145,7 +150,14 @@ class Predmet extends Eloquent {
 		return $syncArray;
 	}
 
+        /**
+         * 
+         * @return string
+         */
 	public function link(){
-		return link_to_route('Predmet.show', $this->ime, array('id' => $this->id));
+            if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA)) {
+            return link_to_route('Predmet.show', $this->ime, array('id' => $this->id));
+        }
+        return $this->ime;
 	}
 }

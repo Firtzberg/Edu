@@ -80,7 +80,15 @@ $requiredPositive = array(
 	<h3>Predavači</h3>
 	<div class="container">
 	<div class="row">
-		<?php $users = User::orderBy('name')->get();
+                <?php $users = User::whereExists(function($query){
+                    $query->select(DB::Raw('1'))
+                            ->from('permission_role')
+                            ->whereRaw('permission_role.role_id = users.role_id')
+                            ->where('permission_role.permission_id', '=', function($query){
+                            $query->select('id')->from('permissions')
+                                    ->where('ime', '=', Permission::PERMISSION_OWN_REZERVACIJA_HANDLING);
+                            });
+                })->orderBy('name')->get();
 		$allowed = array();
 		if(isset($predmet))$allowed = $predmet->users->lists('id');
 		$value = false;?>

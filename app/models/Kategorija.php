@@ -50,7 +50,6 @@ class Kategorija extends Eloquent {
 	}
 
 	public function getEnabledChildren(){
-		$data = array();
 		$kategorije = Kategorija::select('id', 'ime')
 		->where('nadkategorija_id', '=', $this->id)
 		->whereRaw('nadkategorija_id != id')
@@ -66,6 +65,10 @@ class Kategorija extends Eloquent {
 			);
 	}
 
+        /**
+         * 
+         * @return array
+         */
 	public function path(){
 		$nadkategorija = $this->nadkategorija()->first();
 		if($nadkategorija->id == $this->id)
@@ -75,15 +78,26 @@ class Kategorija extends Eloquent {
 		return $path;
 	}
 
+        /**
+         * 
+         * @return string
+         */
 	public function getBreadCrumbs()
 	{
 		$links = array_map(function($kategorija){
-			return link_to_route('Kategorija.show', $kategorija->ime, array('id' => $kategorija->id));
+			return $kategorija->link();
 		}, $this->path());
 		return implode('/', $links);
 	}
 
+        /**
+         * 
+         * @return string
+         */
 	public function link(){
-		return link_to_route('Kategorija.show', $this->ime, array('id' => $this->id));
-	}
+            if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA)) {
+            return link_to_route('Kategorija.show', $this->ime, array('id' => $this->id));
+        }
+        return $this->ime;
+    }
 }
