@@ -10,7 +10,7 @@ Promjena zaporke
 'class' => 'form-signin',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}
 <h2 class="form-signin-heading">Primjena zaporke</h2>
-@if(!Auth::user()->is_admin)
+@if(!Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET))
 <div class = "form-group">
 	{{ Form::password('oldpass',
 		array(
@@ -34,11 +34,6 @@ Promjena zaporke
 			'class' => 'form-control',
 			'required' => 'required')) }}
 </div>
-@if(Session::has('greska'))
-<div class = "alert alert-danger">
-	<p>{{ Session::get('greska') }}</p>
-</div>
-@endif
 {{ Form::submit('Promijeni', array(
 'class' => 'btn btn-lg btn-primary btn-block')) }}
 {{ Form::close() }}

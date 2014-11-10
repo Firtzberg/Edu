@@ -16,8 +16,6 @@ class CreateUsersTable extends Migration {
             $table->string('name')
                     ->unique();
             $table->string('remember_token');
-            $table->boolean('is_admin')
-                    ->default(false);
             $table->string('broj_mobitela');
             $table->string('email');
             $table->string('lozinka');

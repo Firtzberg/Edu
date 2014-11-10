@@ -26,8 +26,9 @@ Predmet {{ $predmet->ime }}
 		@endforeach
 	</tbody></table>
 </div>
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 {{ link_to_route('Predmet.edit', 'Uredi', array('id' => $predmet->id), array('class' => 'btn btn-default')) }}
-@if(Auth::user()->is_admin)
+@endif
 <h3>Predavači</h3>
 <div clas="container">
 	<div class = "row">
@@ -36,5 +37,4 @@ Predmet {{ $predmet->ime }}
 		@endforeach
 	</div>
 </div>
-@endif
 @endsection

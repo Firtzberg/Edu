@@ -11,29 +11,12 @@ class RezervacijaController extends \ResourceController {
             }
         }, array('only' => array('destroy_naplata')));
 
-        $this->beforeFilter(function() {
-            if (!(Auth::check() && (
-                    Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) ||
-                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)))) {
-                return Redirect::to('logout');
-            }
-        }, array('only' => array('create', 'store')));
+        $this->beforeFilter('novaRezervacija', array('only' => array('create', 'store')));
 
-        $this->beforeFilter(function($route) {
-            $id = $route->getParameter('Rezervacija');
-            $rezervacija = Rezervacija::find($id);
-            if (!(Auth::check() && (
-                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)||
-                    (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                    $rezervacija->instruktor_id == Auth::id())))) {
-                return Redirect::to('logout');
-            }
-        }, array('only' => array('copy',
+        $this->beforeFilter('myRezervacija',
+                array('only' => array('copy',
                 'create_naplata', 'store_napata',
                 'edit', 'update', 'destroy')));
-
-        $this->beforeFilter('myRezervacija', array('except' =>
-            array('create', 'store')));
     }
 
     private function itemNotFound() {

@@ -23,7 +23,8 @@ class InstruktorController extends \ResourceController {
             array('changePassword', 'postChangePassword', 'edit', 'update')));
 
         $this->beforeFilter(function($route) {
-            if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) || Auth::id() == $route->getParameter('User'))) {
+            if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) ||
+                    Auth::id() == $route->getParameter('User'))) {
                 return Redirect::to('logout');
             }
         }, array('only' => array('changePassword', 'postChangePassword')));
@@ -79,13 +80,15 @@ class InstruktorController extends \ResourceController {
 		$instruktor = User::find($id);
 		if(!$instruktor)
 			return $this->itemNotFound();
-		if(!(Input::has('oldpass')||Auth::user()->is_admin)||!Input::has('newpass')||!Input::has('rep'))
+		if(!(Input::has('oldpass')||Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET))
+                        ||!Input::has('newpass')||!Input::has('rep'))
 			return Redirect::route('Instruktor.changePassword', $id)
 		->with(self::DANGER_MESSAGE_KEY, 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
-		if($newpass != $rep||!(Hash::check($oldpass, $instruktor->lozinka)||Auth::user()->is_admin))
+		if($newpass != $rep||!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET)||
+                        Hash::check($oldpass, $instruktor->lozinka)))
 			return Redirect::route('Instruktor.changePassword', $id)
 		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
 		$instruktor->lozinka = Hash::make($newpass);
@@ -230,8 +233,8 @@ class InstruktorController extends \ResourceController {
 		$instruktor = User::find($id);
 		if(!$instruktor)
 			return $this->itemNotFound();
-		elseif($instruktor->is_admin)
-			Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće ukloniti administratora.');
+		elseif($instruktor->id == Auth::id())
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Ne možeš ukloniti samoga sebe.');
 		else{
 			$instruktor->delete();
 			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno uklonjen!');

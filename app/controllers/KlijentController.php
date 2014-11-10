@@ -1,13 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
-
 class KlijentController extends \ResourceController {
     public function __construct() {
         parent::__construct();

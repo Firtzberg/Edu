@@ -11,7 +11,6 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @property integer $id
  * @property string $name
  * @property string $remember_token
- * @property boolean $is_admin
  * @property string $broj_mobitela
  * @property string $email
  * @property string $lozinka

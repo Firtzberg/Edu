@@ -23,8 +23,6 @@ array(
 <div id="collection-list">
 @yield('list')
 </div>
-@if(Auth::user()->is_admin)
 @yield('create_button')
-@endif
 {{ HTML::script('js/search.js') }}
 @endsection

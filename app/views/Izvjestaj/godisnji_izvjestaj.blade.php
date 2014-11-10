@@ -9,9 +9,9 @@ Godišnji izvještaj
 
 @section('content')
 <p>
-Godišnji izvjestaj
+Godišnji izvjestaj od
 @if(isset($instruktor))
- instruktora
+ {{ $instruktor->role->link() }} 
 {{ $instruktor->link() }}
 @endif
  za {{ $godina }}. godinu</p>
@@ -47,14 +47,17 @@ Godišnji izvjestaj
 </table>
 
 <div class="navbar">
-@if(isset($instruktor))
+@if(isset($instruktor) && (Auth::id() == $instruktor->id||
+Auth::user()->hasPermission(Permission::PERMISSION_SEE_FOREIGN_IZVJESTAJ)))
 {{ link_to_route('Izvjestaj.tjedni', 'Tjedni izvještaj', array('id' => $instruktor->id), array('class' => 'btn btn-link navbar')) }}
-@if(Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_SEE_GLOBAL_IZVJESTAJ))
 {{ link_to_route('Izvjestaj.ukupni_godisnji', 'Ukupni godišnji izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 {{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
 @endif
 @else
+@if(Auth::user()->hasPermission(Permission::PERMISSION_SEE_GLOBAL_IZVJESTAJ))
 {{ link_to_route('Izvjestaj.ukupni_tjedni', 'Ukupni tjedni izvještaj', null, array('class' => 'btn btn-link navbar')) }}
+@endif
 @endif
 </div>
 @endsection

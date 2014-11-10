@@ -34,11 +34,7 @@
 				@endif
 				>
 				@if(isset($podatak[$key]['rezervacija']))
-@if(Auth::user()->is_admin||Auth::id() == $instruktor->id)
 				{{ $podatak[$key]['rezervacija']->link() }}<br>
-@else
-{{$podatak[$key]['rezervacija']->predmet?$podatak[$key]['rezervacija']->predmet->ime:'Nema predmeta'}}<br>
-@endif
 				@if(!is_null($podatak[$key]['ucionica']))
 					{{ $podatak[$key]['ucionica']->link() }}
 				@endif

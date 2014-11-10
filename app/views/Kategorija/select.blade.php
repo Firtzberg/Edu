@@ -10,6 +10,7 @@ if(!isset($instruktor_id)){
 $instruktor_id = null;
 if (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))
     $instruktor_id = Auth::id();
+$instruktor_id = Input::old('instruktor_id', $instruktor_id);
 }
 ?>
 @if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)

@@ -20,7 +20,7 @@ array('class' => 'btn btn-primary')) }}
 <dt>Napomena</dt><dd>{{ $naplata->napomena }}</dd>
 @endif
 </dl>
-@if(Auth::check() && Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_NALATA))
 {{ Form::open(array('route' => array('Naplata.destroy', $rezervacija->id), 'method' => 'delete')) }}
 {{ Form::submit('Poništi naplatu', array('class' => 'btn btn-danger')) }}
 {{ Form::close() }}

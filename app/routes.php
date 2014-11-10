@@ -42,7 +42,6 @@ Route::get('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@c
 Route::put('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@store_naplata', 'as' => 'Naplata.store'));
 Route::delete('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Naplata.destroy'));
 
-Route::group(array('before' => 'admin'), function(){
 Route::get('/Excel', array('uses' => 'ExcelController@index', 'as' => 'Excel.index'));
 Route::post('/Excel/download', array('uses' => 'ExcelController@download', 'as' => 'Excel.download'));
 Route::resource('Role', 'RoleController');
@@ -50,7 +49,6 @@ Route::resource('Klijent', 'KlijentController', array('except' => array('destroy
 Route::resource('Kategorija', 'KategorijaController', array('except' => array('create', 'edit')));
 Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
 Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
-});
 
 Route::get('/Kategorija/{user_id}/Children/{id?}', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
 

@@ -13,10 +13,14 @@ Učionica {{ $ucionica->naziv }}
 <dt>Opis</dt><dd>{{ $ucionica->opis }}</dd>
 
 {{ $raspored }}
-@if(Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_UCIONICA))
 {{ Form::open(array('route' => array('Ucionica.destroy', $ucionica->id), 'method' => 'delete')) }}
-{{ link_to_route('Ucionica.edit', 'Uredi', array($ucionica->id), array('class' => 'btn btn-default')) }}
- {{ Form::submit('Ukloni', array('class' => 'btn btn-warning')) }}
+@endif
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_UCIONICA))
+{{ link_to_route('Ucionica.edit', 'Uredi', array($ucionica->id), array('class' => 'btn btn-default')) }} 
+@endif
+@if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_UCIONICA))
+{{ Form::submit('Ukloni', array('class' => 'btn btn-warning')) }}
 {{ Form::close() }}
 @endif
 @endsection

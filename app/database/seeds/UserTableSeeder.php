@@ -8,7 +8,6 @@ class UserTableSeeder extends Seeder {
         User::create(array('name' => 'Admin',
             'lozinka' => Hash::make('admin'),
             'email' => 'ja@moje.ba',
-            'is_admin' => true,
             'role_id' => Role::select('id')->where('ime', '=', 'Administrator')->first()->id
             ));
 

@@ -28,7 +28,7 @@ $required = array(
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 <div class = "form-group">
 {{ Form::label('Ime') }}
-@if(Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER))
 {{ Form::text('name', null,
 array(
 'class' =>'form-control',

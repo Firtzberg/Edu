@@ -16,7 +16,7 @@ Klijent {{ $klijent->ime }}
 <dt>Facebook</dt><dd>{{ $klijent->facebook }}</dd>
 @endif
 
-@if(Auth::user()->is_admin)
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
 {{ link_to_route('Klijent.edit', 'Uredi', array($klijent->broj_mobitela), array('class' => 'btn btn-default')) }}
 @endif
 @endsection
