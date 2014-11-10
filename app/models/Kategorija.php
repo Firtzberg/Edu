@@ -22,6 +22,14 @@
 
 class Kategorija extends Eloquent {
 	const NOT_FOUND_MESSAGE = 'Zadana kategorija nije pronađena u sustavu.';
+        const JSON_KATEGORIJE_IDENTIFIER = 'kategorije';
+        const JSON_PREDMETI_IDENTIFIER = 'predmeti';
+        const JSON_SELECTED_KATEGORIJA_IDENTIFIER = 'kategorija';
+        const JSON_SELECTED_PREDMET_IDENTIFIER = 'predmet';
+        const JSON_SELECTED_IDENTIFIER = 'selected';
+        const JSON_CONTENT_IDENTIFIER = 'content';
+        const JSON_TYPE_IDENTIFIER = 'type';
+        const JSON_ID_IDENTIFIER = 'id';
 
 	/**
 	 * The database table used by the model.
@@ -51,8 +59,9 @@ class Kategorija extends Eloquent {
 	}
         
         /**
-     * 
-     * @param int $instruktor_id
+     * Checks if there are any child Predmeti or Kategorije for the user
+         * with id equal to $instruktor_id
+     * @param int $instruktor_id Id of the user
      * @return boolean
      */
     private function hasChildrenFor($instruktor_id) {
@@ -75,56 +84,79 @@ class Kategorija extends Eloquent {
     }
 
     /**
-     * 
-     * @param int $instruktor_id
+     * Gets all child Predmeti allowed for the user with id equal to $instruktor_id
+     * @param int $instruktor_id Id of User
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getChildrenPremetiFor($instruktor_id) {
+        return Predmet::select('id', 'ime')
+                        ->where('kategorija_id', '=', $this->id)
+                        ->withUser($instruktor_id)
+                        ->get();
+    }
+
+    /**
+     * Gets all cild Kategorije which have a nested Predmeti for the user with id equal to $instruktor_id
+     * @param int $instruktor_id Id of User
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getChildrenKategorijeFor($instruktor_id) {
+        return Kategorija::select('id', 'ime')
+                        ->where('nadkategorija_id', '=', $this->id)
+                        ->whereRaw('nadkategorija_id != id')
+                        ->get()
+                        ->filter(function($kategorija)use($instruktor_id) {
+                            return $kategorija->hasChildrenFor($instruktor_id);
+                        });
+    }
+
+    /**
+     * Gets an array for making a dropdown in Rezervacija.create view using selectManager.
+     * @param int $instruktor_id Id of USer
      * @return array Array with 'predmeti' and 'kategorije' keys
      */
-    public function getChildrenFor($instruktor_id = null) {
+    public function getChildrenFor($instruktor_id) {
+        return array(self::JSON_KATEGORIJE_IDENTIFIER => array_values($this->getChildrenKategorijeFor($instruktor_id)->toArray()),
+            self::JSON_PREDMETI_IDENTIFIER => array_values($this->getChildrenPremetiFor($instruktor_id)->toArray()));
+    }
+    /**
+     * Gets ComplexDataStructure for initializing selectManager, and responding to Ajax
+     * @param int $instruktor_id Id of User
+     * @return array
+     */
+    public function getHierarchyFor($instruktor_id = null) {
         if (!$instruktor_id) {
             return array();
         }
-        $kategorije = Kategorija::select('id', 'ime')
-                ->where('nadkategorija_id', '=', $this->id)
-                ->whereRaw('nadkategorija_id != id')
-                ->get()
-                ->filter(function($kategorija)use($instruktor_id){
-                    return $kategorija->hasChildrenFor($instruktor_id);
-                });
-        $predmeti = Predmet::select('id', 'ime')
-                ->where('kategorija_id', '=', $this->id)
-                ->withUser($instruktor_id)
-                ->get();
+        $kategorije = $this->getChildrenKategorijeFor($instruktor_id);
+        $predmeti = $this->getChildrenPremetiFor($instruktor_id);
         if(count($kategorije) + count($predmeti) == 1){
             if(count($predmeti) == 1){
                 return array(
                     array(
-                        'content'=>array(
-                            'predmeti' => $predmeti->toArray()
-                        ),
-                        'selected' => array(
-                            'type' => 'predmet',
-                            'id' => $predmeti[0]->id
+                        self::JSON_CONTENT_IDENTIFIER => array(self::JSON_PREDMETI_IDENTIFIER => array_values($predmeti->toArray())),
+                        self::JSON_SELECTED_IDENTIFIER => array(
+                            self::JSON_TYPE_IDENTIFIER => self::JSON_SELECTED_PREDMET_IDENTIFIER,
+                            self::JSON_ID_IDENTIFIER => $predmeti[0]->id
                         )
                     )
                 );
             }
             return array_merge(array(
                 array(
-                    'content' => array(
-                        'kategorije' => $kategorije->toArray(),
-                    ),
-                    'selected' => array(
-                        'type' => 'kategorija',
-                        'id' => $kategorije[0]->id
+                    self::JSON_CONTENT_IDENTIFIER => array(self::JSON_KATEGORIJE_IDENTIFIER => array_values($kategorije->toArray())),
+                    self::JSON_SELECTED_IDENTIFIER => array(
+                        self::JSON_TYPE_IDENTIFIER => self::JSON_SELECTED_KATEGORIJA_IDENTIFIER,
+                        self::JSON_ID_IDENTIFIER => $kategorije[0]->id
                     )
                 )
-                    ), $kategorije[0]->getChildrenFor($instruktor_id));
+                    ), $kategorije[0]->getHierarchyFor($instruktor_id));
         }
         return array(
             array(
-                'content' => array(
-                    'kategorije' => $kategorije->toArray(),
-                    'predmeti' => $predmeti->toArray()
+                self::JSON_CONTENT_IDENTIFIER => array(
+                    self::JSON_KATEGORIJE_IDENTIFIER => array_values($kategorije->toArray()),
+                    self::JSON_PREDMETI_IDENTIFIER => array_values($predmeti->toArray())
                 )
             )
         );

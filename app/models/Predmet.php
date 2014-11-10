@@ -53,6 +53,7 @@ class Predmet extends Eloquent {
      * 
      * @param \Illuminate\Database\Query\Builder $query
      * @param int $user_id
+         * @return \Illuminate\Database\Query\Builder
      */
     public function scopeWithUser($query, $user_id) {
         return $query->whereExists(function($query) use ($user_id) {

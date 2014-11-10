@@ -20,12 +20,12 @@ class RezervacijaController extends \ResourceController {
         }, array('only' => array('create', 'store')));
 
         $this->beforeFilter(function($route) {
-            $id = $route->getParameter('id');
+            $id = $route->getParameter('Rezervacija');
             $rezervacija = Rezervacija::find($id);
             if (!(Auth::check() && (
+                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)||
                     (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                    $rezervacija->instruktor_id == Auth::id()) ||
-                    Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)))) {
+                    $rezervacija->instruktor_id == Auth::id())))) {
                 return Redirect::to('logout');
             }
         }, array('only' => array('copy',
@@ -169,15 +169,14 @@ class RezervacijaController extends \ResourceController {
     public function store() {
         $input = Input::all();
         $instruktor_id = Input::get('instruktor_id', Auth::id());
-        if (!(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) && Auth::id() == $instruktor_id)) {
-            Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervacije u osobno ime.');
-            return Redirect::route('Rezervacija.create')
-                            ->withInput();
-        }
-        if (!(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
-                        User::whereId($instruktor_id)
+        if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
+                Auth::id() == $instruktor_id)||
+                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
+                                Auth::id() != $instruktor_id)||
+                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
+                User::whereId($instruktor_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
-                        ->count() > 0)) {
+                        ->count() < 1)){
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('Rezervacija.create')
                             ->withInput();
@@ -214,7 +213,8 @@ class RezervacijaController extends \ResourceController {
                         ->with('klijent', View::make('Klijent.listForm')
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
-                                ->with('predmet_id', $rezervacija->predmet_id));
+                                ->with('predmet_id', $rezervacija->predmet_id)
+                                ->with('instruktor_id', $rezervacija->instruktor_id));
     }
 
     /**
@@ -241,7 +241,9 @@ class RezervacijaController extends \ResourceController {
                         ->with('klijent', View::make('Klijent.listForm')
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
-                                ->with('predmet_id', $rezervacija->predmet_id));
+                                ->with('predmet_id', $rezervacija->predmet_id)
+                                ->with('instruktor_id', $rezervacija->instruktor_id)
+                                ->with('disableDropdown', true));
         ;
     }
 
@@ -266,15 +268,14 @@ class RezervacijaController extends \ResourceController {
             return Redirect::route('Rezervacija.show', $id);
         }
         $instruktor_id = Input::get('instruktor_id', Auth::id());
-        if (!(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) && Auth::id() == $instruktor_id)) {
-            Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervacije u osobno ime.');
-            return Redirect::route('Rezervacija.create')
-                            ->withInput();
-        }
-        if (!(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
-                        User::whereId($instruktor_id)
+        if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
+                Auth::id() == $instruktor_id)||
+                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
+                                Auth::id() != $instruktor_id)||
+                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
+                User::whereId($instruktor_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
-                        ->count() > 0)) {
+                        ->count() < 1)){
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('Rezervacija.create')
                             ->withInput();

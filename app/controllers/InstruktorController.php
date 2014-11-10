@@ -23,7 +23,7 @@ class InstruktorController extends \ResourceController {
             array('changePassword', 'postChangePassword', 'edit', 'update')));
 
         $this->beforeFilter(function($route) {
-            if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) || Auth::id() == $route->getParameter('id'))) {
+            if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) || Auth::id() == $route->getParameter('User'))) {
                 return Redirect::to('logout');
             }
         }, array('only' => array('changePassword', 'postChangePassword')));

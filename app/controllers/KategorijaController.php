@@ -134,7 +134,7 @@ class KategorijaController extends \ResourceController {
         if (!$kategorija) {
             return $this->itemNotFound();
         }
-        return Response::json($kategorija->getChildrenFor($user_id));
+        return Response::json($kategorija->getHierarchyFor($user_id));
     }
 
 }
