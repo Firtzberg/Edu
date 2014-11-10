@@ -1,13 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
-
 class UcionicaController extends \ResourceController {
     
     public function __construct() {
@@ -66,22 +58,19 @@ class UcionicaController extends \ResourceController {
 	 *
 	 * @return Response
 	 */
-	public function store()
-	{
-		$s = Ucionica::create(Input::all());
-		$s->save();
-		if(true)
-		{
-			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica je uspješno dodana.');
-	  		return Redirect::route('Ucionica.index');
-	  	}
-	  	return Redirect::route('Ucionica.create')
-	  	->withInput()
-	  	->withErrors($s->errors());
-	}
+    public function store() {
+        $ucionica = new Ucionica();
+        $error = $ucionica->getErrorOrSync(Input::all());
+        if ($error) {
+            Session::flash(self::DANGER_MESSAGE_KEY, $error);
+            return Redirect::route('Ucionica.create')
+                            ->withInput();
+        }
+        Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica uspješno dodana');
+        return Redirect::route('Ucionica.show', array($ucionica->id));
+    }
 
-
-	/**
+    /**
 	 * Display the specified resource.
 	 *
 	 * @param  int  $id
@@ -120,25 +109,21 @@ class UcionicaController extends \ResourceController {
 	 * @param  int  $id
 	 * @return Response
 	 */
-	public function update($id)
-	{
-		$ucionica = Ucionica::find($id);
-		if(!$ucionica)
-			return $this->itemNotFound();
-		$ucionica->update(Input::all());
-		if(true)
-		{
-			Session::flash(self::SUCCESS_MESSAGE_KEY,'Učionica uspješno uređena');
-			return Redirect::route('Ucionica.show', array($id));
-		}
+    public function update($id) {
+        $ucionica = Ucionica::find($id);
+        if (!$ucionica)
+            return $this->itemNotFound();
+        $error = $ucionica->getErrorOrSync(Input::all());
+        if ($error) {
+            Session::flash(self::DANGER_MESSAGE_KEY, $error);
+            return Redirect::route('Ucionica.edit', array($id))
+                            ->withInput();
+        }
+        Session::flash(self::SUCCESS_MESSAGE_KEY, 'Učionica uspješno uređena');
+        return Redirect::route('Ucionica.show', array($id));
+    }
 
-		return Redirect('ucionica.edit')
-		->withInput()
-		->withErrors($ucionica->errors());
-	}
-
-
-	/**
+    /**
 	 * Remove the specified resource from storage.
 	 *
 	 * @param  int  $id

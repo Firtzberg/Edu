@@ -49,18 +49,18 @@ class KategorijaController extends \ResourceController {
 		}
 		if(empty($ime)){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Ime kategorije je obvezno.');
-			return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+			return Redirect::route('Kategorija.show', array($nadkategorija_id));
 		}
 		if($nadkategorija->podkategorije()->where('ime', '=', $ime)->count() > 0){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Kategorija '.$nadkategorija->ime.' već ima podkategoriju s imenom '.$ime.'.');
-			return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+			return Redirect::route('Kategorija.show', array($nadkategorija_id));
 		}
 
 		$kategorija = new Kategorija();
 		$kategorija->ime = $ime;
 		$nadkategorija->podkategorije()->save($kategorija);
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija uspješno dodana.');
-		return Redirect::route('Kategorija.show', array('id' => $kategorija->id));
+		return Redirect::route('Kategorija.show', array($kategorija->id));
 	}
 
 
@@ -90,7 +90,7 @@ class KategorijaController extends \ResourceController {
 		$ime = Input::get('ime');
 		if(!$ime){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Ime kategorije je obvezno.');
-			return Redirect::route('Kategorija.show', array('id' => $id));
+			return Redirect::route('Kategorija.show', array($id));
 		}
 		$kategorija = Kategorija::find($id);
 		if(!$kategorija)
@@ -98,7 +98,7 @@ class KategorijaController extends \ResourceController {
 		$kategorija->ime = $ime;
 		$kategorija->save();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno preimenovana.');
-		return Redirect::route('Kategorija.show', array('id' => $id));
+		return Redirect::route('Kategorija.show', array($id));
 	}
 
 
@@ -116,7 +116,7 @@ class KategorijaController extends \ResourceController {
 		$nadkategorija_id = $kategorija->nadkategorija_id;
 		$kategorija->delete();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno uklonjena!');
-		return Redirect::route('Kategorija.show', array('id' => $nadkategorija_id));
+		return Redirect::route('Kategorija.show', array($nadkategorija_id));
 	}
 
         /**

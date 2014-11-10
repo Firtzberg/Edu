@@ -47,12 +47,12 @@ $required) }}
 </div>
 <div class = "form-group">
 {{ Form::label('max_broj_ucenika') }}
-{{ Form::selectRange('max_broj_ucenika',1,50) }}
+{{ Form::selectRange('max_broj_ucenika',1,50, null, $required) }}
 </div>
 <div class = "form-group">
 {{ Form::label('opis') }}
 {{ Form::textarea('opis', null,
-$required) }}
+$optional + array('rows' => 3)) }}
 </div>
 <div class = "form-group">
 {{ Form::submit('Pohrani', array(

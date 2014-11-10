@@ -20,13 +20,11 @@ Kategorija {{ $kategorija->ime }}
 	<table id="podkategorije-table" class="table"><tbody>
 		<tr>
 			<th>Ime podkategorije</th>
-			<th>Vidljivost</th>
 			<th></th>
 		</tr>
 		@foreach($kategorija->podkategorije as $podkategorija)
 		<tr>
 			<td>{{ $podkategorija->link() }}</td>
-			<td>{{ $podkategorija->enabled?'Vidljiv':'Skriven' }}</td>
 			<td>
 				{{ Form::open(array('route' => array('Kategorija.destroy', 'id' => $podkategorija->id), 'method' => 'delete')) }}
 				{{ Form::submit('Izbriši', array('class' => 'btn btn-danger')) }}
@@ -51,13 +49,11 @@ Kategorija {{ $kategorija->ime }}
 	<table class="table"><tbody>
 		<tr>
 			<th>Ime predmeta</th>
-			<th>Vidljivost</th>
 			<th></th>
 		</tr>
 		@foreach($kategorija->predmeti as $predmet)
 		<tr>
 			<td>{{ $predmet->link() }}</td>
-			<td>{{ $predmet->enabled?'Vidljiv':'Skriven' }}</td>
 			<td>
 				{{ Form::open(array('route' => array('Predmet.destroy', 'id' => $predmet->id), 'method' => 'delete')) }}
 				{{ Form::submit('Izbriši', array('class' => 'btn btn-danger')) }}

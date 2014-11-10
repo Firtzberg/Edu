@@ -1,12 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
 class RoleController extends \ResourceController {
     
     public function __construct() {
@@ -74,7 +67,7 @@ class RoleController extends \ResourceController {
 			return Redirect::route('Role.create')
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
-		return Redirect::route('Role.show', array('id' => $role->id));
+		return Redirect::route('Role.show', array($role->id));
 	}
 
 
@@ -124,11 +117,11 @@ class RoleController extends \ResourceController {
 
 		$error =  $role->getErrorOrSync(Input::all());
 		if($error != null)
-			return Redirect::route('Role.edit', array('id' => $id))
+			return Redirect::route('Role.edit', array($id))
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 
-		return Redirect::route('Role.show', array('id' => $role->id));
+		return Redirect::route('Role.show', array($role->id));
 	}
 
 

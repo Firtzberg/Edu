@@ -1,12 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
 class PredmetController extends \ResourceController {
     
     public function __construct() {
@@ -50,7 +43,7 @@ class PredmetController extends \ResourceController {
 			else return Redirect::route('Kategorija.index');
 		}
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno dodan.');
-		return Redirect::route('Predmet.show', array('id' => $predmet->id));
+		return Redirect::route('Predmet.show', array($predmet->id));
 	}
 
 
@@ -100,12 +93,12 @@ class PredmetController extends \ResourceController {
 		$error = $predmet->getErrorOrSync(Input::all());
 		if($error){
 			Session::flash(self::DANGER_MESSAGE_KEY, $error);
-			return Redirect::route('Predmet.edit', array('id' => $id))
+			return Redirect::route('Predmet.edit', array($id))
 			->withInput();
 		}
 		
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uređen.');
-		return Redirect::route('Predmet.show', array('id' => $id));
+		return Redirect::route('Predmet.show', array($id));
 	}
 
 
@@ -123,6 +116,6 @@ class PredmetController extends \ResourceController {
 		$kategorija_id = $predmet->kategorija_id;
 		$predmet->delete();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Predmet je uspješno uklonjen!');
-		return Redirect::route('Kategorija.show', array('id' => $kategorija_id));
+		return Redirect::route('Kategorija.show', array($kategorija_id));
 	}
 }

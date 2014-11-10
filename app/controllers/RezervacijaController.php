@@ -193,7 +193,7 @@ class RezervacijaController extends \ResourceController {
         }
 
         Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je uspješno dodana.');
-        return Redirect::route('Rezervacija.show', array('id' => $rezervacija->id));
+        return Redirect::route('Rezervacija.show', array($rezervacija->id));
     }
 
     /**
@@ -292,7 +292,7 @@ class RezervacijaController extends \ResourceController {
         }
 
         Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je uspješno promijenjena.');
-        return Redirect::route('Rezervacija.show', array('id' => $rezervacija->id));
+        return Redirect::route('Rezervacija.show', array($rezervacija->id));
     }
 
     /**
