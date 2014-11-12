@@ -1,12 +1,16 @@
 @extends('layouts.master')
 
+@section('heading')
+{{ HTML::style('css/raspored.css') }}
+@endsection
+
 @section('title')
 @if($instruktor->role)
 {{ $instruktor->role->ime }}
 @else
 Djelatnik
 @endif
-{{ $instruktor->name }}
+ {{ $instruktor->name }}
 @endsection
 
 @section('content')

@@ -1,10 +1,41 @@
-td.vrijeme{
-	background-color: #e4e4e4;
+div.raspored {
+    width: 100%;
 }
-table.table{
-	border-spacing: 0px;
-	border-collapse: separate;
+
+div.raspored > div.raspored-column {
+    float: left;
 }
-td.reserved{
-	border: 1px solid #333333 !important;
+div.raspored > div.raspored-column > div.raspored-blocks{
+    position: relative;
+}
+
+div.raspored > div.raspored-column > div.raspored-heading {
+    text-align: center;
+    font-weight: bold;
+    font-size: 150%;
+}
+div.raspored > div.raspored-column > div.raspored-vrijeme {
+    width: 100%;
+    background-color: #e4e4e4;
+    display: table;
+}
+div.raspored > div.raspored-column > div.raspored-vrijeme > p {
+    display: table-cell;
+    vertical-align: middle;
+    width: 100%;
+    border-bottom: 1px solid black;
+}
+div.raspored > div.raspored-column > div.raspored-blocks > hr {
+    position: absolute;
+    left: 5%;
+    width: 90%;
+    border-color: black;
+    margin: 0;
+}
+div.raspored > div.raspored-column > div.raspored-blocks > div.raspored-block {
+    border: 1px solid #333333 !important;
+    position: absolute;
+    width: 96%;
+    left: 2%;
+    text-align: center;
 }

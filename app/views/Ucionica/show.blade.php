@@ -1,5 +1,9 @@
 @extends('layouts.master')
 
+@section('heading')
+{{ HTML::style('css/raspored.css') }}
+@endsection
+
 @section('title')
 Učionica {{ $ucionica->naziv }}
 @endsection

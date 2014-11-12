@@ -13,70 +13,77 @@ namespace Helpers;
  *
  * @author Hrvoje
  */
-class Rapored {
+class Raspored {
+
     /**
      * height of 15 minutes in the display
      */
     const HEIGHT_15_MIN = 12;
-    
+
     /**
      * Dani u tjednu
      */
     public static $dani = array(1 => 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja');
-    
+
     /**
      * gets a raspored column with hours
      * @return string
      */
-    public static function HoursColumn(){
-        $response = '<div class = "column">';
+    public static function HoursColumn($widthPercent) {
+        $response = '<div class = "raspored-column" style="width:'.$widthPercent.'%;">';
         $response .= '<div class = "raspored-heading">Vrijeme</div>';
-        for($hour = \BaseController::START_HOUR; $hour < \BaseController::END_HOUR; $hour++){
-            $response .= '<div class = "vrijeme" height="'.(self::HEIGHT_15_MIN*4).'px">'.$hour.':00</div>';
+        for ($hour = \BaseController::START_HOUR; $hour < \BaseController::END_HOUR; $hour++) {
+            $response .= '<div class = "raspored-vrijeme" style="height:' .
+                    (self::HEIGHT_15_MIN * 4) . 'px;"><p>' . $hour . ':00</p></div>';
         }
         $response .= '</div>';
         return $response;
     }
-    
+
     /**
      * gets a raspored column with hours
      * @return string
      */
-    public static function Blocks2HTML($blocks){
-        $response = '';
-        foreach($blocks as $key => $block){
+    public static function Blocks2HTML($blocks) {
+        $diff = \BaseController::END_HOUR - \BaseController::START_HOUR;
+        $response = '<div class = "raspored-blocks" style="height:'.
+                ($diff*4*self::HEIGHT_15_MIN).'px">';
+        for($i = 0; $i < $diff; $i += 2){
+            $response .= '<hr style="top:'.(self::HEIGHT_15_MIN*4*$i).'px;"/>';
+        }
+        foreach ($blocks as $key => $block) {
             if (!is_int($key)) {
                 continue;
             }
-            $response .= '<div class = "block" background-color = "#'.$block['boja']
-                    .'" height="'.(self::HEIGHT_15_MIN*$block['span']).'px" style="top: '.
-                    $block['offset'].'px">'.$block['rezervacija'].'<br/>'.$block['extra'].
+            $response .= '<div class = "raspored-block" style="background-color:#' . $block['boja']
+                    . ';height:' . (self::HEIGHT_15_MIN * $block['span']) . 'px;top: ' .
+                    (self::HEIGHT_15_MIN * $block['offset']) . 'px;">' . $block['rezervacija'] . '<br/>' . $block['extra'] .
                     '</div>';
         }
         $response .= '</div>';
         return $response;
     }
-    
+
     /**
      * 
      * @param int $dayNumber
      * @return string
      */
-    public static function DayHeading($dayNumber){
+    public static function DayHeading($dayNumber) {
         $response = '<div class = "raspored-heading">';
         $response .= self::$dani[$dayNumber];
         $response .= '</div>';
         return $response;
     }
-    
+
     /**
      * 
      * @param \Ucionica $ucionica
      * @return string
      */
-    public static function UcionicaHeading($ucionica){
+    public static function UcionicaHeading($ucionica) {
         $response = '<div class = "raspored-heading">';
-        $response .= $ucionica->naziv;
+        $response .= $ucionica->link();
         $response .= '</div>';
         return $response;
     }
@@ -91,12 +98,12 @@ class Rapored {
      * @return array
      */
     private static function RezervacijeForUserInWeek($instruktor, $week, $year) {
-        $time = new DateTime();
+        $time = new \DateTime();
         $time->setTime(0, 0);
         $time->setISODate($year, $week);
         $min = $time->format('Y-m-d H:i:s');
         $max = $time->modify('+1 week')->format('Y-m-d H:i:s');
-        $rezervacije = Rezervacija::with('mjera', 'predmet', 'ucionica')
+        $rezervacije = \Rezervacija::with('mjera', 'predmet', 'ucionica')
                 ->where('instruktor_id', '=', $instruktor->id)
                 ->whereBetween('pocetak_rada', array($min, $max))
                 ->get();
@@ -120,7 +127,7 @@ class Rapored {
         }
         return $data;
     }
-    
+
     /**
      * Returns whole raspored for specified ucionica. Each day has one column.
      * @param int $user_id Id of user
@@ -128,17 +135,17 @@ class Rapored {
      * @param int $year Year
      * @return string
      */
-    public static function RasporedForUserInWeek($user_id, $week, $year){
+    public static function RasporedForUserInWeek($user_id, $week, $year) {
+        $widthPercent = 100/8;
         $response = '<div class = "raspored">';
-        $data = self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year);
-        $response .= self::HoursColumn();
-        foreach($data as $dayNumber => $blocks){
-            $response = '<div class = "column">';
+        $response .= self::HoursColumn($widthPercent/2);
+        foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
+            $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber);
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
         }
-        $response .= self::HoursColumn();
+        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div>';
         return $response;
     }
@@ -153,12 +160,12 @@ class Rapored {
      * @return array
      */
     private static function RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) {
-        $time = new DateTime();
+        $time = new \DateTime();
         $time->setTime(0, 0);
         $time->setISODate($year, $week);
         $min = $time->format('Y-m-d H:i:s');
         $max = $time->modify('+1 week')->format('Y-m-d H:i:s');
-        $rezervacije = Rezervacija::with('mjera', 'predmet', 'instruktor')
+        $rezervacije = \Rezervacija::with('mjera', 'predmet', 'instruktor')
                 ->where('ucionica_id', '=', $ucionicaId)
                 ->whereBetween('pocetak_rada', array($min, $max))
                 ->get();
@@ -182,7 +189,7 @@ class Rapored {
         }
         return $data;
     }
-    
+
     /**
      * Returns whole raspored for specified ucionica. Each day has one column.
      * @param int $ucionicaId Id of ucionica
@@ -190,17 +197,17 @@ class Rapored {
      * @param int $year Year
      * @return string
      */
-    public static function RasporedForUcionicaInWeek($ucionicaId, $week, $year){
+    public static function RasporedForUcionicaInWeek($ucionicaId, $week, $year) {
+        $widthPercent = 100/8;
         $response = '<div class = "raspored">';
-        $data = self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year);
-        $response .= self::HoursColumn();
-        foreach($data as $dayNumber => $blocks){
-            $response = '<div class = "column">';
+        $response .= self::HoursColumn($widthPercent/2);
+        foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
+            $response .= '<div class = "raspored-column" style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber);
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
         }
-        $response .= self::HoursColumn();
+        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div>';
         return $response;
     }
@@ -215,16 +222,16 @@ class Rapored {
      * @return array
      */
     private static function RezervacijeForDay($day, $week, $year) {
-        $time = new DateTime();
+        $time = new \DateTime();
         $time->setTime(0, 0);
         $time->setISODate($year, $week, $day);
         $min = $time->format('Y-m-d H:i:s');
         $max = $time->modify('+1 day')->format('Y-m-d H:i:s');
-        $rezervacije = Rezervacija::with('mjera', 'predmet', 'instruktor')
+        $rezervacije = \Rezervacija::with('mjera', 'predmet', 'instruktor')
                 ->whereBetween('pocetak_rada', array($min, $max))
                 ->get();
 
-        $ucionice = \Ucionica::select('id')->get();
+        $ucionice = \Ucionica::all();
         $data = array();
         foreach ($ucionice as $ucionica) {
             $data[$ucionica->id] = array('ucionica' => $ucionica);
@@ -244,7 +251,7 @@ class Rapored {
         }
         return $data;
     }
-    
+
     /**
      * Returns whole raspored for specified day. Each ucionica has one column.
      * @param int $day day of week
@@ -252,18 +259,19 @@ class Rapored {
      * @param int $year Year
      * @return string
      */
-    public static function RasporedForDay($day, $week, $year){
+    public static function RasporedForDay($day, $week, $year) {
+        $widthPercent = 100/(\Ucionica::count()+1);
         $response = '<div class = "raspored">';
-        $ucionicaData = self::RezervacijeForDay($day, $week, $year);
-        $response .= self::HoursColumn();
-        foreach($ucionicaData as $blocks){
-            $response = '<div class = "column">';
+        $response .= self::HoursColumn($widthPercent/2);
+        foreach (self::RezervacijeForDay($day, $week, $year) as $blocks) {
+            $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';
             $response .= self::UcionicaHeading($blocks['ucionica']);
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
         }
-        $response .= self::HoursColumn();
+        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div>';
         return $response;
     }
+
 }
