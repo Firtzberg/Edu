@@ -33,9 +33,9 @@
 				Stay signed in
 			</label>
 		</div>
-		@if(Session::has('poruka'))
+		@if(Session::has(\BaseController::DANGER_MESSAGE_KEY))
 		<div class = "alert alert-warning">
-			{{ Session::get('poruka') }}
+			{{ Session::get(\BaseController::DANGER_MESSAGE_KEY) }}
 		</div>
 		@endif
 		{{ Form::submit('SignIn', array(

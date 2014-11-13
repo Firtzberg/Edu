@@ -21,13 +21,13 @@
 			</button>
 			<div class = "collapse navbar-collapse navHeaderCollapse">
 				<ul class = "nav navbar-nav navbar-right">
-					<li>{{ link_to_route('pocetna', 'Naslovna') }}</li>
+					<li>{{ link_to_route('home', 'Početna') }}</li>
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)||
                                         Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
 					@endif
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
-					<li>{{ link_to_route('Instruktor.index', 'Instruktori') }}</li>
+					<li>{{ link_to_route('Instruktor.index', 'Djelatnici') }}</li>
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
 					@endif
@@ -48,10 +48,10 @@
 	</div>
 	<div id="content-container" class="container">
 		@if(Session::has(BaseController::SUCCESS_MESSAGE_KEY))
-		<div class="alert alert-success">{{ Session::get('poruka') }}</div>
+		<div class="alert alert-success">{{ Session::get(BaseController::SUCCESS_MESSAGE_KEY) }}</div>
 		@endif
 		@if(Session::has(BaseController::DANGER_MESSAGE_KEY))
-		<div class="alert alert-danger">{{ Session::get('greska') }}</div>
+		<div class="alert alert-danger">{{ Session::get(BaseController::DANGER_MESSAGE_KEY) }}</div>
 		@endif
 		@yield('content')
 	</div>

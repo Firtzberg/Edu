@@ -28,30 +28,32 @@ class InstruktorController extends \ResourceController {
         return Redirect::route('Instruktor.index');
     }
 
-    public function signIn()
-	{
-		if(Auth::check())
-			return Redirect::route('home');
-		return View::make('signIn');
-	}
+    public function signIn() {
+        if (Auth::check()) {
+            return Redirect::route('home');
+        }
+        return View::make('signIn');
+    }
 
-	public function login()
-	{
-		if(Auth::check())
-			return Redirect::route('home')
-		->with(self::SUCCESS_MESSAGE_KEY, 'Već si bio registriran');
-		$remember = Input::get('remember');
+    public function login() {
+        if (Auth::check()&&Input::has('userName')) {
+            if (Auth::user()->name == Input::get('userName')) {
+                return Redirect::route('home')
+                                ->with(self::SUCCESS_MESSAGE_KEY, 'Već si bio registriran');
+            }
+        }
+        $remember = Input::get('remember');
 
-		if(Input::has('userName')&&Input::has('lozinka')&&
-			Auth::attempt(array('name' => Input::get('userName'),
-			'password' => Input::get('lozinka')), $remember))
-			return Redirect::route('home');
-		return Redirect::route('signIn')
-		->withInput()
-		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
-	}
+        if (Input::has('userName') && Input::has('lozinka') &&
+                Auth::attempt(array('name' => Input::get('userName'),
+                    'password' => Input::get('lozinka')), $remember))
+            return Redirect::route('home');
+        Session::flash(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
+        return Redirect::route('signIn')
+                        ->withInput();
+    }
 
-	public function logout()
+    public function logout()
 	{
 		Auth::logout();
 		if(Session::has(self::DANGER_MESSAGE_KEY))

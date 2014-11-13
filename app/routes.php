@@ -75,7 +75,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/Izvjestaj/Tjedan/{tjedan?}/{godina?}', array('uses' => 'IzvjestajController@ukupni_tjedni_izvjestaj', 'as' => 'Izvjestaj.ukupni_tjedni'));
 
 //pocetna
-    Route::get('/home', array('as' => 'pocetna', function() {
+    Route::get('/home', array('as' => 'home', function() {
             $t = new DateTime();
             $day = $t->format('N');
             $week = $t->format('W');
@@ -83,7 +83,7 @@ Route::group(array('before' => 'auth'), function() {
             return View::make('home')->with('day', $day)->with('week', $week)->with('year', $year);
         }));
  //listanje rasporeda
-    Route::get('/home/{day}/{week}/{year}', array('as' => 'home', function($day, $week, $year) {
+    Route::get('/home/{day}/{week}/{year}', array('as' => 'home.raspored', function($day, $week, $year) {
             $t = new DateTime();
             $t->setISODate($year, $week, $day);
             $day = $t->format('N');
