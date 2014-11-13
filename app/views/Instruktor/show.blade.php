@@ -30,7 +30,9 @@ Djelatnik
     @endif
 </dl>
 
+<div id="strana-rasporeda">
 {{ $raspored }}
+</div>
 {{ Form::open(array('route' => array('Instruktor.destroy', $instruktor->id), 'method' => 'delete', 'class' => 'form')) }}
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER) || Auth::id() == $instruktor->id)
 {{ link_to_route('Instruktor.edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}

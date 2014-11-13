@@ -69,9 +69,10 @@ class Raspored {
      * @param int $dayNumber
      * @return string
      */
-    public static function DayHeading($dayNumber) {
+    public static function DayHeading($dayNumber, $formatedDate) {
         $response = '<div class = "raspored-heading">';
         $response .= self::$dani[$dayNumber];
+        $response .= '<br/><small>'.$formatedDate.'</small>';
         $response .= '</div>';
         return $response;
     }
@@ -109,8 +110,9 @@ class Raspored {
                 ->get();
 
         $data = array();
+        $time->setISODate($year, $week, 0);
         for ($i = 0; $i < 7; $i++) {
-            $data[$i + 1] = array();
+            $data[$i + 1] = array('formatedDate' => $time->modify('+1 day')->format('d.m.Y'));
         }
 
         foreach ($rezervacije as $r) {
@@ -141,11 +143,13 @@ class Raspored {
         $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%;">';
-            $response .= self::DayHeading($dayNumber);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
+            if ($dayNumber == 5) {
+                $response .= self::HoursColumn($widthPercent / 2);
+            }
         }
-        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div>';
         return $response;
     }
@@ -171,8 +175,9 @@ class Raspored {
                 ->get();
 
         $data = array();
+        $time->setISODate($year, $week, 0);
         for ($i = 0; $i < 7; $i++) {
-            $data[$i + 1] = array();
+            $data[$i + 1] = array('formatedDate' => $time->modify('+1 day')->format('d.m.Y'));
         }
 
         foreach ($rezervacije as $r) {
@@ -203,11 +208,13 @@ class Raspored {
         $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
             $response .= '<div class = "raspored-column" style="width:'.$widthPercent.'%;">';
-            $response .= self::DayHeading($dayNumber);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
+            if ($dayNumber == 5) {
+                $response .= self::HoursColumn($widthPercent / 2);
+            }
         }
-        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div>';
         return $response;
     }
@@ -262,6 +269,9 @@ class Raspored {
     public static function RasporedForDay($day, $week, $year) {
         $widthPercent = 100/(\Ucionica::count()+1);
         $response = '<div class = "raspored">';
+        $dto = new \DateTime();
+        $dto->setISODate($year, $week, $day);
+        $response .= '<p>'.self::$dani[$day].', '.$dto->format('d.m.Y').'</p>';
         $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForDay($day, $week, $year) as $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';

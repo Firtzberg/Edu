@@ -31,21 +31,21 @@ class InstruktorController extends \ResourceController {
     public function signIn()
 	{
 		if(Auth::check())
-			return Redirect::route('Instruktor.show', Auth::id());
+			return Redirect::route('home');
 		return View::make('signIn');
 	}
 
 	public function login()
 	{
 		if(Auth::check())
-			return Redirect::route('Instruktor.show', Auth::id())
+			return Redirect::route('home')
 		->with(self::SUCCESS_MESSAGE_KEY, 'Već si bio registriran');
 		$remember = Input::get('remember');
 
 		if(Input::has('userName')&&Input::has('lozinka')&&
 			Auth::attempt(array('name' => Input::get('userName'),
 			'password' => Input::get('lozinka')), $remember))
-			return Redirect::route('Instruktor.show', Auth::id());
+			return Redirect::route('home');
 		return Redirect::route('signIn')
 		->withInput()
 		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');

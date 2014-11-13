@@ -29,7 +29,7 @@ class IzvjestajController extends \BaseController {
         $instruktor = User::find($id);
         if (!$instruktor) {
             Session::flash(self::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
-            return Redirect::route('Instruktor.show', Auth::id());
+            return Redirect::route('home');
         }
         return $this->t_izvjestaj($id, $tjedan, $godina)
                         ->with('instruktor', $instruktor);
@@ -114,7 +114,7 @@ class IzvjestajController extends \BaseController {
         $instruktor = User::find($id);
         if (!$instruktor) {
             Session::flash(self::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
-            return Redirect::route('Instruktor.show', Auth::id());
+            return Redirect::route('home');
         }
         return $this->g_izvjestaj($id, $godina)
                         ->with('instruktor', $instruktor);

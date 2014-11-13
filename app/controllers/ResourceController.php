@@ -5,19 +5,19 @@ class ResourceController extends \BaseController {
     public function __construct() {
         $this->beforeFilter(function() {
             if (!(Auth::check() && Auth::user()->hasPermission($this->deletePermissions))) {
-                return Redirect::to('login');
+                return Redirect::to('logout');
             }
         }, array('only' => array('destroy')));
 
         $this->beforeFilter(function() {
             if (!(Auth::check() && Auth::user()->hasPermission($this->watchPermissions))) {
-                return Redirect::to('login');
+                return Redirect::to('logout');
             }
         }, array('only' => array('index', '_list', 'show')));
 
         $this->beforeFilter(function() {
             if (!(Auth::check() && Auth::user()->hasPermission($this->managePermissions))) {
-                return Redirect::to('login');
+                return Redirect::to('logout');
             }
         }, array('only' => array('create', 'store', 'edit', 'update', 'destroy')));
     }

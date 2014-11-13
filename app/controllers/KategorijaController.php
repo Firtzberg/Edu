@@ -80,21 +80,44 @@ class KategorijaController extends \ResourceController {
     }
 
     /**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return Response
+     */
+    public function edit($id) {
+        $kategorija = Kategorija::find($id);
+        //provjera postojanja
+        if (!$kategorija)
+            return $this->itemNotFound();
+
+        return View::make('Kategorija.edit')
+                        ->with('kategorija', $kategorija);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @return Response
+     */
 	public function update($id)
 	{
 		$ime = Input::get('ime');
 		if(!$ime){
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Ime kategorije je obvezno.');
-			return Redirect::route('Kategorija.show', array($id));
+			return Redirect::route('Kategorija.edit', array($id))
+                        ->withInput();
 		}
-		$kategorija = Kategorija::find($id);
+		$kategorija = Kategorija::with('nadkategorija')->find($id);
+		$nadkategorija = $kategorija->nadkategorija;
 		if(!$kategorija)
 			return $this->itemNotFound();
+		if($nadkategorija->podkategorije()->where('ime', '=', $ime)->where('id', '!=', $id)->count() > 0){
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Kategorija '.$nadkategorija->ime.' već ima podkategoriju s imenom '.$ime.'.');
+			return Redirect::route('Kategorija.edit', array($id))
+                        ->withInput();
+		}
 		$kategorija->ime = $ime;
 		$kategorija->save();
 		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno preimenovana.');

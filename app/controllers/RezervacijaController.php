@@ -21,7 +21,7 @@ class RezervacijaController extends \ResourceController {
 
     private function itemNotFound() {
         Session::flash(self::DANGER_MESSAGE_KEY, Rezervacija::NOT_FOUND_MESSAGE);
-        return Redirect::route('Instruktor.show', Auth::id());
+        return Redirect::route('home');
     }
 
     public function create_naplata($id) {
@@ -227,7 +227,6 @@ class RezervacijaController extends \ResourceController {
                                 ->with('predmet_id', $rezervacija->predmet_id)
                                 ->with('instruktor_id', $rezervacija->instruktor_id)
                                 ->with('disableDropdown', true));
-        ;
     }
 
     /**

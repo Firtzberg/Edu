@@ -16,7 +16,9 @@ Učionica {{ $ucionica->naziv }}
 <dt>Sprat</dt><dd>{{ $ucionica->kat }}</dd>
 <dt>Opis</dt><dd>{{ $ucionica->opis }}</dd>
 
+<div id="strana-rasporeda">
 {{ $raspored }}
+</div>
 @if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_UCIONICA))
 {{ Form::open(array('route' => array('Ucionica.destroy', $ucionica->id), 'method' => 'delete')) }}
 @endif

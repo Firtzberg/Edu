@@ -1,6 +1,6 @@
 @section('list')
 @if($instruktori->count() > 0)
-<table class="table">
+<table class="table table-striped">
 <tbody>
 	<tr>
 		<th>Ime</th>

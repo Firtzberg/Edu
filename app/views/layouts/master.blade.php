@@ -21,6 +21,7 @@
 			</button>
 			<div class = "collapse navbar-collapse navHeaderCollapse">
 				<ul class = "nav navbar-nav navbar-right">
+					<li>{{ link_to_route('pocetna', 'Naslovna') }}</li>
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)||
                                         Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>

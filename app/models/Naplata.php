@@ -74,7 +74,7 @@ class Naplata extends Eloquent {
          * @return string|void
          */
         public function setStvarneVrijednosti($kolicina, $mjera_id){
-            if($kolicina && is_int($kolicina)){
+            if($kolicina){
                 if($kolicina < 1)
                 {
                     return 'Količina ne može biti manja od 1.';
@@ -84,7 +84,7 @@ class Naplata extends Eloquent {
             elseif($this->rezervacija){
                 $this->stvarna_kolicina = $this->rezervacija->kolicina;
             }
-            if($mjera_id && is_int($mjera_id)){
+            if($mjera_id){
                 $mjera = Mjera::find($mjera_id);
                 if(!$mjera)
                 {return Mjera::NOT_FOUND_MESSAGE;}
