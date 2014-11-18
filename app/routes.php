@@ -30,7 +30,7 @@ Route::post('/login', array('as' => 'login', 'uses' => 'InstruktorController@log
 Route::get('/logout', array('as' => 'logout', 'uses' => 'InstruktorController@logout'));
 Route::get('/', function() {
     if (Auth::check()) {
-        return Reditect::route('home');
+        return Redirect::route('home');
     } else {
         return Redirect::route('signIn');
     }
