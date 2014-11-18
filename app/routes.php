@@ -14,8 +14,6 @@ Route::pattern('id', '[0-9]+');
 Route::pattern('tjedan', '[0-9]+');
 Route::pattern('godina', '[0-9]+');
 Route::pattern('page', '[0-9]+');
-Route::pattern('kategorija_id', '[0-9]+');
-Route::pattern('user_id', '[0-9]+');
 Route::pattern('Djelatnik', '[0-9]+');
 Route::pattern('Ucionica', '[0-9]+');
 Route::pattern('Klijent', '[0-9]+');
@@ -53,7 +51,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
     Route::resource('Kategorija', 'KategorijaController', array('except' => array('create')));
     Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
-    Route::get('/Predmet/create/{kategorija_id}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
+    Route::get('/Predmet/create/{Kategorija}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
     Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index')));
     Route::get('/Rezervacija/{id}/copy', array('as' => 'Rezervacija.copy', 'uses' => 'RezervacijaController@copy'));
     Route::get('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@create_naplata', 'as' => 'Naplata.create'));
@@ -64,7 +62,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::get('/Excel', array('uses' => 'ExcelController@index', 'as' => 'Excel.index'));
     Route::post('/Excel/download', array('uses' => 'ExcelController@download', 'as' => 'Excel.download'));
 
-    Route::get('/Kategorija/{user_id}/Children/{id?}', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
+    Route::get('/Kategorija/{Djelatnik}/Children/{id?}', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
 
     Route::get('/Djelatnik/{Djelatnik}/changePassword', array('as' => 'Djelatnik.changePassword', 'uses' => 'DjelatnikController@changePassword'));
     Route::post('/Djelatnik/{Djelatnik}/changePassword', array('as' => 'Djelatnik.postChangePassword', 'uses' => 'DjelatnikController@postChangePassword'));
@@ -103,18 +101,18 @@ Route::group(array('before' => 'auth'), function() {
         $year = $t->format('o');
         return Helpers\Raspored::RasporedForDay($day, $week, $year);
     });
-    Route::get('/Djelatnik-raspored/{user_id}/{week}/{year}', function($user_id, $week, $year) {
+    Route::get('/Djelatnik-raspored/{Djelatnik}/{week}/{year}', function($Djelatnik, $week, $year) {
         $t = new DateTime();
         $t->setISODate($year, $week);
         $week = $t->format('W');
         $year = $t->format('o');
-        return Helpers\Raspored::RasporedForUserInWeek($user_id, $week, $year);
+        return Helpers\Raspored::RasporedForUserInWeek($Djelatnik, $week, $year);
     });
-    Route::get('/Ucionica-raspored/{ucionica_id}/{week}/{year}', function($ucionica_id, $week, $year) {
+    Route::get('/Ucionica-raspored/{Ucionica}/{week}/{year}', function($Ucionica, $week, $year) {
         $t = new DateTime();
         $t->setISODate($year, $week);
         $week = $t->format('W');
         $year = $t->format('o');
-        return Helpers\Raspored::RasporedForUcionicaInWeek($ucionica_id, $week, $year);
+        return Helpers\Raspored::RasporedForUcionicaInWeek($Ucionica, $week, $year);
     });
 });

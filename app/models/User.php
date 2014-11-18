@@ -129,14 +129,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
         /**
-         * 
-         * @return string
-         */
-	public function link(){
-		return link_to_route('Djelatnik.show', $this->name, array('id' => $this->id));
-	}
-        
-        /**
+     * 
+     * @return string
+     */
+    public function link() {
+        if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER)) {
+            return link_to_route('Djelatnik.show', $this->name, array('id' => $this->id));
+        }
+        return $this->name;
+    }
+
+    /**
          * Select users which have the required permission
          * @param \Illuminate\Database\Query\Builder $query
          * @param string $permission Permission to check

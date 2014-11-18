@@ -74,7 +74,16 @@ Route::filter('csrf', function() {
     }
 });
 
-Route::filter('myProfile', function($route) {
+Route::filter('ViewProfile', function($route) {
+    $id = $route->getParameter('id');
+    if ($id == null)
+        $id = $route->getParameter('Djelatnik');
+    if (!(Auth::check() && (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER) || Auth::id() == $id))) {
+        Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupiti zahtjevanom resursu.');
+        return Redirect::to('logout');
+    }
+});
+Route::filter('ManageProfile', function($route) {
     $id = $route->getParameter('id');
     if ($id == null)
         $id = $route->getParameter('Djelatnik');

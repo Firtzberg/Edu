@@ -3,7 +3,7 @@
 class KlijentController extends \ResourceController {
     public function __construct() {
         parent::__construct();
-        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_KLIJENT);
+        $this->requireWatchPermission(Permission::PERMISSION_VIEW_KLIJENT);
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_KLIJENT);
     }
 

@@ -4,7 +4,7 @@
 @if(isset($instruktor))
 {{ $instruktor->name }} - Uređivanje
 @else
-Dodavanje instruktora
+Dodavanje djelatnika
 @endif
 @endsection
 
@@ -19,11 +19,11 @@ $required = array(
 {{ Form::model($instruktor, array('route' => array('Djelatnik.update', $instruktor->id),
 'method' => 'put',
 'class' => 'form row')) }}
-<h2 class="form-heading">Uređivaje instruktora</h2>
+<h2 class="form-heading">Uređivaje djelatnika</h2>
 @else
 {{ Form::open(array('route' => 'Djelatnik.store',
 'class' => 'form row'))}}
-<h2 class="form-heading">Dodavanje instruktora</h2>
+<h2 class="form-heading">Dodavanje djelatnika</h2>
 @endif
 <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3">
 <div class = "form-group">

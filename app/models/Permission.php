@@ -18,6 +18,11 @@
 
 class Permission extends Eloquent
 {
+    const PERMISSION_VIEW_UCIONICA = 'Gledanje učionica';
+    const PERMISSION_VIEW_USER = 'Gledanje djelatnika';
+    const PERMISSION_VIEW_PREDMET_KATEGORIJA = 'Gledanje predmetima i kategorija';
+    const PERMISSION_VIEW_KLIJENT = 'Gledanje klijenata';
+    const PERMISSION_VIEW_ROLE = 'Gledanje uloga';
     const PERMISSION_MANAGE_UCIONICA = 'Upravljanje učionicama';
     const PERMISSION_MANAGE_USER = 'Upravljanje djelatnicima';
     const PERMISSION_MANAGE_PREDMET_KATEGORIJA = 'Upravljanje predmetima i kategorijama';

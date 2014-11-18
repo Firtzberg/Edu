@@ -7,12 +7,21 @@ class DjelatnikController extends \ResourceController {
 
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_USER);
         $this->beforeFilter(function() {
+            if (!Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER)) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('index', '_list')));
+        
+        $this->beforeFilter(function() {
             if (!Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER)) {
                 return Redirect::to('logout');
             }
         }, array('only' => array('create', 'store')));
 
-        $this->beforeFilter('myProfile', array('only' =>
+        $this->beforeFilter('ViewProfile', array('only' =>
+            array('show')));
+
+        $this->beforeFilter('ManageProfile', array('only' =>
             array('changePassword', 'postChangePassword', 'edit', 'update')));
 
         $this->beforeFilter(function($route) {

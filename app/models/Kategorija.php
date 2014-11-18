@@ -194,7 +194,7 @@ class Kategorija extends Eloquent {
          * @return string
          */
 	public function link(){
-            if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA)) {
+            if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA)) {
             return link_to_route('Kategorija.show', $this->ime, array('id' => $this->id));
         }
         return $this->ime;

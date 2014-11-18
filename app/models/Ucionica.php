@@ -44,9 +44,12 @@ class Ucionica extends Eloquent {
      * @return string
      */
     public function link() {
-        return link_to_route('Ucionica.show', $this->naziv, array('id' => $this->id));
+        if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_UCIONICA)) {
+            return link_to_route('Ucionica.show', $this->naziv, array('id' => $this->id));
+        }
+        return $this->naziv;
     }
-    
+
     public function getErrorOrSync($input){
         if(!is_array($input))
             return "Wrong input";

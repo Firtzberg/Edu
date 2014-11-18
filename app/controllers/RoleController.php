@@ -6,7 +6,7 @@ class RoleController extends \ResourceController {
         parent::__construct();
         
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_ROLE);
-        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_ROLE);
+        $this->requireWatchPermission(Permission::PERMISSION_VIEW_ROLE);
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_ROLE);
     }
     

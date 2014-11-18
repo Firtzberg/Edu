@@ -6,7 +6,7 @@ class PredmetController extends \ResourceController {
         parent::__construct();
         
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA);
-        $this->requireWatchPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA);
+        $this->requireWatchPermission(Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA);
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_PREDMET_KATEGORIJA);
     }
 

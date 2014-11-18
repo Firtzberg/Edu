@@ -93,7 +93,7 @@ class Role extends Eloquent
      * @return stirng
      */
     public function link() {
-        if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_ROLE)) {
+        if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_ROLE)) {
             return link_to_route('Role.show', $this->ime, array('id' => $this->id));
         }
         return $this->ime;

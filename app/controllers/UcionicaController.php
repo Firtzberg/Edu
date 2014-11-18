@@ -6,6 +6,7 @@ class UcionicaController extends \ResourceController {
         parent::__construct();
         
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_UCIONICA);
+        $this->requireWatchPermission(Permission::PERMISSION_VIEW_UCIONICA);
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_UCIONICA);
     }
 

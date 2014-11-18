@@ -7,36 +7,71 @@ class PermissionsTableSeeder extends Seeder {
 
         Permission::create(
             array(
+                'ime' => Permission::PERMISSION_VIEW_UCIONICA,
+                'opis' => 'Dozvola za pregledavanje popisa učionica i svake pojedine učionice. Ne uključuje dodavanje novih učionica, niti uređivanje ni brisanje postojećih.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_VIEW_KLIJENT,
+                'opis' => 'Dozvola za pregledavanje popisa klijenata i svakog pojedinog klijenta. Ne uključuje dodavanje novih klijenata, niti uređivanje ni brisanje postojećih.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA,
+                'opis' => 'Dozvola za pregledavanje strukture kategorija i predmeta i svakog pojedinog predmeta. Ne uključuje dodavanje novih predmeta ili kategorija, niti uređivanje ni brisanje postojećih.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_VIEW_ROLE,
+                'opis' => 'Dozvola za pregledavanje popisa uloga i svake pojedine uloge. Ne uključuje dodavanje novih uloga, niti uređivanje ni brisanje postojećih.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_VIEW_USER,
+                'opis' => 'Dozvola za pregledavanje popisa djelatnika i svakog pojedinog djelatnika. Ne uključuje dodavanje novih djelatnika, niti uređivanje ni brisanje postojećih.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
                 'ime' => Permission::PERMISSION_MANAGE_UCIONICA,
-                'opis' => 'Dozvola za dodavanje novih učionica i uređivanje postojećih. Uklonjanje učionica nije uključeno u ovu dozvolu.',
+                'opis' => 'Dozvola za dodavanje novih učionica i uređivanje postojećih. Uklonjanje učionica nije uključeno u ovu dozvolu. Zahtjeva '.Permission::PERMISSION_VIEW_UCIONICA.'.',
             )
         )->save();
 
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_MANAGE_KLIJENT,
-                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih klijenata. Uklonjanje klijenata nije uključeno u ovu dozvolu.',
+                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih klijenata. Uklonjanje klijenata nije uključeno u ovu dozvolu. Zahtjeva '.Permission::PERMISSION_VIEW_KLIJENT.'.',
             )
         )->save();
 
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA,
-                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih kategorija i predmeta. Uključuje dodjeljivanje/oduzimanje predmeta pojedinom djelatniku. Uklonjanje kategorija i predmeta nije uključeno u ovu dozvolu.',
+                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih kategorija i predmeta. Uključuje dodjeljivanje/oduzimanje predmeta pojedinom djelatniku. Uklonjanje kategorija i predmeta nije uključeno u ovu dozvolu. Zahtjeva '.Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA.'.',
             )
         )->save();
 
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_MANAGE_ROLE,
-                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih uloga. Uključuje određivanje dozvola pojedine uloge (tako i svojoj vlastitoj ulozi). Uklonjanje uloga nije uključeno u ovu dozvolu.',
+                'opis' => 'Dozvola za pregledanje, dodavanje novih i uređivanje postojećih uloga. Uključuje određivanje dozvola pojedine uloge (tako i svojoj vlastitoj ulozi). Uklonjanje uloga nije uključeno u ovu dozvolu. Zahtjeva '.Permission::PERMISSION_VIEW_ROLE.'.',
             )
         )->save();
 
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_MANAGE_USER,
-                'opis' => 'Dozvola za dodavanje novih djelatnika i uređivanje postojećih. Također uključuje dozvolu za promjenom uloge bilo kojem djelatniku (pa i sebi samome). Uklonjanje djelatnika nije uključeno u ovu dozvolu.',
+                'opis' => 'Dozvola za dodavanje novih djelatnika i uređivanje postojećih. Također uključuje dozvolu za promjenom uloge bilo kojem djelatniku (pa i sebi samome). Uklonjanje djelatnika nije uključeno u ovu dozvolu. Zahtjeva '.Permission::PERMISSION_VIEW_USER.'.',
             )
         )->save();
 

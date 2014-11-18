@@ -81,7 +81,7 @@ class Klijent extends Eloquent{
      * @return string
      */
 	public function link(){
-            if (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT)) {
+            if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_KLIJENT)) {
             return link_to_route('Klijent.show', $this->ime, array('id' => $this->broj_mobitela));
         }
         return $this->ime;

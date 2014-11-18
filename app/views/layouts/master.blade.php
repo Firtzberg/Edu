@@ -26,15 +26,19 @@
                                         Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
 					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_UCIONICA))
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
+					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER))
 					<li>{{ link_to_route('Djelatnik.index', 'Djelatnici') }}</li>
-					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
+                                        @endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA))
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
 					@endif
-					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_ROLE))
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_ROLE))
 					<li>{{ link_to_route('Role.index', 'Uloge') }}</li>
 					@endif
-					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_KLIJENT))
 					<li>{{ link_to_route('Klijent.index', 'Klijenti') }}</li>
 					@endif
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_DOWNLOAD_DATA))
