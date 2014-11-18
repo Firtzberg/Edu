@@ -7,42 +7,51 @@ div.raspored > p {
     font-size: 150%;
 }
 
-div.raspored > div.raspored-column {
-    float: left;
+div.raspored > div{
+    width: 100%;
+    overflow-x: scroll;
 }
-div.raspored > div.raspored-column > div.raspored-blocks{
+div.raspored > div > div {
+    width: 100%;
+    overflow-x: visible;
+}
+div.raspored > div > div > div {
+    float: left;
+    margin: 0;
+}
+div.raspored > div > div > div > div.raspored-blocks{
     position: relative;
 }
 
-div.raspored > div.raspored-column > div.raspored-heading {
+div.raspored > div > div >  div > div.raspored-heading {
     text-align: center;
     font-weight: bold;
     font-size: 150%;
     height: 58px;
 }
-div.raspored > div.raspored-column > div.raspored-heading > small{
+div.raspored > div > div >  div > div.raspored-heading > small{
     font-weight: normal;
     font-size: 60%;
 }
-div.raspored > div.raspored-column > div.raspored-vrijeme {
+div.raspored > div > div >  div > div.raspored-vrijeme {
     width: 100%;
     background-color: #e4e4e4;
     display: table;
 }
-div.raspored > div.raspored-column > div.raspored-vrijeme > p {
+div.raspored > div > div >  div > div.raspored-vrijeme > p {
     display: table-cell;
     vertical-align: middle;
     width: 100%;
     border-top: 1px solid black;
 }
-div.raspored > div.raspored-column > div.raspored-blocks > hr {
+div.raspored > div > div >  div > div.raspored-blocks > hr {
     position: absolute;
     left: 5%;
     width: 90%;
     border-color: black;
     margin: 0;
 }
-div.raspored > div.raspored-column > div.raspored-blocks > div.raspored-block {
+div.raspored > div > div >  div > div.raspored-blocks > div {
     border: 1px solid #333333 !important;
     position: absolute;
     width: 96%;
