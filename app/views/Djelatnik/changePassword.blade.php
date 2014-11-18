@@ -5,7 +5,7 @@ Promjena zaporke
 @endsection
 
 @section('content')
-{{ Form::open(array('route' => array('Instruktor.postChangePassword',
+{{ Form::open(array('route' => array('Djelatnik.postChangePassword',
 'id' => $instruktor->id),
 'class' => 'form-signin',
 'style' => 'max-width:330px;padding:15px;margin:auto')) }}

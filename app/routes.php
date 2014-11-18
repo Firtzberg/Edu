@@ -16,7 +16,7 @@ Route::pattern('godina', '[0-9]+');
 Route::pattern('page', '[0-9]+');
 Route::pattern('kategorija_id', '[0-9]+');
 Route::pattern('user_id', '[0-9]+');
-Route::pattern('Instruktor', '[0-9]+');
+Route::pattern('Djelatnik', '[0-9]+');
 Route::pattern('Ucionica', '[0-9]+');
 Route::pattern('Klijent', '[0-9]+');
 Route::pattern('Rezervacija', '[0-9]+');
@@ -25,9 +25,10 @@ Route::pattern('Predmet', '[0-9]+');
 Route::pattern('Kategorija', '[0-9]+');
 Route::when('*', 'csrf', array('post', 'put', 'delete', 'update'));
 
-Route::get('/signin', array('as' => 'signIn', 'uses' => 'InstruktorController@signIn'));
-Route::post('/login', array('as' => 'login', 'uses' => 'InstruktorController@login'));
-Route::get('/logout', array('as' => 'logout', 'uses' => 'InstruktorController@logout'));
+Route::get('/signin', array('as' => 'signIn', 'uses' => 'DjelatnikController@signIn'));
+Route::get('/login', array('uses' => 'DjelatnikController@signIn'));
+Route::post('/login', array('as' => 'login', 'uses' => 'DjelatnikController@login'));
+Route::get('/logout', array('as' => 'logout', 'uses' => 'DjelatnikController@logout'));
 Route::get('/', function() {
     if (Auth::check()) {
         return Redirect::route('home');
@@ -40,13 +41,13 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('/Klijent/Suggestions', array('uses' => 'KlijentController@getSuggestionedKlijents', 'as' => 'Klijent.Suggestions'));
 
 //search
-    Route::post('/Instruktor/list/{page}/{searchString?}', array('as' => 'Instruktor.list', 'uses' => 'InstruktorController@_list'));
+    Route::post('/Djelatnik/list/{page}/{searchString?}', array('as' => 'Djelatnik.list', 'uses' => 'DjelatnikController@_list'));
     Route::post('/Ucionica/list/{page}/{searchString?}', array('as' => 'Ucionica.list', 'uses' => 'UcionicaController@_list'));
     Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list', 'uses' => 'KlijentController@_list'));
     Route::post('/Role/list/{page}/{searchString?}', array('as' => 'Role.list', 'uses' => 'RoleController@_list'));
 
 //restfull
-    Route::resource('Instruktor', 'InstruktorController');
+    Route::resource('Djelatnik', 'DjelatnikController');
     Route::resource('Ucionica', 'UcionicaController');
     Route::resource('Role', 'RoleController');
     Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
@@ -65,8 +66,8 @@ Route::group(array('before' => 'auth'), function() {
 
     Route::get('/Kategorija/{user_id}/Children/{id?}', array('as' => 'Kategorija.children', 'uses' => 'KategorijaController@getChildren'));
 
-    Route::get('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.changePassword', 'uses' => 'InstruktorController@changePassword'));
-    Route::post('/Instruktor/{id}/changePassword', array('as' => 'Instruktor.postChangePassword', 'uses' => 'InstruktorController@postChangePassword'));
+    Route::get('/Djelatnik/{Djelatnik}/changePassword', array('as' => 'Djelatnik.changePassword', 'uses' => 'DjelatnikController@changePassword'));
+    Route::post('/Djelatnik/{Djelatnik}/changePassword', array('as' => 'Djelatnik.postChangePassword', 'uses' => 'DjelatnikController@postChangePassword'));
 
 //izvjestaji
     Route::get('/Izvjestaj/{id}/Godina/{godina?}', array('uses' => 'IzvjestajController@godisnji_izvjestaj', 'as' => 'Izvjestaj.godisnji'));
@@ -92,7 +93,7 @@ Route::group(array('before' => 'auth'), function() {
             return View::make('home')->with('day', $day)->with('week', $week)->with('year', $year);
         }));
     Route::get('/Ucionica/{id}/{tjedan?}/{godina?}', array('uses' => 'UcionicaController@show', 'as' => 'Ucionica.raspored'));
-    Route::get('/Instruktor/{id}/{tjedan?}/{godina?}', array('uses' => 'InstruktorController@show', 'as' => 'Instruktor.raspored'));
+    Route::get('/Djelatnik/{id}/{tjedan?}/{godina?}', array('uses' => 'DjelatnikController@show', 'as' => 'Djelatnik.raspored'));
 //ajax listanje rasporeda
     Route::get('/home-raspored/{day}/{week}/{year}', function($day, $week, $year) {
         $t = new DateTime();
@@ -102,7 +103,7 @@ Route::group(array('before' => 'auth'), function() {
         $year = $t->format('o');
         return Helpers\Raspored::RasporedForDay($day, $week, $year);
     });
-    Route::get('/Instruktor-raspored/{user_id}/{week}/{year}', function($user_id, $week, $year) {
+    Route::get('/Djelatnik-raspored/{user_id}/{week}/{year}', function($user_id, $week, $year) {
         $t = new DateTime();
         $t->setISODate($year, $week);
         $week = $t->format('W');

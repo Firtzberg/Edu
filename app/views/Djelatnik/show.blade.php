@@ -33,11 +33,11 @@ Djelatnik
 <div id="strana-rasporeda">
 {{ $raspored }}
 </div>
-{{ Form::open(array('route' => array('Instruktor.destroy', $instruktor->id), 'method' => 'delete', 'class' => 'form')) }}
+{{ Form::open(array('route' => array('Djelatnik.destroy', $instruktor->id), 'method' => 'delete', 'class' => 'form')) }}
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER) || Auth::id() == $instruktor->id)
-{{ link_to_route('Instruktor.edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}
+{{ link_to_route('Djelatnik.edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}
 {{ link_to_route('Izvjestaj.tjedni', 'Izvjestaj', array($instruktor->id), array('class' => 'btn btn-default')) }}
-{{ link_to_route('Instruktor.changePassword', 'Promijeni zaporku', array($instruktor->id), array('class' => 'btn btn-default')) }} 
+{{ link_to_route('Djelatnik.changePassword', 'Promijeni zaporku', array($instruktor->id), array('class' => 'btn btn-default')) }} 
 @endif
 @if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_USER) && !$instruktor->id == Auth::id())
 {{ Form::submit('Ukloni', array(

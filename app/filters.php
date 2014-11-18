@@ -77,7 +77,7 @@ Route::filter('csrf', function() {
 Route::filter('myProfile', function($route) {
     $id = $route->getParameter('id');
     if ($id == null)
-        $id = $route->getParameter('Instruktor');
+        $id = $route->getParameter('Djelatnik');
     if (!(Auth::check() && (Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER) || Auth::id() == $id))) {
         Session::flash(BaseController::DANGER_MESSAGE_KEY, 'Nemate pravo pristupiti zahtjevanom resursu.');
         return Redirect::to('logout');

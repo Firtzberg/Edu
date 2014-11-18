@@ -16,12 +16,12 @@ $required = array(
 'required' => 'required');
 ?>
 @if(isset($instruktor))
-{{ Form::model($instruktor, array('route' => array('Instruktor.update', $instruktor->id),
+{{ Form::model($instruktor, array('route' => array('Djelatnik.update', $instruktor->id),
 'method' => 'put',
 'class' => 'form row')) }}
 <h2 class="form-heading">Uređivaje instruktora</h2>
 @else
-{{ Form::open(array('route' => 'Instruktor.store',
+{{ Form::open(array('route' => 'Djelatnik.store',
 'class' => 'form row'))}}
 <h2 class="form-heading">Dodavanje instruktora</h2>
 @endif

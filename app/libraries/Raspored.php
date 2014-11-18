@@ -94,19 +94,19 @@ class Raspored {
      * Gets all reservations in specified week for specified user.
      * The key is the day number in week, and the value is an array of
      * arrays with offset, span, rezervacija, boja and instruktor each. 
-     * @param int $instruktor User
+     * @param int $djelatnik User
      * @param int $week ISO week number
      * @param int $year Year
      * @return array
      */
-    private static function RezervacijeForUserInWeek($instruktor, $week, $year) {
+    private static function RezervacijeForUserInWeek($djelatnik, $week, $year) {
         $time = new \DateTime();
         $time->setTime(0, 0);
         $time->setISODate($year, $week);
         $min = $time->format('Y-m-d H:i:s');
         $max = $time->modify('+1 week')->format('Y-m-d H:i:s');
         $rezervacije = \Rezervacija::with('mjera', 'predmet', 'ucionica')
-                ->where('instruktor_id', '=', $instruktor->id)
+                ->where('instruktor_id', '=', $djelatnik->id)
                 ->whereBetween('pocetak_rada', array($min, $max))
                 ->get();
 
@@ -125,7 +125,7 @@ class Raspored {
                 'span' => (int) (($kraj - $pocetak) / 60 / 15),
                 'rezervacija' => $r->link(),
                 'extra' => $r->ucionica->link(),
-                'boja' => $instruktor->boja
+                'boja' => $djelatnik->boja
             );
         }
         return $data;

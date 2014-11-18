@@ -13,7 +13,7 @@ Prikaz rezervacije
 
 <div class="col-xs-12 col-sm-6">
 <dl class="dl-horizontal">
-<dt>Instruktor</dt><dd>{{ $rezervacija->instruktor->link() }}</dd>
+<dt>Djelatnik</dt><dd>{{ $rezervacija->instruktor->link() }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
 <dt>Trajanje</dt><dd>{{ $rezervacija->kolicina.' '.$rezervacija->mjera->znacenje }}</dd>
 <dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>

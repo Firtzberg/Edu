@@ -27,7 +27,7 @@
 					<li>{{ link_to_route('Rezervacija.create', 'Nova Rezervacija') }}</li>
 					@endif
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
-					<li>{{ link_to_route('Instruktor.index', 'Djelatnici') }}</li>
+					<li>{{ link_to_route('Djelatnik.index', 'Djelatnici') }}</li>
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
 					@endif
@@ -40,7 +40,7 @@
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_DOWNLOAD_DATA))
 					<li>{{ link_to_route('Excel.index', 'Preuzimanje') }}</li>
 					@endif
-					<li>{{ link_to_route('Instruktor.show', 'Profil', Auth::id()) }}</li>
+					<li>{{ link_to_route('Djelatnik.show', 'Profil', Auth::id()) }}</li>
 					<li>{{ link_to_route('logout', 'Odjava') }}</li>
 				</ul>
 			</div>

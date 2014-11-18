@@ -1,14 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
-
-
 class IzvjestajController extends \BaseController {
 
     public function __construct() {
@@ -26,13 +17,13 @@ class IzvjestajController extends \BaseController {
     }
 
     public function tjedni_izvjestaj($id, $tjedan = null, $godina = null) {
-        $instruktor = User::find($id);
-        if (!$instruktor) {
-            Session::flash(self::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
+        $djelatnik = User::find($id);
+        if (!$djelatnik) {
+            Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
             return Redirect::route('home');
         }
         return $this->t_izvjestaj($id, $tjedan, $godina)
-                        ->with('instruktor', $instruktor);
+                        ->with('instruktor', $djelatnik);
     }
 
     public function ukupni_tjedni_izvjestaj($tjedan = null, $godina = null) {
@@ -111,13 +102,13 @@ class IzvjestajController extends \BaseController {
     }
 
     public function godisnji_izvjestaj($id, $godina = null) {
-        $instruktor = User::find($id);
-        if (!$instruktor) {
-            Session::flash(self::DANGER_MESSAGE_KEY, Instruktor::NOT_FOUND_MESSAGE);
+        $djelatnik = User::find($id);
+        if (!$djelatnik) {
+            Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
             return Redirect::route('home');
         }
         return $this->g_izvjestaj($id, $godina)
-                        ->with('instruktor', $instruktor);
+                        ->with('instruktor', $djelatnik);
     }
 
     private function g_izvjestaj($id, $godina) {

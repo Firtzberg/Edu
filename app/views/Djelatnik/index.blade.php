@@ -1,7 +1,7 @@
 @extends('layouts.index')
 
 @section('naslov')
-Instruktori
+Djelatnici
 @endsection
 
 @section('list')
@@ -11,6 +11,6 @@ Instruktori
 
 @section('create_button')
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER))
-{{ link_to_route('Instruktor.create', 'Dodaj instruktora', null, array('class' => 'btn btn-primary')) }}
+{{ link_to_route('Djelatnik.create', 'Dodaj instruktora', null, array('class' => 'btn btn-primary')) }}
 @endif
 @endsection

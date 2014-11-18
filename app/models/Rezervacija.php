@@ -110,7 +110,7 @@ class Rezervacija extends Eloquent {
 		//provjera postojanja potrebnih podataka
 			//provjera postojanja podataka za instruktora
 				if(!isset($input['instruktor_id']))
-					return 'Instruktor je obvezan.';
+					return 'Djelatnik je obvezan.';
 				$instruktor_id = $input['instruktor_id'];
 			//kraj provjere postojanja podataka za instruktora
 
@@ -219,8 +219,8 @@ class Rezervacija extends Eloquent {
 		//kraj provjere dozvoljenih vrijednosti podataka koji se ne odnose na relacije
 
 		//provjera postojanja referenciranih unosa
-			$instruktor = User::find($instruktor_id);
-			if(!$instruktor)
+			$djelatnik = User::find($instruktor_id);
+			if(!$djelatnik)
 				return User::NOT_FOUND_MESSAGE;
 
 			$predmet = Predmet::find($predmet_id);
@@ -284,7 +284,7 @@ class Rezervacija extends Eloquent {
 			//kraj provjere zauzetosti instruktora
                         
                         //Provjera dozvole predavanja zadanog predmeta
-                                if($instruktor->predmeti()->where('predmeti.id', '=', $predmet_id)->count() < 1)
+                                if($djelatnik->predmeti()->where('predmeti.id', '=', $predmet_id)->count() < 1)
 					return 'Odabrani instruktor nema dozvolu predavati zadani predmet.';
                         //Kraj provjere dozvole predavanja zadanog predmeta
 		//kraj ostalih provjera relacija

@@ -151,20 +151,20 @@ class RezervacijaController extends \ResourceController {
      */
     public function store() {
         $input = Input::all();
-        $instruktor_id = Input::get('instruktor_id', Auth::id());
+        $djelatnik_id = Input::get('instruktor_id', Auth::id());
         if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                Auth::id() == $instruktor_id)||
+                Auth::id() == $djelatnik_id)||
                 (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                                Auth::id() != $instruktor_id)||
+                                Auth::id() != $djelatnik_id)||
                 (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                User::whereId($instruktor_id)
+                User::whereId($djelatnik_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
                         ->count() < 1)){
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('Rezervacija.create')
                             ->withInput();
         }
-        $input['instruktor_id'] = $instruktor_id;
+        $input['instruktor_id'] = $djelatnik_id;
         $rezervacija = new Rezervacija();
 
         //provjera ispravnosti podataka
@@ -249,13 +249,13 @@ class RezervacijaController extends \ResourceController {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nemate dozvolu uređivati započetu rezervaciju.');
             return Redirect::route('Rezervacija.show', $id);
         }
-        $instruktor_id = Input::get('instruktor_id', Auth::id());
+        $djelatnik_id = Input::get('instruktor_id', Auth::id());
         if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                Auth::id() == $instruktor_id)||
+                Auth::id() == $djelatnik_id)||
                 (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                                Auth::id() != $instruktor_id)||
+                                Auth::id() != $djelatnik_id)||
                 (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                User::whereId($instruktor_id)
+                User::whereId($djelatnik_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
                         ->count() < 1)){
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
@@ -263,7 +263,7 @@ class RezervacijaController extends \ResourceController {
                             ->withInput();
         }
         $input = Input::all();
-        $input['instruktor_id'] = $instruktor_id;
+        $input['instruktor_id'] = $djelatnik_id;
 
         //provjera ispravnosti podataka
         $errorMessage = $rezervacija->getErrorOrSync($input);
@@ -310,7 +310,7 @@ class RezervacijaController extends \ResourceController {
         }
         $rezervacija->delete();
         Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
-        return Redirect::route('Instruktor.show', Auth::id());
+        return Redirect::route('Djelatnik .show', Auth::id());
     }
 
 }

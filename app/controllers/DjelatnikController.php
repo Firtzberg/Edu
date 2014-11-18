@@ -1,6 +1,6 @@
 <?php
 
-class InstruktorController extends \ResourceController {
+class DjelatnikController extends \ResourceController {
     
     public function __construct() {
         parent::__construct();
@@ -17,7 +17,7 @@ class InstruktorController extends \ResourceController {
 
         $this->beforeFilter(function($route) {
             if (!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET) ||
-                    Auth::id() == $route->getParameter('User'))) {
+                    Auth::id() == $route->getParameter('Djelatnik'))) {
                 return Redirect::to('logout');
             }
         }, array('only' => array('changePassword', 'postChangePassword')));
@@ -25,7 +25,7 @@ class InstruktorController extends \ResourceController {
 
     private function itemNotFound() {
         Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
-        return Redirect::route('Instruktor.index');
+        return Redirect::route('Djelatnik.index');
     }
 
     public function signIn() {
@@ -63,32 +63,32 @@ class InstruktorController extends \ResourceController {
 
 	public function changePassword($id)
 	{
-		$instruktor = User::find($id);
-		if(!$instruktor)
+		$djelatnik = User::find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
-		return View::make('Instruktor.changePassword')
-		->with('instruktor', $instruktor);
+		return View::make('Djelatnik.changePassword')
+		->with('instruktor', $djelatnik);
 	}
 
 	public function postChangePassword($id)
 	{
-		$instruktor = User::find($id);
-		if(!$instruktor)
+		$djelatnik = User::find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
 		if(!(Input::has('oldpass')||Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET))
                         ||!Input::has('newpass')||!Input::has('rep'))
-			return Redirect::route('Instruktor.changePassword', $id)
+			return Redirect::route('Djelatnik.changePassword', $id)
 		->with(self::DANGER_MESSAGE_KEY, 'Nedovoljan unos!');
 		$oldpass = Input::get('oldpass');
 		$newpass = Input::get('newpass');
 		$rep = Input::get('rep');
 		if($newpass != $rep||!(Auth::user()->hasPermission(Permission::PERMISSION_PASSWORD_RESET)||
-                        Hash::check($oldpass, $instruktor->lozinka)))
-			return Redirect::route('Instruktor.changePassword', $id)
+                        Hash::check($oldpass, $djelatnik->lozinka)))
+			return Redirect::route('Djelatnik.changePassword', $id)
 		->with(self::DANGER_MESSAGE_KEY, 'Kriv unos!');
-		$instruktor->lozinka = Hash::make($newpass);
-		$instruktor->save();
-		return Redirect::route('Instruktor.show', $id)
+		$djelatnik->lozinka = Hash::make($newpass);
+		$djelatnik->save();
+		return Redirect::route('Djelatnik.show', $id)
 		->with(self::SUCCESS_MESSAGE_KEY, 'Uspješna promjena zaporke!');
 	}
 
@@ -99,22 +99,22 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function index()
 	{
-		return View::make('Instruktor.index')
+		return View::make('Djelatnik.index')
 		->with('list', $this->_list());
 	}
 
 	public function _list($page = 1, $searchString = null){
 		if(!empty($searchString)){
-			$instruktori = User::where('name', 'like', '%'.$searchString.'%')
+			$djelatnici = User::where('name', 'like', '%'.$searchString.'%')
 			->orderBy('name');
 		}
 		else
-			$instruktori = User::orderBy('name');
+			$djelatnici = User::orderBy('name');
 		if($page != 1)
 			Paginator::setCurrentPage($page);
-		$instruktori = $instruktori->paginate(10);
-		$v = View::make('Instruktor.list')
-		->with('instruktori', $instruktori);
+		$djelatnici = $djelatnici->paginate(10);
+		$v = View::make('Djelatnik.list')
+		->with('instruktori', $djelatnici);
 		if(Request::ajax())
 			return $v->renderSections()['list'];
 		return $v;
@@ -128,7 +128,7 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function create()
 	{
-		return View::make('Instruktor.create');
+		return View::make('Djelatnik.create');
 	}
 
 
@@ -145,19 +145,19 @@ class InstruktorController extends \ResourceController {
 				'lozinka' => 'required|min:5|same:ponovljena',
 				'email' => 'email'));
 		if($validator->fails())
-		  	return Redirect::route('Instruktor.create')
+		  	return Redirect::route('Djelatnik.create')
 	  	->withInput()
 	  	->with(self::DANGER_MESSAGE_KEY, $validator->messages()->first());
 
 		$s = new User();
 		$error = $s->getErrorOrSync(Input::all());
 		if($error)
-			return Redirect::route('Instruktor.create')
+			return Redirect::route('Djelatnik.create')
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 
-		return Redirect::route('Instruktor.index')
-	  	->with(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno dodan.');
+		return Redirect::route('Djelatnik.index')
+	  	->with(self::SUCCESS_MESSAGE_KEY, 'Djelatnik je uspješno dodan.');
 	}
 
 
@@ -169,11 +169,11 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function show($id, $tjedan = null, $godina = null)
 	{
-		$instruktor =  User::with('predmeti', 'role')->find($id);
-		if(!$instruktor)
+		$djelatnik =  User::with('predmeti', 'role')->find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
-		return View::make('Instruktor.show')
-		->with('instruktor',$instruktor)
+		return View::make('Djelatnik.show')
+		->with('instruktor',$djelatnik)
 		->with('raspored', $this->raspored($id, $tjedan, $godina));
 	}
 
@@ -186,11 +186,11 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function edit($id)
 	{
-		$instruktor =  User::find($id);
-		if(!$instruktor)
+		$djelatnik =  User::find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
-		return View::make('Instruktor.create')
-		->with('instruktor', $instruktor);
+		return View::make('Djelatnik.create')
+		->with('instruktor', $djelatnik);
 	}
 
 
@@ -202,18 +202,18 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function update($id)
 	{
-		$instruktor = User::find($id);
-		if(!$instruktor)
+		$djelatnik = User::find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
 
-		$error = $instruktor->getErrorOrSync(Input::all());
+		$error = $djelatnik->getErrorOrSync(Input::all());
 		if($error)
-			return Redirect::route('Instruktor.create')
+			return Redirect::route('Djelatnik.create')
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor uspješno uređen');
-		return Redirect::route('Instruktor.show', $id);
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Djelatnik uspješno uređen.');
+		return Redirect::route('Djelatnik.show', $id);
 	}
 
 
@@ -225,16 +225,16 @@ class InstruktorController extends \ResourceController {
 	 */
 	public function destroy($id)
 	{
-		$instruktor = User::find($id);
-		if(!$instruktor)
+		$djelatnik = User::find($id);
+		if(!$djelatnik)
 			return $this->itemNotFound();
-		elseif($instruktor->id == Auth::id())
+		elseif($djelatnik->id == Auth::id())
 			Session::flash(self::DANGER_MESSAGE_KEY, 'Ne možeš ukloniti samoga sebe.');
 		else{
-			$instruktor->delete();
-			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Instruktor je uspješno uklonjen!');
+			$djelatnik->delete();
+			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Djelatnik je uspješno uklonjen!');
 		}
-		return Redirect::route('Instruktor.index');
+		return Redirect::route('Djelatnik.index');
 	}
 
 
@@ -251,7 +251,7 @@ class InstruktorController extends \ResourceController {
 			$tjedan = $t->format('W');
 			$godina = $t->format('o');
 		}
-		return View::make('Instruktor.raspored')
+		return View::make('Djelatnik.raspored')
 		->with('tjedan', $tjedan)
 		->with('godina', $godina)
 		->with('instruktor', User::find($id))

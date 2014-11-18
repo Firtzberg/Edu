@@ -9,7 +9,7 @@ div.raspored > p {
 
 div.raspored > div{
     width: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
 }
 div.raspored > div > div {
     width: 100%;

@@ -60,14 +60,14 @@ class Kategorija extends Eloquent {
         
         /**
      * Checks if there are any child Predmeti or Kategorije for the user
-         * with id equal to $instruktor_id
-     * @param int $instruktor_id Id of the user
+         * with id equal to $djelatnik_id
+     * @param int $djelatnik_id Id of the user
      * @return boolean
      */
-    private function hasChildrenFor($instruktor_id) {
+    private function hasChildrenFor($djelatnik_id) {
         if (Predmet::select('id', 'ime')
                         ->where('kategorija_id', '=', $this->id)
-                        ->withUser($instruktor_id)
+                        ->withUser($djelatnik_id)
                         ->count() > 0) {
             return true;
         }
@@ -76,7 +76,7 @@ class Kategorija extends Eloquent {
                 ->whereRaw('nadkategorija_id != id')
                 ->get();
         foreach ($kategorije as $kategorija){
-            if ($kategorija->hasChildrenFor($instruktor_id)) {
+            if ($kategorija->hasChildrenFor($djelatnik_id)) {
                 return true;
             }
         }
@@ -84,52 +84,52 @@ class Kategorija extends Eloquent {
     }
 
     /**
-     * Gets all child Predmeti allowed for the user with id equal to $instruktor_id
-     * @param int $instruktor_id Id of User
+     * Gets all child Predmeti allowed for the user with id equal to $djelatnik_id
+     * @param int $djelatnik_id Id of User
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getChildrenPremetiFor($instruktor_id) {
+    public function getChildrenPremetiFor($djelatnik_id) {
         return Predmet::select('id', 'ime')
                         ->where('kategorija_id', '=', $this->id)
-                        ->withUser($instruktor_id)
+                        ->withUser($djelatnik_id)
                         ->get();
     }
 
     /**
-     * Gets all cild Kategorije which have a nested Predmeti for the user with id equal to $instruktor_id
-     * @param int $instruktor_id Id of User
+     * Gets all cild Kategorije which have a nested Predmeti for the user with id equal to $djelatnik_id
+     * @param int $djelatnik_id Id of User
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function getChildrenKategorijeFor($instruktor_id) {
+    public function getChildrenKategorijeFor($djelatnik_id) {
         return Kategorija::select('id', 'ime')
                         ->where('nadkategorija_id', '=', $this->id)
                         ->whereRaw('nadkategorija_id != id')
                         ->get()
-                        ->filter(function($kategorija)use($instruktor_id) {
-                            return $kategorija->hasChildrenFor($instruktor_id);
+                        ->filter(function($kategorija)use($djelatnik_id) {
+                            return $kategorija->hasChildrenFor($djelatnik_id);
                         });
     }
 
     /**
      * Gets an array for making a dropdown in Rezervacija.create view using selectManager.
-     * @param int $instruktor_id Id of USer
+     * @param int $djelatnik_id Id of USer
      * @return array Array with 'predmeti' and 'kategorije' keys
      */
-    public function getChildrenFor($instruktor_id) {
-        return array(self::JSON_KATEGORIJE_IDENTIFIER => array_values($this->getChildrenKategorijeFor($instruktor_id)->toArray()),
-            self::JSON_PREDMETI_IDENTIFIER => array_values($this->getChildrenPremetiFor($instruktor_id)->toArray()));
+    public function getChildrenFor($djelatnik_id) {
+        return array(self::JSON_KATEGORIJE_IDENTIFIER => array_values($this->getChildrenKategorijeFor($djelatnik_id)->toArray()),
+            self::JSON_PREDMETI_IDENTIFIER => array_values($this->getChildrenPremetiFor($djelatnik_id)->toArray()));
     }
     /**
      * Gets ComplexDataStructure for initializing selectManager, and responding to Ajax
-     * @param int $instruktor_id Id of User
+     * @param int $djelatnik_id Id of User
      * @return array
      */
-    public function getHierarchyFor($instruktor_id = null) {
-        if (!$instruktor_id) {
+    public function getHierarchyFor($djelatnik_id = null) {
+        if (!$djelatnik_id) {
             return array();
         }
-        $kategorije = $this->getChildrenKategorijeFor($instruktor_id);
-        $predmeti = $this->getChildrenPremetiFor($instruktor_id);
+        $kategorije = $this->getChildrenKategorijeFor($djelatnik_id);
+        $predmeti = $this->getChildrenPremetiFor($djelatnik_id);
         if(count($kategorije) + count($predmeti) == 1){
             if(count($predmeti) == 1){
                 return array(
@@ -150,7 +150,7 @@ class Kategorija extends Eloquent {
                         self::JSON_ID_IDENTIFIER => $kategorije[0]->id
                     )
                 )
-                    ), $kategorije[0]->getHierarchyFor($instruktor_id));
+                    ), $kategorije[0]->getHierarchyFor($djelatnik_id));
         }
         return array(
             array(
