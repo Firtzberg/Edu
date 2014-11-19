@@ -55,6 +55,14 @@ class PermissionRoleTableSeeder extends Seeder {
                 ))->get()->lists('id');
         if (count($permissionIds) > 0)
             $role->permissions()->attach($permissionIds);
+        
+        $role = Role::where('ime', '=', 'Voditelj tečaja')->first();
+        $permissionIds = Permission::select('id')->whereIn('ime', array(
+                    Permission::PERMISSION_OWN_REZERVACIJA_HANDLING,
+                    Permission::PERMISSION_TECAJ,
+                    Permission::PERMISSION_VIEW_UCIONICA,
+                ))->get()->lists('id');
+        if (count($permissionIds) > 0)
+            $role->permissions()->attach($permissionIds);
     }
-
 }

@@ -25,8 +25,6 @@ class CreateUsersTable extends Migration {
                     ->unsigned()
                     ->nullable()
                     ->index();
-            $table->dateTime('obracun')
-                    ->nullable();
             $table->timestamps();
         });
 

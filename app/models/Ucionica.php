@@ -12,14 +12,14 @@
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\Rezervacija[] $rezervacije
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereNaziv($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereMaxBrojUcenika($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereAdresa($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereKat($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereOpis($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Ucionica whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereNaziv($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereMaxBrojUcenika($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereAdresa($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereKat($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereOpis($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Ucionica whereUpdatedAt($value)
  */
 
 class Ucionica extends Eloquent {

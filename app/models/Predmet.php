@@ -12,12 +12,13 @@
  * @property-read \Kategorija $kategorija
  * @property-read \Illuminate\Database\Eloquent\Collection|\User[] $users
  * @property-read \Illuminate\Database\Eloquent\Collection|\Mjera[] $cijene
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereIme($value) 
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereKategorijaId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereEnabled($value) 
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Predmet whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereIme($value)
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereKategorijaId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereEnabled($value)
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Predmet whereUpdatedAt($value)
+ * @method static \Predmet withUser($user_id) 
  */
 
 

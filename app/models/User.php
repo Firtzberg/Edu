@@ -29,6 +29,7 @@ use Illuminate\Auth\Reminders\RemindableInterface;
  * @method static \Illuminate\Database\Query\Builder|\User whereRoleId($value)
  * @method static \Illuminate\Database\Query\Builder|\User whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\User whereUpdatedAt($value)
+ * @method static \User withPermission($permission) 
  */
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
@@ -206,6 +207,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 			$this->boja = substr($input['boja'], 1);
 		if(isset($input['broj_mobitela']))
 			$this->broj_mobitela = $input['broj_mobitela'];
+		if(isset($input['lozinka']))
+			$this->lozinka = Hash::make($input['lozinka']);
 		if(isset($input['email']))
 			$this->email = $input['email'];
 		if(isset($input['facebook']))
@@ -226,7 +229,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
             ->lists('id');
         //kraj odabira predmeta
 
-		$this->save();
+	$this->save();
             
         if(count($predmet_ids) > 0)
             $this->predmeti()->sync($predmet_ids);

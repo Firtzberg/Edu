@@ -1,11 +1,17 @@
 @if(is_null($rezervacija->naplata))
-@if(strtotime($rezervacija->pocetak_rada)>time())
-<h4>Nije moguće naplatiti prije odrade instrukcija.</h4>
+<h4>
+@if($rezervacija->tecaj)
+Tečajevi se ne naplaćuju.
 @else
-<h4>Naplata nije izvršena.</h4>
+@if(strtotime($rezervacija->pocetak_rada)>time())
+Nije moguće naplatiti prije odrade instrukcija.
+@else
+Naplata nije izvršena.
 {{ link_to_route('Naplata.create', 'Naplati', array($rezervacija->id),
 array('class' => 'btn btn-primary')) }}
 @endif
+@endif
+</h4>
 @else
 <?php $naplata = $rezervacija->naplata ?>
 <h4>Naplata je izvršena</h4>

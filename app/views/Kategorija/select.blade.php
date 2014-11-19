@@ -1,32 +1,15 @@
 @section('predmet-select')
 {{ HTML::script('js/Kategorija/predmetSelector.js') }}
-<?php
-if (isset($disableDropdown)) {
-    $disableDropdown = true;
-} else {
-    $disableDropdown = false;
-}
-if(!isset($instruktor_id)){
-$instruktor_id = null;
-if (Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))
-    $instruktor_id = Auth::id();
-$instruktor_id = Input::old('instruktor_id', $instruktor_id);
-}
-?>
-@if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)
-&& !$disableDropdown)
-<div class = 'form-group'>
-    {{ Form::label('Odaberite predavača...') }}
-    {{ Form::select('instruktor_id',
-        User::withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
-            ->get()->lists('name', 'id'),
-        $instruktor_id,
-        array('class' => 'form-control',
-            'required' => 'required'))
-    }}
+{{ Form::hidden('instruktor_id', $instruktor->id) }}
+@if($instruktor->hasPermission(\Permission::PERMISSION_TECAJ))
+<div class = "form-group">
+    {{ Form::label('Tečaj') }}
+{{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), null,
+            array('class' => 'form-control',
+    'required' => 'required')) }}
 </div>
 @else
-{{ Form::hidden('instruktor_id', $instruktor_id) }}
+{{ Form::hidden('tecaj', 0) }}
 @endif
 <div id="predmet-select" class = 'form-group'>
     {{ Form::label('Odaberite predmet...') }}
@@ -44,7 +27,7 @@ if ($predmet_id) {
     $length = count($kategorije);
     for ($i = 0; $i < $length; $i ++) {
         $level = array();
-        $level[Kategorija::JSON_CONTENT_IDENTIFIER] = $kategorije[$i]->getChildrenFor($instruktor_id);
+        $level[Kategorija::JSON_CONTENT_IDENTIFIER] = $kategorije[$i]->getChildrenFor($instruktor->id);
         $level[Kategorija::JSON_SELECTED_IDENTIFIER] = array(
             Kategorija::JSON_TYPE_IDENTIFIER => ($i == $length - 1 ?
                     Kategorija::JSON_SELECTED_PREDMET_IDENTIFIER :
@@ -56,7 +39,7 @@ if ($predmet_id) {
 } else {
     $levels = Kategorija::whereRaw('id = nadkategorija_id')
             ->first()
-            ->getHierarchyFor($instruktor_id);
+            ->getHierarchyFor($instruktor->id);
 }
 echo json_encode($levels);
 ?>

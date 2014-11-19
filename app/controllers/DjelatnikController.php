@@ -112,25 +112,23 @@ class DjelatnikController extends \ResourceController {
 		->with('list', $this->_list());
 	}
 
-	public function _list($page = 1, $searchString = null){
-		if(!empty($searchString)){
-			$djelatnici = User::where('name', 'like', '%'.$searchString.'%')
-			->orderBy('name');
-		}
-		else
-			$djelatnici = User::orderBy('name');
-		if($page != 1)
-			Paginator::setCurrentPage($page);
-		$djelatnici = $djelatnici->paginate(10);
-		$v = View::make('Djelatnik.list')
-		->with('instruktori', $djelatnici);
-		if(Request::ajax())
-			return $v->renderSections()['list'];
-		return $v;
-	}
+	public function _list($page = 1, $searchString = null) {
+        $djelatnici = User::with('role', 'role.permissions');
+        if (!empty($searchString)) {
+            $djelatnici = $djelatnici->where('name', 'like', '%' . $searchString . '%');
+        }
+        $djelatnici = $djelatnici->orderBy('name');
+        if ($page != 1)
+            Paginator::setCurrentPage($page);
+        $djelatnici = $djelatnici->paginate(10);
+        $v = View::make('Djelatnik.list')
+                ->with('instruktori', $djelatnici);
+        if (Request::ajax())
+            return $v->renderSections()['list'];
+        return $v;
+    }
 
-
-	/**
+    /**
 	 * Show the form for creating a new resource.
 	 *
 	 * @return Response
@@ -217,7 +215,7 @@ class DjelatnikController extends \ResourceController {
 
 		$error = $djelatnik->getErrorOrSync(Input::all());
 		if($error)
-			return Redirect::route('Djelatnik.create')
+			return Redirect::route('Djelatnik.edit')
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 

@@ -37,6 +37,9 @@ Djelatnik
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER) || Auth::id() == $instruktor->id)
 {{ link_to_route('Djelatnik.edit', 'Uredi', array($instruktor->id), array('class' => 'btn btn-default')) }}
 {{ link_to_route('Izvjestaj.tjedni', 'Izvjestaj', array($instruktor->id), array('class' => 'btn btn-default')) }}
+@if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
+{{ link_to_route('Rezervacija.create', 'Rezerviraj', array($instruktor->id), array('class' => 'btn btn-default')) }}
+@endif
 {{ link_to_route('Djelatnik.changePassword', 'Promijeni zaporku', array($instruktor->id), array('class' => 'btn btn-default')) }} 
 @endif
 @if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_USER) && !$instruktor->id == Auth::id())

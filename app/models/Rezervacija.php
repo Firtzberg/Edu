@@ -10,6 +10,7 @@
  * @property integer $instruktor_id
  * @property integer $predmet_id
  * @property integer $ucionica_id
+ * @property boolean $tecaj
  * @property string $napomena
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -19,16 +20,17 @@
  * @property-read \Naplata $naplata
  * @property-read \Mjera $mjera
  * @property-read \Illuminate\Database\Eloquent\Collection|\Klijent[] $klijenti
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePocetakRada($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereMjeraId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereKolicina($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereInstruktorId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePredmetId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUcionicaId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereNapomena($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePocetakRada($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereMjeraId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereKolicina($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereInstruktorId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija wherePredmetId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUcionicaId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereNapomena($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Rezervacija whereTecaj($value) 
  */
 
 class Rezervacija extends Eloquent {
@@ -126,6 +128,10 @@ class Rezervacija extends Eloquent {
 				if(!isset($input['startMinute']))
 					return 'Minuta početka je obvezna.';
 				$startMinute = $input['startMinute'];
+                                
+                                $tecaj = false;
+                                if(isset($input['tecaj']))
+                                    $tecaj = $input['tecaj'];
 			//kraj provjere postojanja podataka za vrijeme pocetka
 
 			//provjera postojanja podataka za trajanje instrukcija
@@ -287,6 +293,11 @@ class Rezervacija extends Eloquent {
                                 if($djelatnik->predmeti()->where('predmeti.id', '=', $predmet_id)->count() < 1)
 					return 'Odabrani instruktor nema dozvolu predavati zadani predmet.';
                         //Kraj provjere dozvole predavanja zadanog predmeta
+                        
+                        //Provjera dozvole održavanja tečaja
+                                if($tecaj && !$djelatnik->hasPermission(Permission::PERMISSION_TECAJ))
+					return 'Odabrani instruktor nema dozvolu održavati tečajeve.';
+                        //Kraj provjere dozvole održavanja tečaja
 		//kraj ostalih provjera relacija
 
 		//sve provjere su uspješno obavljene
@@ -298,6 +309,7 @@ class Rezervacija extends Eloquent {
 		$this->mjera_id = $mjera_id;
 		$this->predmet_id = $predmet_id;
 		$this->ucionica_id = $ucionica_id;
+                $this->tecaj = $tecaj;
 		$this->napomena = $napomena;
 		//kraj pridruživanja
 

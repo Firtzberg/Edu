@@ -21,6 +21,13 @@ class RolesTableSeeder extends Seeder {
 
         Role::create(
                 array(
+                    'ime' => 'Voditelj tečaja',
+                    'opis' => 'Održava instrukcije. Ima dodatnu mogućnost označiti ih kao tečaj.',
+                )
+        );
+
+        Role::create(
+                array(
                     'ime' => 'Asistent',
                     'opis' => 'Uklanja greške pri unosu prouzročene od Instruktora.',
                 )

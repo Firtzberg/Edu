@@ -119,6 +119,13 @@ class PermissionsTableSeeder extends Seeder {
 
         Permission::create(
             array(
+                'ime' => Permission::PERMISSION_TECAJ,
+                'opis' => 'Dodaje mogućnost da se rezervacije ovog instruktora označe kao tečajevi. Zahtjeva '.Permission::PERMISSION_OWN_REZERVACIJA_HANDLING.'.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
                 'ime' => Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING,
                 'opis' => 'Dozvola za rezerviranje u ime druge osobe i uređivanje postojeće tuđe rezervacije, prije njenog početka. Ujedno dozvola za naplaćivanje tuđe rezervacije nakon odrade. Dozvola za dodavanje novog klijenta ukoliko se ne pojavljuje u sustavu.',
             )

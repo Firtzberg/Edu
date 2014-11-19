@@ -10,11 +10,11 @@
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\User[] $users
  * @property-read \Illuminate\Database\Eloquent\Collection|\Permission[] $permissions
- * @method static \Illuminate\Database\Query\Builder|\Role whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Role whereIme($value) 
- * @method static \Illuminate\Database\Query\Builder|\Role whereOpis($value) 
- * @method static \Illuminate\Database\Query\Builder|\Role whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Role whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Role whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Role whereIme($value)
+ * @method static \Illuminate\Database\Query\Builder|\Role whereOpis($value)
+ * @method static \Illuminate\Database\Query\Builder|\Role whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Role whereUpdatedAt($value)
  */
 
 class Role extends Eloquent

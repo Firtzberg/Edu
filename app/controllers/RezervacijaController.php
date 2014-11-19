@@ -30,6 +30,10 @@ class RezervacijaController extends \ResourceController {
         if (!$naplata->rezervacija) {
             return $this->itemNotFound();
         }
+        if ($naplata->rezervacija->tecaj) {
+            return Redirect::route('Rezervacija.show', $id)
+                            ->with(self::DANGER_MESSAGE_KEY, 'Tečajvi se ne naplaćuju!');
+        }
         if (!$naplata->rezervacija->predmet) {
             return Redirect::route('Rezervacija.show', $id)
                             ->with(self::DANGER_MESSAGE_KEY, 'Predmet rezervacije se više ne nalazi u sustavu. Nije moguća naplata.');
@@ -51,6 +55,10 @@ class RezervacijaController extends \ResourceController {
                 ->find($id);
         if ($rezervacija == null) {
             return $this->itemNotFound();
+        }
+        if ($rezervacija->tecaj) {
+            return Redirect::route('Rezervacija.show', $id)
+                            ->with(self::DANGER_MESSAGE_KEY, 'Tečajvi se ne naplaćuju!');
         }
 
         if (strtotime($rezervacija->pocetak_rada) > time()) {
@@ -138,10 +146,20 @@ class RezervacijaController extends \ResourceController {
      *
      * @return Response
      */
-    public function create() {
+    public function create($user_id = null) {
+        if(!$user_id){
+            $user_id = Input::old('instruktor_id', Auth::id());
+        }
+        $djelatnik = \User::find($user_id);
+        if(!$djelatnik) {
+            Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
+            return Redirect::route('home');
+        }
         return View::make('Rezervacija.create')
                         ->with('klijent', View::make('Klijent.listForm'))
-                        ->with('predmet', View::make('Kategorija.select'));
+                        ->with('predmet',
+                                View::make('Kategorija.select')
+                                ->with('instruktor', $djelatnik));
     }
 
     /**
@@ -186,7 +204,7 @@ class RezervacijaController extends \ResourceController {
      * @return Response
      */
     public function copy($id) {
-        $rezervacija = Rezervacija::with('klijenti')->find($id);
+        $rezervacija = Rezervacija::with('klijenti', 'instruktor')->find($id);
         //provjera postojanja
         if (!$rezervacija) {
             return $this->itemNotFound();
@@ -197,7 +215,7 @@ class RezervacijaController extends \ResourceController {
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor_id', $rezervacija->instruktor_id));
+                                ->with('instruktor', $rezervacija->instruktor));
     }
 
     /**
@@ -207,7 +225,7 @@ class RezervacijaController extends \ResourceController {
      * @return Response
      */
     public function edit($id) {
-        $rezervacija = Rezervacija::with('klijenti', 'mjera', 'ucionica')->find($id);
+        $rezervacija = Rezervacija::with('klijenti', 'mjera', 'ucionica', 'instruktor')->find($id);
         //provjera postojanja
         if (!$rezervacija)
             return $this->itemNotFound();
@@ -225,8 +243,7 @@ class RezervacijaController extends \ResourceController {
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor_id', $rezervacija->instruktor_id)
-                                ->with('disableDropdown', true));
+                                ->with('instruktor', $rezervacija->instruktor));
     }
 
     /**
@@ -284,7 +301,7 @@ class RezervacijaController extends \ResourceController {
      * @return Response
      */
     public function show($id) {
-        $rezervacija = Rezervacija::with('naplata', 'predmet', 'mjera', 'klijenti')->find($id);
+        $rezervacija = Rezervacija::with('naplata', 'predmet', 'mjera', 'klijenti', 'instruktor')->find($id);
         if (!$rezervacija) {
             return $this->itemNotFound();
         }

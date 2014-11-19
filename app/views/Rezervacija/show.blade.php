@@ -33,6 +33,7 @@ Nije definiran
 </dd>
 <dt>Rezervacija obavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
 <dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
+<dt>Tečaj</dt><dd>{{ $rezervacija->tecaj?'DA':'NE' }}</dd>
 @if($rezervacija->napomena && !empty($rezervacija->napomena))
 <dt>Napomena</dt><dd>{{ $rezervacija->napomena }}</dd>
 @endif

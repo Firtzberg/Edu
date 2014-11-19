@@ -52,10 +52,11 @@ Route::group(array('before' => 'auth'), function() {
     Route::resource('Kategorija', 'KategorijaController', array('except' => array('create')));
     Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
     Route::get('/Predmet/create/{Kategorija}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));
-    Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index')));
-    Route::get('/Rezervacija/{id}/copy', array('as' => 'Rezervacija.copy', 'uses' => 'RezervacijaController@copy'));
-    Route::get('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@create_naplata', 'as' => 'Naplata.create'));
-    Route::put('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@store_naplata', 'as' => 'Naplata.store'));
+    Route::resource('Rezervacija', 'RezervacijaController', array('except' => array('index', 'create')));
+    Route::get('/Rezervacija/create/{Djelatnik?}', array('uses' => 'RezervacijaController@create', 'as' => 'Rezervacija.create'));
+    Route::get('/Rezervacija/{Rezervacija}/copy', array('as' => 'Rezervacija.copy', 'uses' => 'RezervacijaController@copy'));
+    Route::get('/Rezervacija/{Rezervacija}/Naplata', array('uses' => 'RezervacijaController@create_naplata', 'as' => 'Naplata.create'));
+    Route::put('/Rezervacija/{Rezervacija}/Naplata', array('uses' => 'RezervacijaController@store_naplata', 'as' => 'Naplata.store'));
     Route::delete('/Rezervacija/{id}/Naplata', array('uses' => 'RezervacijaController@destroy_naplata', 'as' => 'Naplata.destroy'));
 
 //Excel

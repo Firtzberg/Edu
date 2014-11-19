@@ -14,15 +14,15 @@
  * @property \Carbon\Carbon $updated_at
  * @property-read \Rezervacija $rezervacija
  * @property-read \Mjera $stvarnaMjera
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereRezervacijaId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereUkupnoUplaceno($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereZaInstruktora($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereZaTvrtku($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereStvarnaKolicina($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereStvarnaMjera($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereNapomena($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Naplata whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereRezervacijaId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereUkupnoUplaceno($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereZaInstruktora($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereZaTvrtku($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereStvarnaKolicina($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereStvarnaMjera($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereNapomena($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Naplata whereUpdatedAt($value)
  */
 
 class Naplata extends Eloquent {

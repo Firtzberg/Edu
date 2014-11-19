@@ -9,11 +9,11 @@
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection|\Role[] $roles
- * @method static \Illuminate\Database\Query\Builder|\Permission whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Permission whereIme($value) 
- * @method static \Illuminate\Database\Query\Builder|\Permission whereOpis($value) 
- * @method static \Illuminate\Database\Query\Builder|\Permission whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Permission whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Permission whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Permission whereIme($value)
+ * @method static \Illuminate\Database\Query\Builder|\Permission whereOpis($value)
+ * @method static \Illuminate\Database\Query\Builder|\Permission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Permission whereUpdatedAt($value)
  */
 
 class Permission extends Eloquent
@@ -35,6 +35,7 @@ class Permission extends Eloquent
     const PERMISSION_PASSWORD_RESET = 'Promjena zaporke drugom djelatniku';
     const PERMISSION_DOWNLOAD_DATA = 'Preuzimanje podataka(Excell)';
     const PERMISSION_OWN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanje';
+    const PERMISSION_TECAJ = 'Držanje tečajeva';
     const PERMISSION_FOREIGN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanjeza u ime drugog djelatnika';
     const PERMISSION_REMOVE_STARTED_REZERVACIJA = 'Uklonjanje započete rezervacije';
     const PERMISSION_EDIT_STARTED_REZERVACIJA = 'Uređivanje započete rezervacije';

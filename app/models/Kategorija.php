@@ -12,12 +12,12 @@
  * @property-read \Kategorija $nadkategorija
  * @property-read \Illuminate\Database\Eloquent\Collection|\Kategorija[] $podkategorije
  * @property-read \Illuminate\Database\Eloquent\Collection|\Predmet[] $predmeti
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereIme($value) 
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereNadkategorijaId($value) 
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereEnabled($value) 
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereCreatedAt($value) 
- * @method static \Illuminate\Database\Query\Builder|\Kategorija whereUpdatedAt($value) 
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereIme($value)
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereNadkategorijaId($value)
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereEnabled($value)
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\Kategorija whereUpdatedAt($value)
  */
 
 class Kategorija extends Eloquent {
@@ -130,14 +130,14 @@ class Kategorija extends Eloquent {
         }
         $kategorije = $this->getChildrenKategorijeFor($djelatnik_id);
         $predmeti = $this->getChildrenPremetiFor($djelatnik_id);
-        if(count($kategorije) + count($predmeti) == 1){
-            if(count($predmeti) == 1){
+        if($kategorije->count() + $predmeti->count() == 1){
+            if($predmeti->count() == 1){
                 return array(
                     array(
                         self::JSON_CONTENT_IDENTIFIER => array(self::JSON_PREDMETI_IDENTIFIER => array_values($predmeti->toArray())),
                         self::JSON_SELECTED_IDENTIFIER => array(
                             self::JSON_TYPE_IDENTIFIER => self::JSON_SELECTED_PREDMET_IDENTIFIER,
-                            self::JSON_ID_IDENTIFIER => $predmeti[0]->id
+                            self::JSON_ID_IDENTIFIER => $predmeti->first()->id
                         )
                     )
                 );
@@ -147,10 +147,10 @@ class Kategorija extends Eloquent {
                     self::JSON_CONTENT_IDENTIFIER => array(self::JSON_KATEGORIJE_IDENTIFIER => array_values($kategorije->toArray())),
                     self::JSON_SELECTED_IDENTIFIER => array(
                         self::JSON_TYPE_IDENTIFIER => self::JSON_SELECTED_KATEGORIJA_IDENTIFIER,
-                        self::JSON_ID_IDENTIFIER => $kategorije[0]->id
+                        self::JSON_ID_IDENTIFIER => $kategorije->first()->id
                     )
                 )
-                    ), $kategorije[0]->getHierarchyFor($djelatnik_id));
+                    ), $kategorije->first()->getHierarchyFor($djelatnik_id));
         }
         return array(
             array(
