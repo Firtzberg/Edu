@@ -56,7 +56,7 @@ if ($poOsobi < $cijena->pivot->minimalno)
                     {{ Form::input('number', 'stvarna_kolicina', null,
 				$requiredPositive) }}</div>
                 <div class="col-xs-6">
-                    {{ Form::select('stvarna_mjera', \Mjera::all()->lists('simbol', 'id'), null,
+                    {{ Form::select('stvarna_mjera', \Mjera::all()->lists('simbol', 'id'), $rezervacija->mjera_id,
 				$required) }}</div>
             </div>
             <script type="text/javascript">

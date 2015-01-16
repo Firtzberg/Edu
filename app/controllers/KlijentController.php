@@ -19,7 +19,7 @@ class KlijentController extends \ResourceController {
 	 */
 	public function index()
 	{
-		return View::make('klijent.index')
+		return View::make('Klijent.index')
 		->with('list', $this->_list());
 	}
 

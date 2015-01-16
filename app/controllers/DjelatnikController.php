@@ -215,7 +215,7 @@ class DjelatnikController extends \ResourceController {
 
 		$error = $djelatnik->getErrorOrSync(Input::all());
 		if($error)
-			return Redirect::route('Djelatnik.edit')
+			return Redirect::route('Djelatnik.edit', array($id))
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 

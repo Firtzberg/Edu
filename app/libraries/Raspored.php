@@ -19,7 +19,7 @@ class Raspored {
      * height of 15 minutes in the display
      */
     const HEIGHT_15_MIN = 12;
-    const MIN_COLUMN_WIGHT = 120;
+    const MIN_COLUMN_WIGHT = 150;
 
     /**
      * Dani u tjednu
@@ -49,7 +49,7 @@ class Raspored {
         $diff = \BaseController::END_HOUR - \BaseController::START_HOUR;
         $response = '<div class = "raspored-blocks" style="height:'.
                 ($diff*4*self::HEIGHT_15_MIN).'px">';
-        for($i = 0; $i < $diff; $i += 2){
+        for($i = 0; $i < $diff; $i ++){
             $response .= '<hr style="top:'.(self::HEIGHT_15_MIN*4*$i).'px;"/>';
         }
         foreach ($blocks as $key => $block) {

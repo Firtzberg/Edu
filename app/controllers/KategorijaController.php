@@ -136,10 +136,18 @@ class KategorijaController extends \ResourceController {
 		$kategorija = Kategorija::find($id);
 		if(!$kategorija)
 			return $this->itemNotFound();
-		$nadkategorija_id = $kategorija->nadkategorija_id;
-		$kategorija->delete();
-		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno uklonjena!');
-		return Redirect::route('Kategorija.show', array($nadkategorija_id));
+		$count = $kategorija->podkategorije()->count();
+		$count += $kategorija->predmeti()->count();
+		$cilj = $kategorija->nadkategorija_id;
+		if($count > 0){
+			Session::flash(self::DANGER_MESSAGE_KEY, 'Kategorija se ne moze ukloniti dok ima ugnjezdene kategorije ili predmete!');
+			$cilj = $id;
+		}
+		else{
+			$kategorija->delete();
+			Session::flash(self::SUCCESS_MESSAGE_KEY, 'Kategorija je uspješno uklonjena!');
+		}
+		return Redirect::route('Kategorija.show', array($cilj));
 	}
 
         /**

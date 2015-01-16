@@ -105,7 +105,7 @@ class ExcelController extends \BaseController {
 
 			$excel->sheet(self::SHEET_NAME_UCIONICE, function($sheet){
 				$sheet->appendRow(array('ID', 'Ime učionice', 'Najveći broj učenika',
-					'Adresa', 'Sprat', 'Opis', 'Dodana', 'Zadnja promjena'));
+					'Adresa', 'Kat', 'Opis', 'Dodana', 'Zadnja promjena'));
 				$i = 1;
 				foreach (Ucionica::select('id', 'naziv', 'max_broj_ucenika', 'adresa',
 					'kat', 'opis', 'created_at', 'updated_at')->get() as $ucionica) {

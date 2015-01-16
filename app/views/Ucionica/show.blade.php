@@ -13,7 +13,7 @@ Učionica {{ $ucionica->naziv }}
 <dl class = "dl-horizontal">
 <dt>Najveći broj učenika</dt><dd>{{ $ucionica->max_broj_ucenika }}</dd>
 <dt>Adresa</dt><dd>{{ $ucionica->adresa }}</dd>
-<dt>Sprat</dt><dd>{{ $ucionica->kat }}</dd>
+<dt>Kat</dt><dd>{{ $ucionica->kat }}</dd>
 <dt>Opis</dt><dd>{{ $ucionica->opis }}</dd>
 
 <div id="strana-rasporeda">

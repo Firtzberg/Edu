@@ -36,7 +36,7 @@ array(
 'required' => 'required',
 'autocomplete' => 'off')) }}
 @else
-<br>{{ Form::label($instruktor->name)}}
+<br/>{{ Form::label($instruktor->name)}}
 @endif
 </div>
 <?php $color = '#ffffff';?>
@@ -54,8 +54,12 @@ $required) }}
 @endif
 <div class = "form-group">
 {{ Form::label('Uloga') }}
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_USER))
 {{ Form::select('role_id', Role::select('id', 'ime')->get()->lists('ime', 'id'),null,
 $required) }}
+@else
+<br/>{{ Form::label($instruktor->role->ime)}}
+@endif
 </div>
 <div class = "form-group">
 {{ Form::label('Boja') }}

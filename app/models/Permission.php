@@ -20,7 +20,7 @@ class Permission extends Eloquent
 {
     const PERMISSION_VIEW_UCIONICA = 'Gledanje učionica';
     const PERMISSION_VIEW_USER = 'Gledanje djelatnika';
-    const PERMISSION_VIEW_PREDMET_KATEGORIJA = 'Gledanje predmetima i kategorija';
+    const PERMISSION_VIEW_PREDMET_KATEGORIJA = 'Gledanje predmeta i kategorija';
     const PERMISSION_VIEW_KLIJENT = 'Gledanje klijenata';
     const PERMISSION_VIEW_ROLE = 'Gledanje uloga';
     const PERMISSION_MANAGE_UCIONICA = 'Upravljanje učionicama';
@@ -33,7 +33,7 @@ class Permission extends Eloquent
     const PERMISSION_REMOVE_PREDMET_KATEGORIJA = 'Uklonjanje predmeta i kategorija';
     const PERMISSION_REMOVE_ROLE = 'Uklonjanje uloga';
     const PERMISSION_PASSWORD_RESET = 'Promjena zaporke drugom djelatniku';
-    const PERMISSION_DOWNLOAD_DATA = 'Preuzimanje podataka(Excell)';
+    const PERMISSION_DOWNLOAD_DATA = 'Preuzimanje podataka(Excel)';
     const PERMISSION_OWN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanje';
     const PERMISSION_TECAJ = 'Držanje tečajeva';
     const PERMISSION_FOREIGN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanjeza u ime drugog djelatnika';

@@ -327,7 +327,7 @@ class RezervacijaController extends \ResourceController {
         }
         $rezervacija->delete();
         Session::flash(self::SUCCESS_MESSAGE_KEY, 'Rezervacija je oslobođena.');
-        return Redirect::route('Djelatnik .show', Auth::id());
+        return Redirect::route('Djelatnik.show', Auth::id());
     }
 
 }

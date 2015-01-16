@@ -10,7 +10,7 @@
         @foreach($instruktori as $i)
         <tr>
             <td>{{ $i->link() }}</td>
-            <td>{{ $i->role->link() }}</td>
+            <td>{{ $i->roleLink() }}</td>
             <td>
                 @if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
                 $i->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))

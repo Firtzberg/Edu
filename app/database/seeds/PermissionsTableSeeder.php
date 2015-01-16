@@ -169,7 +169,7 @@ class PermissionsTableSeeder extends Seeder {
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_DOWNLOAD_DATA,
-                'opis' => 'Dozvola za preuzimanje pohranjenih podataka u sustavu u obliku Excell tablica.',
+                'opis' => 'Dozvola za preuzimanje pohranjenih podataka u sustavu u obliku Excel tablica.',
             )
         )->save();
     }
