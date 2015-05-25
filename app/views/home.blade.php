@@ -17,4 +17,19 @@ Početna
 <div id="strana-rasporeda">
 {{ \Helpers\Raspored::RasporedForDay($day, $week, $year) }}
 </div>
+<div>
+    <h3>KONTAKTI SURADNIKA</h3>
+    <div class="container">
+    <div class="row">
+    <?php
+    $djelatnici = User::orderBy('name')->get();
+    ?>
+    @foreach($djelatnici as $djelatnik)
+    <div class="col-lg-3 col-md-4 col-sm-12">
+        <span style="font-weight: bold">{{$djelatnik->name}}</span> - {{$djelatnik->broj_mobitela}}
+    </div>
+    @endforeach
+    </div>
+    </div>
+</div>
 @endsection

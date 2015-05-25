@@ -142,6 +142,14 @@ class Rezervacija extends Eloquent {
 				if(!isset($input['mjera_id']))
 					return 'Mjera je obvezna.';
 				$mjera_id = $input['mjera_id'];
+                                
+				if(!isset($input['endHour']))
+					return 'Sat završetka je obvezan.';
+				$endHour = $input['endHour'];
+
+				if(!isset($input['endMinute']))
+					return 'Minuta završetka je obvezna.';
+				$endMinute = $input['endMinute'];
 			//kraj provjere postojanja podataka za trajanje instrukcija
 
 			//provjera postojanja podataka za predmet
@@ -199,8 +207,7 @@ class Rezervacija extends Eloquent {
 
 		//provjera dozvoljenih vrijednosti podataka koji se ne odnose na relacije
 			//provjera dozvoljene vrijednosti za vrijeme pocetka
-				$dto = new DateTime($datum);
-				$dto = $dto->setTime($startHour, $startMinute);
+				$dto = (new DateTime($datum))->setTime($startHour, $startMinute);
 				if($dto < new DateTime() && !(Auth::check() && Auth::user()
                                         ->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA)))
 					return 'Zadani početak rada je prošao. Trebate imati posebnu dozvolu za rezerviranje u prošlosti.';
@@ -210,6 +217,10 @@ class Rezervacija extends Eloquent {
 			//provjera dozvoljene vrijednosti za trajanje
 				if($kolicina < 1)
 					return 'Trajanje instrukcija mora biti barem 1.';
+                                $dto2 = (new DateTime($datum))->setTime($endHour, $endMinute);
+                                if($dto >= $dto2)
+                                    return "Kraj instrukcija mora biti poslje početka.";
+				$kraj_rada = $dto2->format('Y-m-d H:i:s');
 			//kraj provjere dozvoljene vrijednosti za trajanje
 
 			//provjera broja polaznika
@@ -254,8 +265,12 @@ class Rezervacija extends Eloquent {
 
 		//ostale provjere relacija
 			//provjera završetka instrukcija
-				$dto->add(new DateInterval('PT'.($mjera->trajanje*$kolicina).'M'));
-				$kraj_rada = $dto->format('Y-m-d H:i:s');
+                                if($dto2 > $dto->setTime(BaseController::END_HOUR, 0))
+                                        return "Kraj radnog vremena je u ".BaseController::END_HOUR." sata.";
+                                $dto->setTime($startHour, $startMinute);
+                                $dto->add(new DateInterval('PT'.($mjera->trajanje*$kolicina).'M'));
+                                if($dto > $dto2)
+                                    return "Ne stignete odratiti $kolicina $mjera->znacenje u zadanom vremenu";
 			//kraj provjere završetka instrukcija
 
 			//provjera učionice
@@ -266,9 +281,8 @@ class Rezervacija extends Eloquent {
 
 				//provjera zauzetosti učionice
 					$preklapanja = Rezervacija::where('ucionica_id', '=', $ucionica->id)
-					->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id')
 					->where('pocetak_rada', '<', $kraj_rada)
-					->whereRaw("timestampadd(MINUTE, kolicina*trajanje, pocetak_rada) > '".$pocetak_rada."'");
+					->where('kraj_rada', '>', $pocetak_rada);
 					if($this->id)
 					    $preklapanja = $preklapanja->where('rezervacije.id', '!=', $this->id);
 					$preklapanja = $preklapanja->count();
@@ -279,9 +293,8 @@ class Rezervacija extends Eloquent {
 
 			//provjera zauzetosti instruktora
 				$preklapanja = Rezervacija::where('instruktor_id', '=', $instruktor_id)
-				->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id')
 				->where('pocetak_rada', '<', $kraj_rada)
-				->whereRaw("timestampadd(MINUTE, kolicina*trajanje, pocetak_rada) > '".$pocetak_rada."'");
+				->where('kraj_rada', '>', $pocetak_rada);
 				if($this->id)
 				    $preklapanja = $preklapanja->where('rezervacije.id', '!=', $this->id);
 				$preklapanja = $preklapanja->count();
@@ -307,6 +320,7 @@ class Rezervacija extends Eloquent {
 		$this->pocetak_rada = $pocetak_rada;
 		$this->kolicina = $kolicina;
 		$this->mjera_id = $mjera_id;
+		$this->kraj_rada = $kraj_rada;
 		$this->predmet_id = $predmet_id;
 		$this->ucionica_id = $ucionica_id;
                 $this->tecaj = $tecaj;

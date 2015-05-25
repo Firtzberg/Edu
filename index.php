@@ -46,9 +46,8 @@ $app = require_once __DIR__.'/bootstrap/start.php';
 |
 */
 
-if(!Schema::hasTable('users'))
+if(false)
 {
 Artisan::call('migrate');
-Artisan::call('db:seed');
 }
 $app->run();

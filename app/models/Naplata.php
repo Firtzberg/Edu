@@ -92,7 +92,7 @@ class Naplata extends Eloquent {
             }
             elseif($this->rezervacija){
                 $this->stvarna_mjera = $this->rezervacija->mjera_id;
-            }
+        }
         }
 
 }

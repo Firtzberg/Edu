@@ -49,6 +49,7 @@ class ExcelController extends \BaseController {
 	}
 
 	public function download(){
+            $name = 'Data';
 		$formats = array('xls', 'xlsx');
 		if(in_array(Input::get('format'), $formats))
 			$format = Input::get('format');
@@ -59,6 +60,7 @@ class ExcelController extends \BaseController {
 		$year = Input::get('startYear');
 		if(!($year>=2014 && $year <= date('Y')))
 			$year = 2014;
+                $name .= "_$month-$year";
 		$from = "$year-$month-1 00:00:00";
 		$month = Input::get('endMonth');
 		if(!($month>0 && $month < 13))
@@ -66,13 +68,14 @@ class ExcelController extends \BaseController {
 		$year = Input::get('endYear');
 		if(!($year>=2014 && $year <= date('Y')))
 			$year = 2014;
+                $name .= "_$month-$year";
 		$month++;
 		if($month > 12){
 			$month = 1;
 			$year++;
 		}
 		$to = "$year-$month-1 00:00:00";
-		Excel::create('test', function($excel) use($from, $to){
+		Excel::create($name, function($excel) use($from, $to){
 			$usersCount = User::count();
 			$predmetCount = Predmet::count();
 			$mjeraCount = Mjera::count();
@@ -172,10 +175,10 @@ class ExcelController extends \BaseController {
 
 			$excel->sheet(self::SHEET_NAME_REZERVACIJE, function($sheet) use (&$naplate, &$klijenti, &$klijentRezervacije,
 				$usersCount, $predmetCount, $mjeraCount, $ucionicaCount, &$rezervacijaCount, $from, $to){
-				$sheet->appendRow(array('ID', 'Količina', 'ID djelatnika', 'ID predmeta', 'ID mjere',
+				$sheet->appendRow(array('ID', 'ID djelatnika', 'ID predmeta', 'Početak rada', 'Količina', 'ID mjere', 'Kraj rada',
 					'ID učionice', 'Tečaj', 'Napomena', 'Dodana', 'Zadnja promjena', 'Djelatnik', 'Predmet', 'Mjera', 'Učionica'));
 				$i = 1;
-				$rezervacije = Rezervacija::select('id', 'kolicina', 'instruktor_id', 'predmet_id', 'mjera_id',
+				$rezervacije = Rezervacija::select('id', 'instruktor_id', 'predmet_id', 'pocetak_rada', 'kolicina', 'mjera_id', 'kraj_rada',
 				'ucionica_id', 'tecaj', 'napomena', 'created_at', 'updated_at')->with('naplata', 'klijenti')
 				->whereBetween('pocetak_rada', array($from, $to))
 				->get();
@@ -185,17 +188,19 @@ class ExcelController extends \BaseController {
 					$row = $rezervacija->toArray();
 					unset($row['naplata']);
 					unset($row['klijenti']);
-					$row[] = self::getHyperlink(self::SHEET_NAME_USERS, $usersCount, 'C'.$i);
-					$row[] = self::getHyperlink(self::SHEET_NAME_PREDEMTI, $predmetCount, 'D'.$i);
-					$row[] = self::getHyperlink(self::SHEET_NAME_MJERE, $mjeraCount, 'E'.$i);
-					$row[] = self::getHyperlink(self::SHEET_NAME_UCIONICE, $ucionicaCount, 'F'.$i);
+					$row[] = self::getHyperlink(self::SHEET_NAME_USERS, $usersCount, 'B'.$i);
+					$row[] = self::getHyperlink(self::SHEET_NAME_PREDEMTI, $predmetCount, 'C'.$i);
+                                        $row[] = self::getHyperlink(self::SHEET_NAME_MJERE, $mjeraCount, 'F'.$i);
+					$row[] = self::getHyperlink(self::SHEET_NAME_UCIONICE, $ucionicaCount, 'H'.$i);
 					$sheet->appendRow($row);
 					if(!$rezervacija->tecaj && !$rezervacija->naplata)
 						$sheet->row($sheet->getHighestRow(), function($row){
 							$row->setBackground('#ff9999');
 						});
-					else $naplate[] = $rezervacija->naplata->toArray();
-					foreach ($rezervacija->klijenti as $klijent) {
+                                            if ($rezervacija->naplata) {
+                                                $naplate[] = $rezervacija->naplata->toArray();
+                                            }
+                                            foreach ($rezervacija->klijenti as $klijent) {
 						$klijentRezervacije[] = array(
 							'klijent_id' => $klijent->broj_mobitela,
 							'rezervacija_id' => $rezervacija->id,
@@ -212,7 +217,7 @@ class ExcelController extends \BaseController {
 				foreach ($naplate as $naplata) {
 					$i++;
 					$row = $naplata;
-					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'A'.$i, 'L');
+					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'A'.$i, 'N');
 					$row[] = self::getHyperlink(self::SHEET_NAME_MJERE, $mjeraCount, 'C'.$i);
 					$sheet->appendRow($row);
 				}
@@ -226,7 +231,7 @@ class ExcelController extends \BaseController {
 				foreach ($klijentRezervacije as $klijentRezervacija) {
 					$i++;
 					$row = $klijentRezervacija;
-					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'B'.$i, 'L');
+					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'B'.$i, 'N');
 					$row[] = self::getHyperlink(self::SHEET_NAME_KLIJENTI, $klijentCount, 'A'.$i);
 					$sheet->appendRow($row);
 				}

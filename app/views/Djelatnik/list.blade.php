@@ -5,12 +5,14 @@
         <tr>
             <th>Ime</th>
             <th>Uloga</th>
+            <th>Mobitel</th>
             <th></th>
         </tr>
         @foreach($instruktori as $i)
         <tr>
             <td>{{ $i->link() }}</td>
             <td>{{ $i->roleLink() }}</td>
+            <td>{{ $i->broj_mobitela }}</td>
             <td>
                 @if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
                 $i->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING))

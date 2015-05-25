@@ -64,7 +64,7 @@ $requiredPositive = array(
                     else
                         $value = 0;
                     ?>
-                    {{ Form::select('startMinute', array(0 => '00', 30 => '30'), $value,
+                    {{ Form::select('startMinute', array(0 => '00', 15 => '15', 30 => '30', 45 => '45'), $value,
 				$required) }}</div>
             </div>
         </div>
@@ -92,6 +92,29 @@ $requiredPositive = array(
 				$required) }}</div>
             </div>
         </div>
+        <div class = "form-group">
+{{ Form::label('Vrijeme završetka') }}
+            <div class="row">
+                <div class="col-xs-6">
+                    <?php
+                    if (isset($rezervacija))
+                        $value = date('H', strtotime($rezervacija->kraj_rada));
+                    else
+                        $value = 8;
+                    ?>
+                    {{ Form::selectRange('endHour', BaseController::START_HOUR, BaseController::END_HOUR, $value,
+				$required) }}</div>
+                <div class="col-xs-6">
+                    <?php
+                    if (isset($rezervacija))
+                        $value = date('i', strtotime($rezervacija->kraj_rada));
+                    else
+                        $value = 0;
+                    ?>
+                    {{ Form::select('endMinute', array(0 => '00', 15 => '15', 30 => '30', 45 => '45'), $value,
+				$required) }}</div>
+            </div>
+        </div>
     </div>
     <div class = "col-xs-12 col-sm-7 col-lg-9 row">
         <div class = "col-xs-12 col-lg-7">
@@ -102,9 +125,12 @@ $requiredPositive = array(
                 foreach ($rows as $row) {
                     $ucionice[$row->id] = $row->naziv . '(' . $row->max_broj_ucenika . ')';
                 }
+                if(!isset($local_ucionica_id)){
+                    $local_ucionica_id = null;
+                }
                 ?>
                 {{ Form::label('Učionica') }}
-                {{ Form::select('ucionica_id', $ucionice, null,
+                {{ Form::select('ucionica_id', $ucionice, $local_ucionica_id,
 			$required) }}
             </div>
             <div>

@@ -70,12 +70,12 @@ class RezervacijaController extends \ResourceController {
         $naplata->stvarna_kolicina = $rezervacija->kolicina;
         $naplata->stvarna_mjera = $rezervacija->mjera_id;
         if (Input::get('mjerechanged') == 'yes') {
-            $error = $naplata->setStvarneVrijednosti(Input::get('stvarna_kolicina'), Input::get('stvarna_mjera'));
-            if ($error) {
-                return Redirect::route('Naplata.create')
-                                ->with(self::DANGER_MESSAGE_KEY, $error)
-                                ->withInput();
-            }
+        $error = $naplata->setStvarneVrijednosti(Input::get('stvarna_kolicina'), Input::get('stvarna_mjera'));
+        if ($error) {
+            return Redirect::route('Naplata.create')
+                            ->with(self::DANGER_MESSAGE_KEY, $error)
+                            ->withInput();
+        }
         }
         //
         $polaznici = $rezervacija->klijenti;
@@ -179,8 +179,7 @@ class RezervacijaController extends \ResourceController {
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
                         ->count() < 1)){
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
-            return Redirect::route('Rezervacija.create')
-                            ->withInput();
+            return Redirect::route('home');
         }
         $input['instruktor_id'] = $djelatnik_id;
         $rezervacija = new Rezervacija();
@@ -189,7 +188,7 @@ class RezervacijaController extends \ResourceController {
         $errorMessage = $rezervacija->getErrorOrSync($input);
         if ($errorMessage != null) {
             Session::flash(self::DANGER_MESSAGE_KEY, $errorMessage);
-            return Redirect::route('Rezervacija.create')
+            return Redirect::route('Rezervacija.create', $djelatnik_id)
                             ->withInput();
         }
 
@@ -215,7 +214,9 @@ class RezervacijaController extends \ResourceController {
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor', $rezervacija->instruktor));
+                                ->with('instruktor', $rezervacija->instruktor)
+                                ->with('local_tecaj', $rezervacija->tecaj))
+                ->with('local_ucionica_id', $rezervacija->ucionica_id);
     }
 
     /**
@@ -231,7 +232,7 @@ class RezervacijaController extends \ResourceController {
             return $this->itemNotFound();
 
         //provjera dozvole
-        if (strtotime($rezervacija->pocetak_rada) < time() &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nemate dozvolu uređivati započetu rezervaciju.');
             return Redirect::route('Rezervacija.show', $id);
@@ -261,7 +262,7 @@ class RezervacijaController extends \ResourceController {
         }
 
         //provjera dozvole
-        if (strtotime($rezervacija->pocetak_rada) < time() &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nemate dozvolu uređivati započetu rezervaciju.');
             return Redirect::route('Rezervacija.show', $id);
@@ -320,7 +321,7 @@ class RezervacijaController extends \ResourceController {
         if (!$rezervacija) {
             return $this->itemNotFound();
         }
-        if (strtotime($rezervacija->pocetak_rada) < time() &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Morate imati odgovarajuću dozvolu za uklonjanje započete rezervacije.');
             return Redirect::route('Rezervacija.show', $id);

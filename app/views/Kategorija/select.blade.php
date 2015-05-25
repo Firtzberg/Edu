@@ -4,7 +4,12 @@
 @if($instruktor->hasPermission(\Permission::PERMISSION_TECAJ))
 <div class = "form-group">
     {{ Form::label('Tečaj') }}
-{{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), null,
+    <?php
+    if(!isset($local_tecaj)){
+        $local_tecaj = false;
+    }
+    ?>
+{{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), $local_tecaj,
             array('class' => 'form-control',
     'required' => 'required')) }}
 </div>

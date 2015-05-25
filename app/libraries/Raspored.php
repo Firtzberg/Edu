@@ -118,7 +118,7 @@ class Raspored {
 
         foreach ($rezervacije as $r) {
             $pocetak = strtotime($r->pocetak_rada);
-            $kraj = strtotime($r->kraj_rada());
+            $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
@@ -186,7 +186,7 @@ class Raspored {
 
         foreach ($rezervacije as $r) {
             $pocetak = strtotime($r->pocetak_rada);
-            $kraj = strtotime($r->kraj_rada());
+            $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
@@ -253,7 +253,7 @@ class Raspored {
 
         foreach ($rezervacije as $r) {
             $pocetak = strtotime($r->pocetak_rada);
-            $kraj = strtotime($r->kraj_rada());
+            $kraj = strtotime($r->kraj_rada);
             $key = $r->ucionica_id;
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),

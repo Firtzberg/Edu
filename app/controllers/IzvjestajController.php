@@ -40,15 +40,15 @@ class IzvjestajController extends \BaseController {
         $tjedan = $dto->format('W');
         $godina = $dto->format('o');
 
-        $primanja = Rezervacija::select(DB::raw('weekday(pocetak_rada)+1 as dan, ' .
-                                'COALESCE(sum(kolicina*trajanje),0) as minuta, ' .
+        $primanja = Naplata::select(DB::raw('weekday(pocetak_rada)+1 as dan, ' .
+                                'COALESCE(sum(stvarna_kolicina*trajanje),0) as minuta, ' .
                                 'COALESCE(sum(za_instruktora),0) as za_instruktora, ' .
                                 'COALESCE(sum(za_tvrtku),0) as za_tvrtku, ' .
                                 'COALESCE(sum(ukupno_uplaceno),0) as ukupno_uplaceno'))
-                ->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id')
-                ->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id');
+                ->leftJoin('rezervacije', 'naplate.rezervacija_id', '=', 'rezervacije.id')
+                ->join('mjere', 'mjere.id', '=', 'naplate.stvarna_mjera');
         if (!is_null($id))
-            $primanja = $primanja->where('instruktor_id', '=', $id);
+            $primanja = $primanja->where('rezervacije.instruktor_id', '=', $id);
         $primanja = $primanja->where(DB::raw('yearweek(pocetak_rada, 3)'), '=', $godina . $tjedan)
                 ->groupBy(DB::raw('weekday(pocetak_rada)'))
                 ->get();
@@ -115,15 +115,15 @@ class IzvjestajController extends \BaseController {
         if (is_null($godina))
             $godina = date('Y');
 
-        $primanja = Rezervacija::select(DB::raw('month(pocetak_rada) as mjesec, ' .
-                                'COALESCE(sum(kolicina*trajanje),0) as minuta, ' .
+        $primanja = Naplata::select(DB::raw('month(pocetak_rada) as mjesec, ' .
+                                'COALESCE(sum(stvarna_kolicina*trajanje),0) as minuta, ' .
                                 'COALESCE(sum(za_instruktora),0) as za_instruktora, ' .
                                 'COALESCE(sum(za_tvrtku),0) as za_tvrtku, ' .
                                 'COALESCE(sum(ukupno_uplaceno),0) as ukupno_uplaceno'))
-                ->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id')
-                ->join('mjere', 'mjere.id', '=', 'rezervacije.mjera_id');
+                ->leftJoin('rezervacije', 'naplate.rezervacija_id', '=', 'rezervacije.id')
+                ->join('mjere', 'mjere.id', '=', 'naplate.stvarna_mjera');
         if (!is_null($id))
-            $primanja = $primanja->where('instruktor_id', '=', $id);
+            $primanja = $primanja->where('rezervacije.instruktor_id', '=', $id);
         $primanja = $primanja->where(DB::raw('year(pocetak_rada)'), '=', $godina)
                 ->groupBy(DB::raw('month(pocetak_rada)'))
                 ->get();

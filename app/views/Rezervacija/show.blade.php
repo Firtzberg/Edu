@@ -16,7 +16,7 @@ Prikaz rezervacije
 <dt>Djelatnik</dt><dd>{{ $rezervacija->instruktor->link() }}</dd>
 <dt>Vrijeme početka</dt><dd>{{ $rezervacija->pocetak_rada }}</dd>
 <dt>Trajanje</dt><dd>{{ $rezervacija->kolicina.' '.$rezervacija->mjera->znacenje }}</dd>
-<dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada() }}</dd>
+<dt>Vrijeme završetka</dt><dd>{{ $rezervacija->kraj_rada }}</dd>
 <dt>Učionica</dt><dd>
 @if(is_null($rezervacija->ucionica))
 Uklonjena
@@ -31,23 +31,27 @@ Uklonjena
 Nije definiran
 @endif
 </dd>
-<dt>Rezervacija obavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
+<dt>Rezervacija objavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
 <dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
 <dt>Tečaj</dt><dd>{{ $rezervacija->tecaj?'DA':'NE' }}</dd>
 @if($rezervacija->napomena && !empty($rezervacija->napomena))
 <dt>Napomena</dt><dd>{{ $rezervacija->napomena }}</dd>
 @endif
 </dl>
-@if(strtotime($rezervacija->pocetak_rada) > time() ||
+    <?php
+    $deadline = strtotime($rezervacija->pocetak_rada);
+    $deadline -= 60 * 60;
+?>
+@if($deadline > time() ||
 Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_STARTED_REZERVACIJA))
 {{ Form::open(array('route' => array('Rezervacija.destroy', $rezervacija->id), 'method' => 'delete')) }}
 @endif
-@if(strtotime($rezervacija->pocetak_rada) > time() ||
+@if($deadline > time() ||
 Auth::user()->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA))
 {{ link_to_route('Rezervacija.edit', 'Uredi', array('id' => $rezervacija->id), array('class' => 'btn btn-default')) }} 
 @endif
 {{ link_to_route('Rezervacija.copy', 'Kopiraj', array('id' => $rezervacija->id), array('class' => 'btn btn-default')) }} 
-@if(strtotime($rezervacija->pocetak_rada) > time() ||
+@if($deadline > time() ||
 Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_STARTED_REZERVACIJA))
 {{ Form::submit('Otkaži rezervaciju',
 array('class' => 'btn btn-danger')) }}
