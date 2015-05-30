@@ -53,18 +53,17 @@ class Naplata extends Eloquent {
          * @param int $ukupno
          * @return int|float
          */
-	public function getSatnicaZaInstruktora($ukupno){
+	public static function getSatnicaZaTvrtku($ukupno){
 		$pravedni = floor($ukupno/30);
-		$za_instruktora = $pravedni*20;
+        $za_tvrtku = $pravedni * 10;
 		$ukupno -= $pravedni * 30;
-		if ($ukupno < 10) {
-            $za_instruktora += $ukupno;
-        } elseif ($ukupno < 20) {
-            $za_instruktora += 10;
-        } else {
-            $za_instruktora += $ukupno - 10;
+        if ($ukupno > 10 && $ukupno < 20) {
+            $za_tvrtku += $ukupno - 10;
         }
-        return $za_instruktora;
+        elseif($ukupno >= 20){
+            $za_tvrtku += 10;
+        }
+        return $za_tvrtku;
 	}
         
         /**

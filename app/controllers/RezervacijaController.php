@@ -100,12 +100,16 @@ class RezervacijaController extends \ResourceController {
         if ($ukupno_satnica_po_polazniku < $cijena->minimalno) {
             $ukupno_satnica_po_polazniku = $cijena->minimalno;
         }
-        $satnica_instruktora = $naplata->getSatnicaZaInstruktora($ukupno_satnica_po_polazniku) * $broj_polaznika;
         $ukupno_satnica = $ukupno_satnica_po_polazniku * $broj_polaznika;
+        $satnica_po_polazniku_za_tvrtku = Naplata::getSatnicaZaTvrtku($cijena->individualno);
+        $satnica_za_tvrku = $satnica_po_polazniku_za_tvrtku*$broj_polaznika;
+        if(2*$satnica_za_tvrku > $ukupno_satnica){
+            $satnica_za_tvrku = $ukupno_satnica/2;
+        }
 
         $naplata->ukupno_uplaceno = $ukupno_satnica * $naplata->stvarna_kolicina;
-        $naplata->za_instruktora = $satnica_instruktora * $naplata->stvarna_kolicina;
-        $naplata->za_tvrtku = $naplata->ukupno_uplaceno - $naplata->za_instruktora;
+        $naplata->za_tvrtku = $satnica_za_tvrku * $naplata->stvarna_kolicina;
+        $naplata->za_instruktora = $naplata->ukupno_uplaceno - $naplata->za_tvrtku;
         $naplata->napomena = Input::get('napomena', '');
         if (strlen($naplata->napomena) > 255) {
             return Redirect::route('Naplata.create')
