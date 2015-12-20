@@ -42,14 +42,14 @@ class CreateCjenovniciTable extends Migration {
         $res = DB::table('cijene')
                 ->groupBy('individualno', 'popust', 'minimalno')
                 ->get();
-        $ukupno = function ($t, $n) {
+        $po_osobi = function ($t, $n) {
             $x = $t->individualno - ($n - 1) * $t->popust;
             if ($x < $t->minimalno)
                 return $t->minimalno;
             return $x;
         };
-        $instruktoru = function ($t, $n) use ($ukupno) {
-            $u = $ukupno($t, $n);
+        $instruktoru = function ($t, $n) use ($po_osobi) {
+            $u = $po_osobi($t, $n) * $n;
             return $u - Naplata::getSatnicaZaTvrtku($u);
         };
         $i = 0;
@@ -58,10 +58,10 @@ class CreateCjenovniciTable extends Migration {
             $triplet->cjenovnik_id = Cjenovnik::create(
                             array(
                                 'ime' => "Cjenovnik $i",
-                                'cijena_1_osoba' => $ukupno($triplet, 1),
-                                'cijena_2_osobe' => $ukupno($triplet, 2),
-                                'cijena_3_osobe' => $ukupno($triplet, 3),
-                                'cijena_4_osobe' => $ukupno($triplet, 4),
+                                'cijena_1_osoba' => $po_osobi($triplet, 1),
+                                'cijena_2_osobe' => $po_osobi($triplet, 2),
+                                'cijena_3_osobe' => $po_osobi($triplet, 3),
+                                'cijena_4_osobe' => $po_osobi($triplet, 4),
                                 'cijena_vise_osoba' => $triplet->minimalno,
                                 'instruktor_1_osoba' => $instruktoru($triplet, 1),
                                 'instruktor_2_osobe' => $instruktoru($triplet, 2),

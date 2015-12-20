@@ -57,7 +57,7 @@ class Permission extends Eloquent
      *
      * @var array
      */
-    protected $fillable = array('name', 'description');
+    protected $fillable = array('ime', 'opis');
 
     /**
      * Roles

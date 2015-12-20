@@ -19,6 +19,7 @@ Route::pattern('Ucionica', '[0-9]+');
 Route::pattern('Klijent', '[0-9]+');
 Route::pattern('Rezervacija', '[0-9]+');
 Route::pattern('Role', '[0-9]+');
+Route::pattern('Cjenovnik', '[0-9]+');
 Route::pattern('Predmet', '[0-9]+');
 Route::pattern('Kategorija', '[0-9]+');
 Route::when('*', 'csrf', array('post', 'put', 'delete', 'update'));
@@ -43,11 +44,13 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('/Ucionica/list/{page}/{searchString?}', array('as' => 'Ucionica.list', 'uses' => 'UcionicaController@_list'));
     Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list', 'uses' => 'KlijentController@_list'));
     Route::post('/Role/list/{page}/{searchString?}', array('as' => 'Role.list', 'uses' => 'RoleController@_list'));
+    Route::post('/Cjenovnik/list/{page}/{searchString?}', array('as' => 'Cjenovnik.list', 'uses' => 'CjenovnikController@_list'));
 
 //restfull
     Route::resource('Djelatnik', 'DjelatnikController');
     Route::resource('Ucionica', 'UcionicaController');
     Route::resource('Role', 'RoleController');
+    Route::resource('Cjenovnik', 'CjenovnikController');
     Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
     Route::resource('Kategorija', 'KategorijaController', array('except' => array('create')));
     Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));

@@ -12,6 +12,11 @@ class Cjenovnik extends Eloquent {
     protected $table = 'cjenovnici';
     protected $guarded = array('id');
 
+    public function c_m_p() {
+        return $this->belongsToMany('Predmet', 'c_m_p')
+                        ->withPivot('mjera_id');
+    }
+
     /**
      * 
      * @param array $input
@@ -24,39 +29,50 @@ class Cjenovnik extends Eloquent {
         if (!$ime)
             return 'Ime cjenovnika je obvezno.';
 
+            $data[2]['key'] = 'cijena_2_osobe';
+            $data[3]['key'] = 'cijena_3_osobe';
+            $data[4]['key'] = 'cijena_4_osobe';
+            $data[2]['key2'] = 'instruktor_2_osobe';
+            $data[3]['key2'] = 'instruktor_3_osobe';
+            $data[4]['key2'] = 'instruktor_4_osobe';
+            
         $cijena_1_osoba = $this->cijena_1_osoba;
         if (isset($input['cijena_1_osoba']))
             $cijena_1_osoba = $input['cijena_1_osoba'];
-        $cijena_2_osobe = $this->cijena_2_osobe;
-        if (isset($input['cijena_2_osobe']))
-            $cijena_2_osobe = $input['cijena_2_osobe'];
-        $cijena_3_osobe = $this->cijena_3_osobe;
-        if (isset($input['cijena_3_osobe']))
-            $cijena_2_osobe = $input['cijena_3_osobe'];
-        $cijena_4_osobe = $this->cijena_4_osobe;
-        if (isset($input['cijena_4_osobe']))
-            $cijena_4_osobe = $input['cijena_4_osobe'];
+        if (!$cijena_1_osoba)
+            return 'Cijena za 1 osobu je obvezna.';
+        for($i = 2; $i < 5; $i++)
+        {
+            $data[$i]['value'] = $this[$data[$i]['key']];
+            $data[$i]['value2'] = $this[$data[$i]['key2']];
+        if (isset($input[$data[$i]['key']]))
+            $data[$i]['value'] = $input[$data[$i]['key']];
+        if (isset($input[$data[$i]['key2']]))
+            $data[$i]['value2'] = $input[$data[$i]['key2']];
+        if (!$data[$i]['value'])
+            return "Cijena za $i osobe je obvezna.";
+        if (!$data[$i]['value2'])
+            return "Instruktorov udio za $i osobe je obvezan.";
+        }
         $cijena_vise_osoba = $this->cijena_vise_osoba;
         if (isset($input['cijena_vise_osoba']))
             $cijena_vise_osoba = $input['cijena_vise_osoba'];
+        if (!$cijena_vise_osoba)
+            return 'Cijena za 5 i više osoba je obvezna.';
+        
         $instruktor_1_osoba = $this->instruktor_1_osoba;
         if (isset($input['instruktor_1_osoba']))
             $instruktor_1_osoba = $input['instruktor_1_osoba'];
-        $instruktor_2_osobe = $this->instruktor_2_osobe;
-        if (isset($input['instruktor_2_osobe']))
-            $instruktor_2_osobe = $input['instruktor_2_osobe'];
-        $instruktor_3_osobe = $this->instruktor_3_osobe;
-        if (isset($input['instruktor_3_osobe']))
-            $instruktor_3_osobe = $input['instruktor_3_osobe'];
-        $instruktor_4_osobe = $this->instruktor_4_osobe;
-        if (isset($input['instruktor_4_osobe']))
-            $instruktor_4_osobe = $input['instruktor_4_osobe'];
+        if (!$instruktor_1_osoba)
+            return 'Instruktorov udio za 1 osobu je obvezan.';
         $instruktor_udio_vise_osoba = $this->instruktor_udio_vise_osoba;
         if (isset($input['instruktor_udio_vise_osoba']))
             $instruktor_udio_vise_osoba = $input['instruktor_udio_vise_osoba'];
+        if (!$instruktor_udio_vise_osoba)
+            return 'Instruktorov udio za 5 i više osoba je obvezan.';
 
         //provjera zauzetosti imena
-        $query = Cijenovnik::where('ime', '=', $ime);
+        $query = Cjenovnik::where('ime', '=', $ime);
         if ($this->id > 0)
             $query = $query->where('id', '!=', $this->id);
         if ($query->count() > 0)
@@ -65,15 +81,14 @@ class Cjenovnik extends Eloquent {
         //pohrana podataka
         $this->ime = $ime;
         $this->cijena_1_osoba = $cijena_1_osoba;
-        $this->cijena_2_osobe = $cijena_2_osobe;
-        $this->cijena_3_osobe = $cijena_3_osobe;
-        $this->cijena_4_osobe = $cijena_4_osobe;
         $this->cijena_vise_osoba = $cijena_vise_osoba;
         $this->instruktor_1_osoba = $instruktor_1_osoba;
-        $this->instruktor_2_osobe = $instruktor_2_osobe;
-        $this->instruktor_3_osobe = $instruktor_3_osobe;
-        $this->instruktor_4_osobe = $instruktor_4_osobe;
         $this->instruktor_udio_vise_osoba = $instruktor_udio_vise_osoba;
+        for($i = 2; $i < 5; $i++)
+        {
+            $this[$data[$i]['key']] = $data[$i]['value'];
+            $this[$data[$i]['key2']] = $data[$i]['value2'];
+        }
         if (isset($input['opis']))
             $this->opis = $input['opis'];
         $this->save();

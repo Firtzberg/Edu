@@ -43,6 +43,9 @@
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_PREDMET_KATEGORIJA))
 					<li>{{ link_to_route('Kategorija.index', 'Kategorije') }}</li>
 					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_CJENOVNIK))
+					<li>{{ link_to_route('Cjenovnik.index', 'Cijene') }}</li>
+					@endif
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_ROLE))
 					<li>{{ link_to_route('Role.index', 'Uloge') }}</li>
 					@endif
