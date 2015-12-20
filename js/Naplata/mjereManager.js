@@ -39,14 +39,9 @@ var mjereManager = {
 			quantity = mjereManager.default.quantity;
 		}
 
-		var personCount = mjereManager.getPersonCount();
-		var perPersonPerUnit = cijena.individualno - (personCount - 1)*cijena.popust;
-		if(perPersonPerUnit < cijena.minimalno)
-			perPersonPerUnit = cijena.minimalno;
-
 		jQuery(mjereManager.mjeraNameDisplaySelector).html(cijena.ime);
 		jQuery(mjereManager.quantityDisplaySelector).html(quantity.toString());
-		mjereManager.setPerPersonPerUnit(perPersonPerUnit);
+		mjereManager.updatePerPersonPerUnit(cijena);
 	},
 	setDefault: function(){
 		mjereManager.changeState(false);
@@ -55,17 +50,12 @@ var mjereManager = {
 		mjereManager.changeState(true);
 	},
 	onPersonCountChanged: function(){
-		var personCount = mjereManager.getPersonCount();
 		var cijena;
 		if(mjereManager.isDefault)
 			cijena = mjereManager.default.cijena;
 		else cijena = mjereManager.current.cijena;
 
-		var perPersonPerUnit = cijena.individualno - (personCount - 1)*cijena.popust;
-		if(perPersonPerUnit < cijena.minimalno)
-			perPersonPerUnit = cijena.minimalno;
-
-		mjereManager.setPerPersonPerUnit(perPersonPerUnit);
+		mjereManager.updatePerPersonPerUnit(cijena);
 	},
 	setCijena: function(cijena){
 		if(mjereManager.current.cijena == cijena)
@@ -75,15 +65,28 @@ var mjereManager = {
 		if(mjereManager.isDefault)
 			return;
 
-		var personCount = mjereManager.getPersonCount();
-		var perPersonPerUnit = cijena.individualno - (personCount - 1)*cijena.popust;
-		if(perPersonPerUnit < cijena.minimalno)
-			perPersonPerUnit = cijena.minimalno;
-
 		jQuery(mjereManager.mjeraNameDisplaySelector).html(cijena.ime);
-		mjereManager.setPerPersonPerUnit(perPersonPerUnit);
+		mjereManager.updatePerPersonPerUnit(cijena);
 	},
-	setPerPersonPerUnit: function(perPersonPerUnit){
+    updatePerPersonPerUnit: function (cijena) {
+        var perPersonPerUnit = 0;
+        switch (mjereManager.getPersonCount()) {
+            case 1:
+                perPersonPerUnit = cijena.cijena_1_osoba;
+                break;
+            case 2:
+                perPersonPerUnit = cijena.cijena_2_osobe;
+                break;
+            case 3:
+                perPersonPerUnit = cijena.cijena_3_osobe;
+                break;
+            case 4:
+                perPersonPerUnit = cijena.cijena_4_osobe;
+                break;
+            default:
+                perPersonPerUnit = cijena.cijena_vise_osoba;
+                break;
+        }
 		mjereManager.perPersonPerUnit = perPersonPerUnit;
 		jQuery(mjereManager.perPersonPerUnitDispalySelector).html(perPersonPerUnit.toString());
 		mjereManager.onPerPersonChanged();

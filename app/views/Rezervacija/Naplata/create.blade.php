@@ -18,13 +18,25 @@ $requiredPositive = array(
 <?php
 $rezervacija = $naplata->rezervacija;
 $brojPolaznika = $rezervacija->klijenti->count();
-$cijena = $rezervacija->predmet->cijene->filter(
-                function($cijena) use ($rezervacija) {
-            return $cijena->id == $rezervacija->mjera_id;
-        })->first();
-$poOsobi = $cijena->pivot->individualno - ($brojPolaznika - 1) * $cijena->pivot->popust;
-if ($poOsobi < $cijena->pivot->minimalno)
-    $poOsobi = $cijena->pivot->minimalno;
+$cjenovnik = $rezervacija->predmet->cjenovnik($rezervacija->mjera_id);
+$poOsobi = 0;
+switch ($brojPolaznika) {
+    case 1:
+        $poOsobi = $cjenovnik->cijena_1_osoba;
+        break;
+    case 2:
+        $poOsobi = $cjenovnik->cijena_2_osobe;
+        break;
+    case 3:
+        $poOsobi = $cjenovnik->cijena_3_osobe;
+        break;
+    case 4:
+        $poOsobi = $cjenovnik->cijena_4_osobe;
+        break;
+    default:
+        $poOsobi = $cjenovnik->cijena_vise_osoba;
+        break;
+}
 ?>
 {{ HTML::script('js/Naplata/mjereManager.js') }}
 <h2>Naplaćivanje</h2>
@@ -61,14 +73,17 @@ if ($poOsobi < $cijena->pivot->minimalno)
             </div>
             <script type="text/javascript">
                 mjereManager.begin(<?php
+$mjere = Mjera::lists('znacenje', 'id');
 echo json_encode(
-        $rezervacija->predmet->cijene->map(function($cijena) {
+        $rezervacija->predmet->c_m_p->map(function($cjenovnik) use ($mjere) {
             return array(
-                'id' => $cijena->id,
-                'ime' => $cijena->znacenje,
-                'individualno' => $cijena->pivot->individualno,
-                'popust' => $cijena->pivot->popust,
-                'minimalno' => $cijena->pivot->minimalno);
+                'id' => $cjenovnik->pivot->mjera_id,
+                'ime' => $mjere[$cjenovnik->pivot->mjera_id],
+                'cijena_1_osoba' => $cjenovnik->cijena_1_osoba,
+                'cijena_2_osobe' => $cjenovnik->cijena_2_osobe,
+                'cijena_3_osobe' => $cjenovnik->cijena_3_osobe,
+                'cijena_4_osobe' => $cjenovnik->cijena_4_osobe,
+                'cijena_vise_osoba' => $cjenovnik->cijena_vise_osoba);
         }
         )->toArray()
 );

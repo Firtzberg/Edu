@@ -13,8 +13,7 @@ class RezervacijaController extends \ResourceController {
 
         $this->beforeFilter('novaRezervacija', array('only' => array('create', 'store')));
 
-        $this->beforeFilter('myRezervacija',
-                array('only' => array('copy',
+        $this->beforeFilter('myRezervacija', array('only' => array('copy',
                 'create_naplata', 'store_napata',
                 'edit', 'update', 'destroy')));
     }
@@ -26,7 +25,7 @@ class RezervacijaController extends \ResourceController {
 
     public function create_naplata($id) {
         $naplata = new Naplata();
-        $naplata->rezervacija = Rezervacija::with('predmet', 'predmet.cijene', 'mjera', 'klijenti')->find($id);
+        $naplata->rezervacija = Rezervacija::with('predmet', 'predmet.c_m_p', 'mjera', 'klijenti')->find($id);
         if (!$naplata->rezervacija) {
             return $this->itemNotFound();
         }
@@ -51,7 +50,7 @@ class RezervacijaController extends \ResourceController {
 
     public function store_naplata($id) {
         $naplata = new Naplata();
-        $rezervacija = Rezervacija::with('predmet', 'klijenti')
+        $rezervacija = Rezervacija::with('predmet', 'predmet.c_m_p', 'klijenti')
                 ->find($id);
         if ($rezervacija == null) {
             return $this->itemNotFound();
@@ -70,12 +69,12 @@ class RezervacijaController extends \ResourceController {
         $naplata->stvarna_kolicina = $rezervacija->kolicina;
         $naplata->stvarna_mjera = $rezervacija->mjera_id;
         if (Input::get('mjerechanged') == 'yes') {
-        $error = $naplata->setStvarneVrijednosti(Input::get('stvarna_kolicina'), Input::get('stvarna_mjera'));
-        if ($error) {
-            return Redirect::route('Naplata.create')
-                            ->with(self::DANGER_MESSAGE_KEY, $error)
-                            ->withInput();
-        }
+            $error = $naplata->setStvarneVrijednosti(Input::get('stvarna_kolicina'), Input::get('stvarna_mjera'));
+            if ($error) {
+                return Redirect::route('Naplata.create')
+                                ->with(self::DANGER_MESSAGE_KEY, $error)
+                                ->withInput();
+            }
         }
         //
         $polaznici = $rezervacija->klijenti;
@@ -91,25 +90,51 @@ class RezervacijaController extends \ResourceController {
         }
         //obracun iznosa
         $broj_polaznika = $polaznici->count() - $missed_count;
-        $cijena = $rezervacija->predmet
-                        ->cijene()
-                        ->where('id', '=', $naplata->stvarna_mjera)
-                        ->first()->pivot;
+        $cjenovnik = $rezervacija->predmet
+                ->cjenovnik($naplata->stvarna_mjera);
 
-        $ukupno_satnica_po_polazniku = $cijena->individualno - $cijena->popust * ($broj_polaznika - 1);
-        if ($ukupno_satnica_po_polazniku < $cijena->minimalno) {
-            $ukupno_satnica_po_polazniku = $cijena->minimalno;
+        $ukupno_satnica_po_polazniku = 0;
+        switch ($broj_polaznika) {
+            case 1:
+                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_1_osoba;
+                break;
+            case 2:
+                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_2_osobe;
+                break;
+            case 3:
+                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_3_osobe;
+                break;
+            case 4:
+                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_4_osobe;
+                break;
+            default:
+                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_vise_osoba;
+                break;
         }
+
         $ukupno_satnica = $ukupno_satnica_po_polazniku * $broj_polaznika;
-        $satnica_po_polazniku_za_tvrtku = Naplata::getSatnicaZaTvrtku($cijena->individualno);
-        $satnica_za_tvrku = $satnica_po_polazniku_za_tvrtku*$broj_polaznika;
-        if(2*$satnica_za_tvrku > $ukupno_satnica){
-            $satnica_za_tvrku = $ukupno_satnica/2;
+        $satnica_za_instruktora = 0;
+        switch ($broj_polaznika) {
+            case 1:
+                $satnica_za_instruktora = $cjenovnik->instruktor_1_osoba;
+                break;
+            case 2:
+                $satnica_za_instruktora = $cjenovnik->instruktor_2_osobe;
+                break;
+            case 3:
+                $satnica_za_instruktora = $cjenovnik->instruktor_3_osobe;
+                break;
+            case 4:
+                $satnica_za_instruktora = $cjenovnik->instruktor_4_osobe;
+                break;
+            default:
+                $satnica_za_instruktora = $cjenovnik->instruktor_udio_vise_osoba * $ukupno_satnica / 100;
+                break;
         }
 
         $naplata->ukupno_uplaceno = $ukupno_satnica * $naplata->stvarna_kolicina;
-        $naplata->za_tvrtku = $satnica_za_tvrku * $naplata->stvarna_kolicina;
-        $naplata->za_instruktora = $naplata->ukupno_uplaceno - $naplata->za_tvrtku;
+        $naplata->za_instruktora = $satnica_za_instruktora * $naplata->stvarna_kolicina;
+        $naplata->za_tvrtku = $naplata->ukupno_uplaceno - $naplata->za_instruktora;
         $naplata->napomena = Input::get('napomena', '');
         if (strlen($naplata->napomena) > 255) {
             return Redirect::route('Naplata.create')
@@ -151,18 +176,17 @@ class RezervacijaController extends \ResourceController {
      * @return Response
      */
     public function create($user_id = null) {
-        if(!$user_id){
+        if (!$user_id) {
             $user_id = Input::old('instruktor_id', Auth::id());
         }
         $djelatnik = \User::find($user_id);
-        if(!$djelatnik) {
+        if (!$djelatnik) {
             Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
             return Redirect::route('home');
         }
         return View::make('Rezervacija.create')
                         ->with('klijent', View::make('Klijent.listForm'))
-                        ->with('predmet',
-                                View::make('Kategorija.select')
+                        ->with('predmet', View::make('Kategorija.select')
                                 ->with('instruktor', $djelatnik));
     }
 
@@ -174,14 +198,14 @@ class RezervacijaController extends \ResourceController {
     public function store() {
         $input = Input::all();
         $djelatnik_id = Input::get('instruktor_id', Auth::id());
-        if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                Auth::id() == $djelatnik_id)||
-                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                                Auth::id() != $djelatnik_id)||
-                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                User::whereId($djelatnik_id)
+        if ((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
+                Auth::id() == $djelatnik_id) ||
+                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
+                Auth::id() != $djelatnik_id) ||
+                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
+                        User::whereId($djelatnik_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
-                        ->count() < 1)){
+                        ->count() < 1)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('home');
         }
@@ -220,7 +244,7 @@ class RezervacijaController extends \ResourceController {
                                 ->with('predmet_id', $rezervacija->predmet_id)
                                 ->with('instruktor', $rezervacija->instruktor)
                                 ->with('local_tecaj', $rezervacija->tecaj))
-                ->with('local_ucionica_id', $rezervacija->ucionica_id);
+                        ->with('local_ucionica_id', $rezervacija->ucionica_id);
     }
 
     /**
@@ -236,7 +260,7 @@ class RezervacijaController extends \ResourceController {
             return $this->itemNotFound();
 
         //provjera dozvole
-        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60 * 60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nemate dozvolu uređivati započetu rezervaciju.');
             return Redirect::route('Rezervacija.show', $id);
@@ -266,20 +290,20 @@ class RezervacijaController extends \ResourceController {
         }
 
         //provjera dozvole
-        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60 * 60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_EDIT_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nemate dozvolu uređivati započetu rezervaciju.');
             return Redirect::route('Rezervacija.show', $id);
         }
         $djelatnik_id = Input::get('instruktor_id', Auth::id());
-        if((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
-                Auth::id() == $djelatnik_id)||
-                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                                Auth::id() != $djelatnik_id)||
-                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)&&
-                User::whereId($djelatnik_id)
+        if ((!Auth::user()->hasPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING) &&
+                Auth::id() == $djelatnik_id) ||
+                (!Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
+                Auth::id() != $djelatnik_id) ||
+                (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) &&
+                        User::whereId($djelatnik_id)
                         ->withPermission(Permission::PERMISSION_OWN_REZERVACIJA_HANDLING)
-                        ->count() < 1)){
+                        ->count() < 1)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('Rezervacija.create')
                             ->withInput();
@@ -325,7 +349,7 @@ class RezervacijaController extends \ResourceController {
         if (!$rezervacija) {
             return $this->itemNotFound();
         }
-        if (strtotime($rezervacija->pocetak_rada) < time() + 60*60 &&
+        if (strtotime($rezervacija->pocetak_rada) < time() + 60 * 60 &&
                 !Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_STARTED_REZERVACIJA)) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Morate imati odgovarajuću dozvolu za uklonjanje započete rezervacije.');
             return Redirect::route('Rezervacija.show', $id);

@@ -13,7 +13,7 @@ Cjenovnik {{ $cjenovnik->ime }}
             <div>{{ $cjenovnik->opis }}</div>
         </div>
         <div>
-            {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->renderSections()['table'] }}
+            {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->render() }}
         </div>
         @if(Auth::user()->hasPermission(Permission::PERMISSION_REMOVE_CJENOVNIK))
         {{ Form::open(array('route' => array('Cjenovnik.destroy', $cjenovnik->id), 'method' => 'delete', 'class' => 'form')) }}

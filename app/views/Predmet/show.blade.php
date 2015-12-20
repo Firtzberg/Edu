@@ -15,7 +15,7 @@ Predmet {{ $predmet->ime }}
     ?>
     @if($cjenovnik)
     Cjenovnik za {{ $znacenje }} je {{ $cjenovnik->link() }}.
-    {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->renderSections()['table'] }}
+    {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->render() }}
     @else
     Cjenovnik za {{ $znacenje }} nije postavljen.
     @endif

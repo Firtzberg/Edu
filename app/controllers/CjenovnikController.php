@@ -47,7 +47,7 @@ class CjenovnikController extends \ResourceController {
         return $v;
     }
     
-    public function _table($id = 1) {
+    public function _table($id) {
         $cjenovnik = Cjenovnik::find($id);
         if (!$cjenovnik) {
             return Cjenovnik::NOT_FOUND_MESSAGE;
@@ -55,7 +55,7 @@ class CjenovnikController extends \ResourceController {
         $v = View::make('Cjenovnik.table')
                 ->with('cjenovnik', $cjenovnik);
         if (Request::ajax())
-            return $v->renderSections()['table'];
+            return $v->render();
         return $v;
     }
 

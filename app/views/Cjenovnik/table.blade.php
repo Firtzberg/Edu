@@ -1,4 +1,3 @@
-@section('table')
 <table class = "table table-striped">
     <tbody>
         <tr>
@@ -61,4 +60,3 @@
         </tr>
     </tbody>
 </table>
-@endsection
