@@ -55,7 +55,7 @@ class PredmetController extends \ResourceController {
 	 */
 	public function show($id)
 	{
-		$predmet = Predmet::with('cijene')->find($id);
+		$predmet = Predmet::with('c_m_p')->find($id);
 		if(!$predmet)
 			return $this->itemNotFound();
 		return View::make('Predmet.show')
@@ -70,7 +70,7 @@ class PredmetController extends \ResourceController {
 	 */
 	public function edit($id)
 	{
-		$predmet = Predmet::with('cijene')->find($id);
+		$predmet = Predmet::with('c_m_p')->find($id);
 		if(!$predmet)
 			return $this->itemNotFound();
 		return View::make('Predmet.create')
@@ -86,7 +86,7 @@ class PredmetController extends \ResourceController {
 	 */
 	public function update($id)
 	{
-		$predmet = Predmet::with('cijene', 'kategorija')->find($id);
+		$predmet = Predmet::with('c_m_p', 'kategorija')->find($id);
 		if(!$predmet)
 			return $this->itemNotFound();
 

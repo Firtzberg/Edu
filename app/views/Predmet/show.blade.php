@@ -9,32 +9,27 @@ Predmet {{ $predmet->ime }}
 <h2>{{ $predmet->ime }}</h2>
 <h3>Cijene</h3>
 <div id='cijene-list' class="container">
-	<table class="table"><tbody>
-		<tr>
-			<th>Mjera</th>
-			<th>Individualno</th>
-			<th>Popust po dodatnoj osobi</th>
-			<th>Minimalno</th>
-		</tr>
-		@foreach($predmet->cijene as $cijena)
-		<tr>
-			<td>{{ $cijena->znacenje }}</td>
-			<td>{{ $cijena->pivot->individualno }}</td>
-			<td>{{ $cijena->pivot->popust }}</td>
-			<td>{{ $cijena->pivot->minimalno }}</td>
-		</tr>
-		@endforeach
-	</tbody></table>
+    @foreach(Mjera::lists('znacenje', 'id') as $id => $znacenje)
+    <?php
+    $cjenovnik = $predmet->cjenovnik($id);
+    ?>
+    @if($cjenovnik)
+    Cjenovnik za {{ $znacenje }} je {{ $cjenovnik->link() }}.
+    {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->renderSections()['table'] }}
+    @else
+    Cjenovnik za {{ $znacenje }} nije postavljen.
+    @endif
+    @endforeach
 </div>
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))
 {{ link_to_route('Predmet.edit', 'Uredi', array('id' => $predmet->id), array('class' => 'btn btn-default')) }}
 @endif
 <h3>Predavači</h3>
 <div clas="container">
-	<div class = "row">
-		@foreach($predmet->users as $user)
-			<div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">{{ $user->link() }}</div>
-		@endforeach
-	</div>
+    <div class = "row">
+        @foreach($predmet->users as $user)
+        <div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">{{ $user->link() }}</div>
+        @endforeach
+    </div>
 </div>
 @endsection

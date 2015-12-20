@@ -45,6 +45,9 @@ Route::group(array('before' => 'auth'), function() {
     Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list', 'uses' => 'KlijentController@_list'));
     Route::post('/Role/list/{page}/{searchString?}', array('as' => 'Role.list', 'uses' => 'RoleController@_list'));
     Route::post('/Cjenovnik/list/{page}/{searchString?}', array('as' => 'Cjenovnik.list', 'uses' => 'CjenovnikController@_list'));
+    
+//cjenovnik table
+    Route::post('/Cjenovnik/table/{Cjenovnik}', array('as' => 'Cjenovnik.table', 'uses' => 'CjenovnikController@_table'));
 
 //restfull
     Route::resource('Djelatnik', 'DjelatnikController');

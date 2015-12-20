@@ -8,6 +8,12 @@ class CjenovnikController extends \ResourceController {
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_CJENOVNIK);
         $this->requireWatchPermission(Permission::PERMISSION_VIEW_CJENOVNIK);
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_CJENOVNIK);
+        
+        $this->beforeFilter(function() {
+            if (!(Auth::check() && Auth::user()->hasPermission($this->watchPermissions))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('_table')));
     }
 
     private function itemNotFound() {
@@ -38,6 +44,18 @@ class CjenovnikController extends \ResourceController {
                 ->with('cjenovnici', $cjenovnici);
         if (Request::ajax())
             return $v->renderSections()['list'];
+        return $v;
+    }
+    
+    public function _table($id = 1) {
+        $cjenovnik = Cjenovnik::find($id);
+        if (!$cjenovnik) {
+            return Cjenovnik::NOT_FOUND_MESSAGE;
+        }
+        $v = View::make('Cjenovnik.table')
+                ->with('cjenovnik', $cjenovnik);
+        if (Request::ajax())
+            return $v->renderSections()['table'];
         return $v;
     }
 
@@ -72,7 +90,7 @@ class CjenovnikController extends \ResourceController {
      * @return Response
      */
     public function show($id) {
-        $cjenovnik = Cjenovnik::find($id);
+        $cjenovnik = Cjenovnik::with('c_m_p')->find($id);
         if (!$cjenovnik)
             return $this->itemNotFound();
         return View::make('Cjenovnik.show')

@@ -44,6 +44,17 @@ class Predmet extends Eloquent {
 		return $this->belongsToMany('User','predmet_user');
 	}
 
+    public function c_m_p() {
+        return $this->belongsToMany('Cjenovnik', 'c_m_p')
+                        ->withPivot('mjera_id');
+    }
+
+    public function cjenovnik($mjera_id) {
+        return $this->c_m_p->first(function($index, $cjenovnik) use ($mjera_id) {
+                    return $cjenovnik->pivot->mjera_id == $mjera_id;
+                });
+    }
+
 	public function cijene(){
 		return $this->belongsToMany('Mjera', 'cijene')
 		->withPivot('individualno', 'popust', 'minimalno')

@@ -45,33 +45,27 @@ $requiredPositive = array(
 
 <h3>Cijene</h3>
 <div id='cijene-list' class="container">
-	<table class="table"><tbody>
-		<tr>
-			<th>Mjera</th>
-			<th>Individualno</th>
-			<th>Popust po dodatnoj osobi</th>
-			<th>Minimalno</th>
-		</tr>
-		@if(isset($predmet))
-		@foreach($predmet->cijene as $cijena)
-		<tr>
-			<td>{{ $cijena->znacenje }}</td>
-			<td>{{ Form::input('number', 'individualno-cijena-'.$cijena->id, $cijena->pivot->individualno, $requiredPositive) }}</td>
-			<td>{{ Form::input('number', 'popust-cijena-'.$cijena->id, $cijena->pivot->popust, $requiredPositive) }}</td>
-			<td>{{ Form::input('number', 'minimalno-cijena-'.$cijena->id, $cijena->pivot->minimalno, $requiredPositive) }}</td>
-		</tr>
-		@endforeach
-		@else
-		@foreach(Mjera::all() as $mjera)
-		<tr>
-			<td>{{ $mjera->znacenje }}</td>
-			<td>{{ Form::input('number', 'individualno-cijena-'.$mjera->id, 0, $requiredPositive) }}</td>
-			<td>{{ Form::input('number', 'popust-cijena-'.$mjera->id, 0, $requiredPositive) }}</td>
-			<td>{{ Form::input('number', 'minimalno-cijena-'.$mjera->id, 0, $requiredPositive) }}</td>
-		</tr>
-		@endforeach
-		@endif
-	</tbody></table>
+    <?php
+    $mjere = Mjera::lists('znacenje', 'id');
+    $cjenovnici = Cjenovnik::lists('ime', 'id');
+    ?>
+    @foreach($mjere as $id => $znacenje)
+    <div class="form-group">
+        <?php
+        $cjenovnik = $predmet->cjenovnik($id);
+        ?>
+        @if($cjenovnik)
+        Cjenovnik za <strong>{{ $znacenje }}</strong> {{ Form::select("cjenovnik_id_$id", $cjenovnici, $cjenovnik->id, $required) }}
+        <div class="cjenovnik_table">
+            {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->renderSections()['table'] }}
+        </div>
+        @else
+        Cjenovnik za <strong>{{ $znacenje }}</strong> {{ Form::select("cjenovnik_id_$id", $cjenovnici, null, $required) }}
+        <div class="cjenovnik_table"></div>
+        @endif
+    </div>
+    @endforeach
+    {{ HTML::script('js/Predmet/cjenovnikUpdater.js') }}
 </div>
 <div class="form-group">
 {{ Form::submit('Pohrani', array('class' => 'btn btn-primary')) }}
