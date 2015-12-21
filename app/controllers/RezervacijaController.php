@@ -93,44 +93,8 @@ class RezervacijaController extends \ResourceController {
         $cjenovnik = $rezervacija->predmet
                 ->cjenovnik($naplata->stvarna_mjera);
 
-        $ukupno_satnica_po_polazniku = 0;
-        switch ($broj_polaznika) {
-            case 1:
-                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_1_osoba;
-                break;
-            case 2:
-                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_2_osobe;
-                break;
-            case 3:
-                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_3_osobe;
-                break;
-            case 4:
-                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_4_osobe;
-                break;
-            default:
-                $ukupno_satnica_po_polazniku = $cjenovnik->cijena_vise_osoba;
-                break;
-        }
-
-        $ukupno_satnica = $ukupno_satnica_po_polazniku * $broj_polaznika;
-        $satnica_za_instruktora = 0;
-        switch ($broj_polaznika) {
-            case 1:
-                $satnica_za_instruktora = $cjenovnik->instruktor_1_osoba;
-                break;
-            case 2:
-                $satnica_za_instruktora = $cjenovnik->instruktor_2_osobe;
-                break;
-            case 3:
-                $satnica_za_instruktora = $cjenovnik->instruktor_3_osobe;
-                break;
-            case 4:
-                $satnica_za_instruktora = $cjenovnik->instruktor_4_osobe;
-                break;
-            default:
-                $satnica_za_instruktora = $cjenovnik->instruktor_udio_vise_osoba * $ukupno_satnica / 100;
-                break;
-        }
+        $ukupno_satnica = $cjenovnik->getUkupnaSatnica($broj_polaznika);
+        $satnica_za_instruktora = $cjenovnik->getIntruktorovaSatnica($broj_polaznika);
 
         $naplata->ukupno_uplaceno = $ukupno_satnica * $naplata->stvarna_kolicina;
         $naplata->za_instruktora = $satnica_za_instruktora * $naplata->stvarna_kolicina;

@@ -16,6 +16,36 @@ class Cjenovnik extends Eloquent {
         return $this->belongsToMany('Predmet', 'c_m_p')
                         ->withPivot('mjera_id');
     }
+    
+    public function getUkupnaSatnica($broj_polaznika) {
+        switch ($broj_polaznika) {
+            case 1:
+                return $this->cijena_1_osoba * $broj_polaznika;
+            case 2:
+                return $this->cijena_2_osobe * $broj_polaznika;
+            case 3:
+                return $this->cijena_3_osobe * $broj_polaznika;
+            case 4:
+                return $this->cijena_4_osobe * $broj_polaznika;
+            default:
+                return $this->cijena_vise_osoba * $broj_polaznika;
+        }
+    }
+    
+    public function getIntruktorovaSatnica($broj_polaznika) {
+        switch ($broj_polaznika) {
+            case 1:
+                return $this->instruktor_1_osoba;
+            case 2:
+                return $this->instruktor_2_osobe;
+            case 3:
+                return $this->instruktor_3_osobe;
+            case 4:
+                return $this->instruktor_4_osobe;
+            default:
+                return $this->instruktor_udio_vise_osoba * $this->cijena_vise_osoba * $broj_polaznika / 100;
+        }
+    }
 
     /**
      * 

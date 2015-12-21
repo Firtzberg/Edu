@@ -19,24 +19,8 @@ $requiredPositive = array(
 $rezervacija = $naplata->rezervacija;
 $brojPolaznika = $rezervacija->klijenti->count();
 $cjenovnik = $rezervacija->predmet->cjenovnik($rezervacija->mjera_id);
-$poOsobi = 0;
-switch ($brojPolaznika) {
-    case 1:
-        $poOsobi = $cjenovnik->cijena_1_osoba;
-        break;
-    case 2:
-        $poOsobi = $cjenovnik->cijena_2_osobe;
-        break;
-    case 3:
-        $poOsobi = $cjenovnik->cijena_3_osobe;
-        break;
-    case 4:
-        $poOsobi = $cjenovnik->cijena_4_osobe;
-        break;
-    default:
-        $poOsobi = $cjenovnik->cijena_vise_osoba;
-        break;
-}
+$ukupno_satnica = $cjenovnik->getUkupnaSatnica($broj_polaznika);
+$poOsobi = $ukupno_satnica / $broj_polaznika;
 ?>
 {{ HTML::script('js/Naplata/mjereManager.js') }}
 <h2>Naplaćivanje</h2>
