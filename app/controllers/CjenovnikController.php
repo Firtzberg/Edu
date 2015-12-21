@@ -128,6 +128,7 @@ class CjenovnikController extends \ResourceController {
                             ->withInput()
                             ->with(self::DANGER_MESSAGE_KEY, $error);
 
+        Session::flash(self::SUCCESS_MESSAGE_KEY, 'Cjenovnik je uspješno uređen.');
         return Redirect::route('Cjenovnik.show', array($cjenovnik->id));
     }
 

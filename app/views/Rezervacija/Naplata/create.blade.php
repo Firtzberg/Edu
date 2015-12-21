@@ -19,8 +19,8 @@ $requiredPositive = array(
 $rezervacija = $naplata->rezervacija;
 $brojPolaznika = $rezervacija->klijenti->count();
 $cjenovnik = $rezervacija->predmet->cjenovnik($rezervacija->mjera_id);
-$ukupno_satnica = $cjenovnik->getUkupnaSatnica($broj_polaznika);
-$poOsobi = $ukupno_satnica / $broj_polaznika;
+$ukupno_satnica = $cjenovnik->getUkupnaSatnica($brojPolaznika);
+$poOsobi = $ukupno_satnica / $brojPolaznika;
 ?>
 {{ HTML::script('js/Naplata/mjereManager.js') }}
 <h2>Naplaćivanje</h2>
@@ -57,12 +57,18 @@ $poOsobi = $ukupno_satnica / $broj_polaznika;
             </div>
             <script type="text/javascript">
                 mjereManager.begin(<?php
-$mjere = Mjera::lists('znacenje', 'id');
+$cjenovnici = Cjenovnik::whereIn('id', $rezervacija->predmet->c_m_p->map(function($mjera) {
+                    return $mjera->pivot->cjenovnik_id;
+                })->toArray())->get();
+                
 echo json_encode(
-        $rezervacija->predmet->c_m_p->map(function($cjenovnik) use ($mjere) {
+        $rezervacija->predmet->c_m_p->map(function($mjera) use ($cjenovnici) {
+            $cjenovnik = $cjenovnici->first(function($index, $cjenovnik) use ($mjera) {
+                return $cjenovnik->id == $mjera->pivot->cjenovnik_id;
+            });
             return array(
-                'id' => $cjenovnik->pivot->mjera_id,
-                'ime' => $mjere[$cjenovnik->pivot->mjera_id],
+                'id' => $mjera->id,
+                'ime' => $mjera->znacenje,
                 'cijena_1_osoba' => $cjenovnik->cijena_1_osoba,
                 'cijena_2_osobe' => $cjenovnik->cijena_2_osobe,
                 'cijena_3_osobe' => $cjenovnik->cijena_3_osobe,

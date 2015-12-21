@@ -121,6 +121,7 @@ class RoleController extends \ResourceController {
 			->withInput()
 			->with(self::DANGER_MESSAGE_KEY, $error);
 
+		Session::flash(self::SUCCESS_MESSAGE_KEY, 'Uloga je uspješno uređena.');
 		return Redirect::route('Role.show', array($role->id));
 	}
 
