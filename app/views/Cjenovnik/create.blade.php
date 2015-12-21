@@ -115,22 +115,22 @@ array(
             @foreach($data as $index => $info)
             <tr>
                 <td>{{ $index }} osoba</td>
-                <th>{{ Form::input('number', $info['key'], $info['cijena'], $requiredPositive) }}</th>
+                <th>{{ Form::input('number', $info['key'], $info['cijena'], $requiredPositive + array('id' => "cijena_$index")) }}</th>
                 @for($i = 1; $i < $index; $i++)
-                <td>{{ $info['cijena'] }}</td>
+                <td class="cijena_copy_{{ $index }}">{{ $info['cijena'] }}</td>
                 @endfor
                 @for(;$i < 4; $i++)
                 <td>-</td>
                 @endfor
-                <td>{{ $info['cijena'] * $index }}</td>
-                <td>{{ Form::input('number', $info['key2'], $info['instruktor'], $requiredPositive) }}</td>
-                <td>{{ $info['cijena'] * $index - $info['instruktor'] }}</td>
+                <td class="total_{{ $index }}">{{ $info['cijena'] * $index }}</td>
+                <td>{{ Form::input('number', $info['key2'], $info['instruktor'], $requiredPositive + array('id' => "instruktor_$index")) }}</td>
+                <td class="tvrtka_{{ $index }}">{{ $info['cijena'] * $index - $info['instruktor'] }}</td>
                 @if($info['cijena'] == 0)
-                <td>0</td>
-                <td>0</td>
+                <td class="instruktor_pcnt_{{ $index }}">0</td>
+                <td class="tvrtka_pcnt_{{ $index }}">0</td>
                 @else
-                <td>{{ $info['instruktor'] * 100 / ($info['cijena'] * $index) }}</td>
-                <td>{{ ($info['cijena'] * $index - $info['instruktor']) * 100 / ($info['cijena'] * $index) }}</td>
+                <td class="instruktor_pcnt_{{ $index }}">{{ number_format($info['instruktor'] * 100 / ($info['cijena'] * $index), 2, '.', '') }}</td>
+                <td class="tvrtka_pcnt_{{ $index }}">{{ number_format(($info['cijena'] * $index - $info['instruktor']) * 100 / ($info['cijena'] * $index), 2, '.', '') }}</td>
                 @endif
             </tr>
             @endforeach
@@ -140,11 +140,12 @@ array(
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>{{ Form::input('number', 'instruktor_udio_vise_osoba', $AdditionalData['instruktor'], $requiredPercentage) }}</td>
-                <td>{{ 100 - $AdditionalData['instruktor'] }}</td>
+                <td>{{ Form::input('number', 'instruktor_udio_vise_osoba', $AdditionalData['instruktor'], $requiredPercentage + array('id' => 'ins_more_pcnt')) }}</td>
+                <td id="tvtka_more_pcnt">{{ 100 - $AdditionalData['instruktor'] }}</td>
             </tr>
         </tbody>
     </table>
+    {{ HTML::script('js/Cjenovnik/tableUpdater.js') }}
 </div>
 <div class = "form-group" style="max-width: 330px; margin: auto">
     {{ Form::submit('Pohrani', array(

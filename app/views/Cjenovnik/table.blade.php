@@ -44,8 +44,8 @@
             <td>0</td>
             <td>0</td>
             @else
-            <td>{{ $info['instruktor'] * 100 / ($info['cijene'] * $index) }}</td>
-            <td>{{ ($info['cijene'] * $index - $info['instruktor']) * 100 / ($info['cijene'] * $index) }}</td>
+            <td>{{ number_format($info['instruktor'] * 100 / ($info['cijene'] * $index), 2, '.', '') }}</td>
+            <td>{{ number_format(($info['cijene'] * $index - $info['instruktor']) * 100 / ($info['cijene'] * $index), 2, '.', '') }}</td>
             @endif
         </tr>
         @endforeach
