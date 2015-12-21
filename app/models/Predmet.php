@@ -45,17 +45,21 @@ class Predmet extends Eloquent {
 	}
 
     public function c_m_p() {
-        return $this->belongsToMany('Cjenovnik', 'c_m_p')
-                        ->withPivot('mjera_id');
+        return $this->belongsToMany('Mjera', 'c_m_p')
+                        ->withPivot('cjenovnik_id');
     }
 
     public function cjenovnik($mjera_id) {
-        return $this->c_m_p->first(function($index, $cjenovnik) use ($mjera_id) {
-                    return $cjenovnik->pivot->mjera_id == $mjera_id;
-                });
+        $mjera = $this->c_m_p->first(function($index, $mjera) use ($mjera_id) {
+            return $mjera->id == $mjera_id;
+        });
+        if (!$mjera) {
+            return null;
+        }
+        return Cjenovnik::find($mjera->pivot->cjenovnik_id);
     }
 
-	public function cijene(){
+    public function cijene(){
 		return $this->belongsToMany('Mjera', 'cijene')
 		->withPivot('individualno', 'popust', 'minimalno')
 		->withTimestamps();
@@ -125,7 +129,7 @@ class Predmet extends Eloquent {
 		$this->ime = $ime;
 
 		$kategorija->predmeti()->save($this);
-		$this->cijene()->sync($mjereSyncronizator);
+		$this->c_m_p()->sync($mjereSyncronizator);
             
         if(count($user_ids) > 0)
             $this->users()->sync($user_ids);
@@ -133,45 +137,25 @@ class Predmet extends Eloquent {
 	}
 
 	public function getErrorOrCijenaSyncArray($input){
-		$mjere = Mjera::all();
 		$syncArray = array();
 
 		//obilazak za svaku mjeru u sustavu
-		foreach ($mjere as $mjera) {
-			$cijena = array();
-
+		foreach (Mjera::all() as $mjera) {
 			//začimanje potrebnih podataka
-			if(isset($input['individualno-cijena-'.$mjera->id]))
-				$individualno = $input['individualno-cijena-'.$mjera->id];
-			else $individualno = 0;
-
-			if(isset($input['popust-cijena-'.$mjera->id]))
-				$popust = $input['popust-cijena-'.$mjera->id];
-			else $popust = 0;
-
-			if(isset($input['minimalno-cijena-'.$mjera->id]))
-				$minimalno = $input['minimalno-cijena-'.$mjera->id];
-			else $minimalno = 0;
+			if(isset($input["cjenovnik_id_$mjera->id"]))
+				$cjenovnik_id = $input["cjenovnik_id_$mjera->id"];
+			else return 'Niste odabrali cjenovnik za '.$mjera->znacenje.'.';
 			//kraj začimanja potrebnih podataka
 
 			//provjera vrijednosti podataka
-			if($individualno < 0)
-				return 'Individualna cijena za '.$mjera->znacenje.' ne može biti negativna.';
-
-			if($popust < 0)
-				return 'Popust po dodatnoj osobi za '.$mjera->znacenje.' ne može biti negativan.';
-
-			if($minimalno < 0)
-				return 'Minimalna cijena za '.$mjera->znacenje.' ne može biti negativan.';
-			if($minimalno > $individualno)
-				return 'Minimalna cijena za '.$mjera->znacenje.' ne može biti manja od individualne cijene.';
+                            $cjenovnik = Cjenovnik::find($cjenovnik_id);
+                            if(!$cjenovnik)
+                                    return "Zadani cjenovnik za $mjera->znacenje nije pronađen u sustavu.";
 			//kraj provjere vrijednosti podataka
 
 			//pridruživanje vrijednosti
 			$syncArray[$mjera->id] = array(
-				'individualno' => $individualno,
-				'popust' => $popust,
-				'minimalno' => $minimalno
+				'cjenovnik_id' => $cjenovnik_id
 			);
 			//kraj pridruživanja
 		}

@@ -52,12 +52,26 @@ $requiredPositive = array(
     @foreach($mjere as $id => $znacenje)
     <div class="form-group">
         <?php
-        $cjenovnik = $predmet->cjenovnik($id);
+        $cjenovnik = null;
+        $cjenovnik_id = null;
+        if (isset($predmet)) {
+            $cjenovnik = $predmet->cjenovnik($id);
+            if ($cjenovnik) {
+                $cjenovnik_id = $cjenovnik->id;
+            }
+        }
+        $cjenovnik_id = Input::old("cjenovnik_id_$id", $cjenovnik_id);
+        if ($cjenovnik_id) {
+            $cjenovnik = Cjenovnik::find($cjenovnik_id);
+        }
+        else {
+            $cjenovnik = null;
+        }
         ?>
         @if($cjenovnik)
         Cjenovnik za <strong>{{ $znacenje }}</strong> {{ Form::select("cjenovnik_id_$id", $cjenovnici, $cjenovnik->id, $required) }}
         <div class="cjenovnik_table">
-            {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->renderSections()['table'] }}
+            {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->render() }}
         </div>
         @else
         Cjenovnik za <strong>{{ $znacenje }}</strong> {{ Form::select("cjenovnik_id_$id", $cjenovnici, null, $required) }}

@@ -8,17 +8,19 @@ Predmet {{ $predmet->ime }}
 {{ $predmet->kategorija->getBreadCrumbs() }}
 <h2>{{ $predmet->ime }}</h2>
 <h3>Cijene</h3>
-<div id='cijene-list' class="container">
+<div id='cijene-list'>
     @foreach(Mjera::lists('znacenje', 'id') as $id => $znacenje)
-    <?php
-    $cjenovnik = $predmet->cjenovnik($id);
-    ?>
-    @if($cjenovnik)
-    Cjenovnik za {{ $znacenje }} je {{ $cjenovnik->link() }}.
-    {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->render() }}
-    @else
-    Cjenovnik za {{ $znacenje }} nije postavljen.
-    @endif
+    <div class = "container">
+        <?php
+        $cjenovnik = $predmet->cjenovnik($id);
+        ?>
+        @if($cjenovnik)
+        Cjenovnik za {{ $znacenje }} je {{ $cjenovnik->link() }}.
+        {{ View::make('Cjenovnik.table')->with('cjenovnik', $cjenovnik)->render() }}
+        @else
+        Cjenovnik za {{ $znacenje }} nije postavljen.
+        @endif
+    </div>
     @endforeach
 </div>
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_PREDMET_KATEGORIJA))

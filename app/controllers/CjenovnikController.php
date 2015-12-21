@@ -8,7 +8,7 @@ class CjenovnikController extends \ResourceController {
         $this->requireManagePermission(Permission::PERMISSION_MANAGE_CJENOVNIK);
         $this->requireWatchPermission(Permission::PERMISSION_VIEW_CJENOVNIK);
         $this->requireDeletePermission(Permission::PERMISSION_REMOVE_CJENOVNIK);
-        
+
         $this->beforeFilter(function() {
             if (!(Auth::check() && Auth::user()->hasPermission($this->watchPermissions))) {
                 return Redirect::to('logout');
@@ -46,7 +46,7 @@ class CjenovnikController extends \ResourceController {
             return $v->renderSections()['list'];
         return $v;
     }
-    
+
     public function _table($id) {
         $cjenovnik = Cjenovnik::find($id);
         if (!$cjenovnik) {
@@ -141,6 +141,10 @@ class CjenovnikController extends \ResourceController {
         $cjenovnik = Cjenovnik::find($id);
         if (!$cjenovnik)
             return $this->itemNotFound();
+        if ($cjenovnik->c_m_p()->count()) {
+            Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće ukloniti cjenovnik, dok ga još neki predmeti koriste.');
+            return Redirect::route('Cjenovnik.show', array($cjenovnik->id));
+        }
         $cjenovnik->delete();
         Session::flash(self::SUCCESS_MESSAGE_KEY, 'Cjenovnik je uspješno uklonjen!');
         return Redirect::route('Cjenovnik.index');

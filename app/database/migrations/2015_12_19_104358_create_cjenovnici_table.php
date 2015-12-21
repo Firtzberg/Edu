@@ -83,7 +83,7 @@ class CreateCjenovniciTable extends Migration {
             $table->integer('predmet_id')
                     ->unsigned()
                     ->index();
-            $table->primary(array('cjenovnik_id', 'mjera_id', 'predmet_id'));
+            $table->primary(array('mjera_id', 'predmet_id'));
         });
 
         Schema::table('c_m_p', function(Blueprint $table) {
