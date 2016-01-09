@@ -226,11 +226,12 @@ class ExcelController extends \BaseController {
 			$klijentCount = count($klijenti);
 
 			$excel->sheet(self::SHEET_NAME_KLIJENT_REZERVACIJA, function($sheet) use ($klijentRezervacije, $rezervacijaCount, $klijentCount){
-				$sheet->appendRow(array('Broj polaznika', 'ID rezervacije', 'Izostao', 'Predmet rezervacije', 'Klijent'));
+				$sheet->appendRow(array('Broj mobitela polaznika', 'ID rezervacije', 'Izostao', 'Predmet rezervacije', 'Klijent'));
 				$i = 1;
 				foreach ($klijentRezervacije as $klijentRezervacija) {
 					$i++;
 					$row = $klijentRezervacija;
+                                        $row['klijent_id'] = Klijent::getReadableBrojMobitela($klijentRezervacija['klijent_id']);
 					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'B'.$i, 'N');
 					$row[] = self::getHyperlink(self::SHEET_NAME_KLIJENTI, $klijentCount, 'A'.$i);
 					$sheet->appendRow($row);
@@ -238,10 +239,12 @@ class ExcelController extends \BaseController {
 			});
 
 			$excel->sheet(self::SHEET_NAME_KLIJENTI, function($sheet) use ($klijenti, $rezervacijaCount){
-				$sheet->appendRow(array('Broj mobitela', 'Ime', 'Email', 'Facebook', 'Dodana', 'Zadnja promjena'));
+				$sheet->appendRow(array('Broj mobitela', 'Ime', 'Email', 'Facebook', 'Dodan', 'Zadnja promjena', 'Ime Roditelja', 'Broj roditelja', 'Škola/Fakultet', 'Razred'));
 				$i = 1;
 				foreach ($klijenti as $klijent) {
 					$i++;
+                                    $klijent->broj_mobitela = Klijent::getReadableBrojMobitela($klijent->broj_mobitela);
+                                    $klijent->broj_roditelja = Klijent::getReadableBrojMobitela($klijent->broj_roditelja);
 					$row = $klijent->toArray();
 					unset($row['pivot']);
 					$sheet->appendRow($row);
