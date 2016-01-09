@@ -28,7 +28,7 @@ class Klijent extends Eloquent{
 	 */
 	protected $table = 'klijenti';
 
-	protected $fillable = array('broj_mobitela', 'ime', 'facebook', 'email');
+	protected $fillable = array('broj_mobitela', 'ime', 'skola', 'razred', 'facebook', 'email', 'roditelj', 'broj_roditelja');
 	protected $guarded = array();
 
 	//Enables primary key not to be int
@@ -46,8 +46,9 @@ class Klijent extends Eloquent{
      * 
      * @return string
      */
-    public function getReadableBrojMobitela(){
-    	$broj_mobitela = $this->broj_mobitela;
+    public static function getReadableBrojMobitela($broj_mobitela){
+        if (!$broj_mobitela)
+            return '';
 		if(substr($broj_mobitela, 0, 5) == '00385')
 			$broj_mobitela = '0'.substr($broj_mobitela, 5);
 		if(strlen($broj_mobitela) > 3 && $broj_mobitela[0] == '0'){
@@ -63,7 +64,7 @@ class Klijent extends Eloquent{
      * @param string $broj_mobitela
      * @return stirng
      */
-    public function getStorableBrojMobitela($broj_mobitela){
+    public static function getStorableBrojMobitela($broj_mobitela){
     	if(strlen($broj_mobitela) > 0 && $broj_mobitela[0] == '+')
     		$broj_mobitela = '00'.substr($broj_mobitela, 1);
 		if(strlen($broj_mobitela) > 1)

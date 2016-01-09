@@ -43,7 +43,7 @@ class KlijentController extends \ResourceController {
 	public function getSuggestionedKlijents(){
 		if(Input::has('broj'))
 		{
-			$broj = (new Klijent())->getStorableBrojMobitela(Input::get('broj'));
+			$broj = Klijent::getStorableBrojMobitela(Input::get('broj'));
 		}
 		$query = Auth::user()->klijenti();
 		if(isset($broj)){
@@ -65,7 +65,7 @@ class KlijentController extends \ResourceController {
 			$collection = $query->take(5)->get();
 		}
 		foreach ($collection as $item) 
-			$item->broj_mobitela = $item->getReadableBrojMobitela();
+			$item->broj_mobitela = Klijent::getReadableBrojMobitela($item->broj_mobitela);
 
 		return Response::json($collection);
 	}
@@ -112,10 +112,16 @@ class KlijentController extends \ResourceController {
 	  	}
 
 		$klijent = new Klijent();
-		$klijent->broj_mobitela = $klijent->getStorableBrojMobitela($broj_mobitela);
+		$klijent->broj_mobitela = Klijent::getStorableBrojMobitela($broj_mobitela);
 		$klijent->ime =  Input::get('ime');
+		$klijent->skola = Input::get('skola');
+		if (Input::get('razred')) {
+                    $klijent->razred = Input::get('razred');
+                }
 		$klijent->facebook = Input::get('facebook');
 		$klijent->email = Input::get('email');
+		$klijent->roditelj = Input::get('roditelj');
+		$klijent->broj_roditelja = Klijent::getStorableBrojMobitela(Input::get('broj_roditelja'));
 		$klijent->save();
 		if(true)
 		{
@@ -185,15 +191,21 @@ class KlijentController extends \ResourceController {
 			return $this->itemNotFound();
 
 	  	if($broj_mobitela != $id)
-	  		$klijent->broj_mobitela = $klijent->getStorableBrojMobitela($broj_mobitela);
+	  		$klijent->broj_mobitela = Klijent::getStorableBrojMobitela($broj_mobitela);
 		$klijent->ime =  Input::get('ime');
+		$klijent->skola = Input::get('skola');
+		if (Input::get('razred')) {
+                    $klijent->razred = Input::get('razred');
+                }
 		$klijent->facebook = Input::get('facebook');
 		$klijent->email = Input::get('email');
+		$klijent->roditelj = Input::get('roditelj');
+		$klijent->broj_roditelja = Klijent::getStorableBrojMobitela(Input::get('broj_roditelja'));
 		$klijent->save();
 		if(true)
 		{
 			Session::flash(self::SUCCESS_MESSAGE_KEY,'Klijent uspješno uređen');
-			return Redirect::route('Klijent.show', array($broj_mobitela));
+			return Redirect::route('Klijent.show', array($klijent->broj_mobitela));
 		}
 
 		return Redirect('Klijent.edit')
