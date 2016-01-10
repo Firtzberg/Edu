@@ -55,6 +55,7 @@ Route::group(array('before' => 'auth'), function() {
     Route::resource('Role', 'RoleController');
     Route::resource('Cjenovnik', 'CjenovnikController');
     Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
+    Route::get('/Klijent/{Klijent}/Rezervacije/{User}/{Predmet}', array('uses' => 'KlijentController@rezervacije', 'as' => 'Klijent.rezervacije'));
     Route::resource('Kategorija', 'KategorijaController', array('except' => array('create')));
     Route::resource('Predmet', 'PredmetController', array('except' => array('index', 'create')));
     Route::get('/Predmet/create/{Kategorija}', array('as' => 'Predmet.create', 'uses' => 'PredmetController@create'));

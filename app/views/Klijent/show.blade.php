@@ -28,22 +28,10 @@ Klijent {{ $klijent->ime }}
     <dt>Broj Roditelja</dt><dd>{{ Klijent::getReadableBrojMobitela($klijent->broj_roditelja) }}</dd>
     @endif
 </dl>
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
+{{ link_to_route('Klijent.edit', 'Uredi', array($klijent->broj_mobitela), array('class' => 'btn btn-default')) }}
+@endif
 <?php
-$polazniciQuery = '(select COUNT(*) from klijent_rezervacija where missed = FALSE AND klijent_rezervacija.rezervacija_id = rezervacije.id)';
-$jePlatio = 'missed = FALSE AND ukupno_uplaceno IS NOT NULL';
-$interesi = $klijent->rezervacije()
-        ->leftJoin('naplate', 'naplate.rezervacija_id', '=', 'rezervacije.id')
-        ->groupBy('instruktor_id', 'predmet_id')
-        ->select(array(
-            DB::Raw('COUNT(*) as count'),
-            DB::Raw('COUNT(CASE WHEN ' . $jePlatio . ' THEN 1 END) as naplate_count'),
-            DB::Raw('COUNT(CASE WHEN missed = TRUE THEN 1 END) as missed_count'),
-            DB::Raw('SUM(CASE WHEN ' . $jePlatio . ' THEN ukupno_uplaceno / ' . $polazniciQuery . ' END) as ukupno'),
-            DB::Raw('SUM(CASE WHEN ' . $jePlatio . ' THEN za_tvrtku / ' . $polazniciQuery . ' END) as za_tvrtku'),
-            DB::Raw("MAX(pocetak_rada) as posljednji_put"),
-        ))
-        ->orderBy('posljednji_put', 'DESC')
-        ->get();
 $suma_ukupno = 0;
 $suma_za_tvrtku = 0;
 $suma_rezervacija = 0;
@@ -52,7 +40,7 @@ $suma_naplate_count = 0;
 ?>
 <div>
     <h4>Pohađane instrukcije</h4>
-    <table class="table">
+    <table class="table table-striped">
         <tbody>
             <tr>
                 <th>
@@ -78,6 +66,9 @@ $suma_naplate_count = 0;
                 </th>
                 <th>
                     Posljednja rezervacija
+                </th>
+                <th>
+                    Detalji
                 </th>
             </tr>
             @foreach($interesi as $interes)
@@ -121,6 +112,9 @@ $suma_naplate_count = 0;
                 <td>
                     {{ (new DateTime($interes->posljednji_put))->format('d.m.Y') }}
                 </td>
+                <td>
+                    {{ link_to_route('Klijent.rezervacije', 'Popis >>', array($klijent->broj_mobitela, $interes->instruktor_id, $interes->predmet_id)); }}
+                </td>
             </tr>
             @endforeach
             <tr>
@@ -143,11 +137,9 @@ $suma_naplate_count = 0;
                     {{ $suma_za_tvrtku }}
                 </td>
                 <td></td>
+                <td></td>
             </tr>
         </tbody>
     </table>
 </div>
-@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
-{{ link_to_route('Klijent.edit', 'Uredi', array($klijent->broj_mobitela), array('class' => 'btn btn-default')) }}
-@endif
 @endsection
