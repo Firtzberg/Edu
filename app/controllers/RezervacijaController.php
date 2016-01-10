@@ -22,6 +22,30 @@ class RezervacijaController extends \ResourceController {
         Session::flash(self::DANGER_MESSAGE_KEY, Rezervacija::NOT_FOUND_MESSAGE);
         return Redirect::route('home');
     }
+    
+    /**
+     * Nalazi sve nenaplaćene rezervacije za određenog djelatnika.
+     * @param int $instruktor_id Id djelatnika za kojega se traženenaplaćene istrukcije.
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    private function getNenaplaceneRezervacije($instruktor_id) {
+        return Rezervacija::where('instruktor_id', $instruktor_id)
+                        ->where('pocetak_rada', '<', DB::Raw('NOW()'))
+                        ->where('tecaj', 0)
+                        ->has('naplata', '=', 0)
+                        ->get();
+    }
+
+    /**
+     * Odgovor servera u slučaju pokušaja rezerviranja kada postoje nenaplaćene rezervacije.
+     * @param \Illuminate\Database\Eloquent\Collection $nenaplaceneRezervacije Nenaplaćene rezervacije
+     * @return Response
+     */
+    private function nenaplaceno($nenaplaceneRezervacije) {
+        Session::flash(self::DANGER_MESSAGE_KEY, 'Nije dozvoljeno praviti rezervaiju dok ne naplatite sve odrađene.<br/>' .
+                'Primjerice rezervacija ' . $nenaplaceneRezervacije->first()->link() . ' nije naplaćena.');
+        return Redirect::route('home');
+    }
 
     public function create_naplata($id) {
         $naplata = new Naplata();
@@ -148,6 +172,14 @@ class RezervacijaController extends \ResourceController {
             Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
             return Redirect::route('home');
         }
+        
+        if ($user_id == Auth::id()) {
+            $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($user_id);
+            if ($nenaplaceneRezervacije->count()) {
+                return $this->nenaplaceno($nenaplaceneRezervacije);
+            }
+        }
+
         return View::make('Rezervacija.create')
                         ->with('klijent', View::make('Klijent.listForm'))
                         ->with('predmet', View::make('Kategorija.select')
@@ -173,6 +205,14 @@ class RezervacijaController extends \ResourceController {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('home');
         }
+        
+        if ($djelatnik_id == Auth::id()) {
+            $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($djelatnik_id);
+            if ($nenaplaceneRezervacije->count()) {
+                return $this->nenaplaceno($nenaplaceneRezervacije);
+            }
+        }
+        
         $input['instruktor_id'] = $djelatnik_id;
         $rezervacija = new Rezervacija();
 
@@ -199,6 +239,13 @@ class RezervacijaController extends \ResourceController {
         //provjera postojanja
         if (!$rezervacija) {
             return $this->itemNotFound();
+        }
+        
+        if ($rezervacija->instruktor_id == Auth::id()) {
+            $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($rezervacija->instruktor_id);
+            if ($nenaplaceneRezervacije->count()) {
+                return $this->nenaplaceno($nenaplaceneRezervacije);
+            }
         }
 
         return View::make('Rezervacija.create')
