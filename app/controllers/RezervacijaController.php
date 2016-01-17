@@ -283,7 +283,8 @@ class RezervacijaController extends \ResourceController {
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor', $rezervacija->instruktor));
+                                ->with('instruktor', $rezervacija->instruktor)
+                                ->with('local_tecaj', $rezervacija->tecaj));
     }
 
     /**
