@@ -41,6 +41,11 @@ array(
 $required) }}
 </div>
 <div class = "form-group">
+{{ Form::label('Položaj u rasporedu') }}
+{{ Form::text('polozaj', null,
+$optional) }}
+</div>
+<div class = "form-group">
 {{ Form::label('kat') }}
 {{ Form::text('kat', null,
 $required) }}

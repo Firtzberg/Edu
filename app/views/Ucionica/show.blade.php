@@ -11,6 +11,7 @@ Učionica {{ $ucionica->naziv }}
 @section('content')
 <h2>Učionica {{ $ucionica->naziv }}</h2>
 <dl class = "dl-horizontal">
+<dt>Položaj u rasporedu</dt><dd>{{ $ucionica->polozaj }}</dd>
 <dt>Najveći broj učenika</dt><dd>{{ $ucionica->max_broj_ucenika }}</dd>
 <dt>Adresa</dt><dd>{{ $ucionica->adresa }}</dd>
 <dt>Kat</dt><dd>{{ $ucionica->kat }}</dd>

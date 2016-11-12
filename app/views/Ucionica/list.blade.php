@@ -4,6 +4,7 @@
 	<tbody>
 		<tr>
 			<th>Naziv</th>
+			<th>Položaj u rasporedu</th>
 			<th>Adresa</th>
 			<th>Najveći broj učenika</th>
 		</tr>
@@ -12,6 +13,7 @@
 	<td>
 {{ $ucionica->link() }}
 	</td>
+	<td>{{ $ucionica->polozaj }}</td>
 	<td>{{ $ucionica->adresa }}</td>
 	<td>{{ $ucionica->max_broj_ucenika }}</td>
 </tr>

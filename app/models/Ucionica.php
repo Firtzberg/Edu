@@ -102,6 +102,10 @@ class Ucionica extends Eloquent {
         
         if(isset($input['opis']))
             $this->opis = $input['opis'];
+        
+        if(isset($input['polozaj']))
+            $this->polozaj = $input['polozaj'];
+
         $this->save();
     }
 

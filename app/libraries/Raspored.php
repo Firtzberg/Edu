@@ -85,7 +85,14 @@ class Raspored {
      */
     public static function UcionicaHeading($ucionica) {
         $response = '<div class = "raspored-heading">';
-        $response .= $ucionica->link();
+        if ($ucionica)
+        {
+            $response .= $ucionica->link();
+        }
+        else
+        {
+            $response .= "Uklonjena učionica";
+        }
         $response .= '</div>';
         return $response;
     }
@@ -124,7 +131,7 @@ class Raspored {
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
                 'span' => (int) (($kraj - $pocetak) / 60 / 15),
                 'rezervacija' => $r->link(),
-                'extra' => $r->ucionica->link(),
+                'extra' => $r->ucionica?$r->ucionica->link():"Uklonjena učionica",
                 'boja' => $djelatnik->boja
             );
         }
@@ -245,7 +252,7 @@ class Raspored {
                 ->whereBetween('pocetak_rada', array($min, $max))
                 ->get();
 
-        $ucionice = \Ucionica::all();
+        $ucionice = \Ucionica::orderBy('polozaj')->get();
         $data = array();
         foreach ($ucionice as $ucionica) {
             $data[$ucionica->id] = array('ucionica' => $ucionica);
@@ -274,7 +281,8 @@ class Raspored {
      * @return string
      */
     public static function RasporedForDay($day, $week, $year) {
-        $count = \Ucionica::count()+1;
+        $rezervacije = self::RezervacijeForDay($day, $week, $year);
+        $count = count($rezervacije)+1;
         $widthPercent = 100/$count;
         $response = '<div class = "raspored">';
         $dto = new \DateTime();
@@ -282,9 +290,14 @@ class Raspored {
         $response .= '<p>'.self::$dani[$day].', '.$dto->format('d.m.Y').'</p>';
         $response .= '<div><div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         $response .= self::HoursColumn($widthPercent/2);
-        foreach (self::RezervacijeForDay($day, $week, $year) as $blocks) {
+        foreach ($rezervacije as $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';
-            $response .= self::UcionicaHeading($blocks['ucionica']);
+            if (isset($blocks['ucionica'])) {
+                $response .= self::UcionicaHeading($blocks['ucionica']);
+            }
+            else {
+                $response .= self::UcionicaHeading(null);
+            }
             $response .= self::Blocks2HTML($blocks);
             $response .= '</div>';
         }
