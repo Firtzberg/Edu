@@ -61,7 +61,9 @@ class ExcelController extends \BaseController {
 		if(!($year>=2014 && $year <= date('Y')))
 			$year = 2014;
                 $name .= "_$month-$year";
-		$from = "$year-$month-1 00:00:00";
+		if($month < 10)
+			$month = '0'.$month;
+		$from = "$year-$month-01 00:00:00";
 		$month = Input::get('endMonth');
 		if(!($month>0 && $month < 13))
 			$month = 1;
@@ -74,7 +76,9 @@ class ExcelController extends \BaseController {
 			$month = 1;
 			$year++;
 		}
-		$to = "$year-$month-1 00:00:00";
+		if($month < 10)
+			$month = '0'.$month;
+		$to = "$year-$month-01 00:00:00";
 		Excel::create($name, function($excel) use($from, $to){
 			$usersCount = User::count();
 			$predmetCount = Predmet::count();
@@ -85,6 +89,7 @@ class ExcelController extends \BaseController {
 			$rezervacijaCount = 0;
 
 			$excel->setCreator('Hrvoje');
+			ini_set('max_execution_time', 120);
 
 			$excel->sheet(self::SHEET_NAME_USERS, function($sheet) use ($ulogaCount){
 				$sheet->appendRow(array('ID', 'Ime', 'Broj mobitela', 'Email',
@@ -226,14 +231,14 @@ class ExcelController extends \BaseController {
 			$klijentCount = count($klijenti);
 
 			$excel->sheet(self::SHEET_NAME_KLIJENT_REZERVACIJA, function($sheet) use ($klijentRezervacije, $rezervacijaCount, $klijentCount){
-				$sheet->appendRow(array('Broj mobitela polaznika', 'ID rezervacije', 'Izostao', 'Predmet rezervacije', 'Klijent'));
+				$sheet->appendRow(array('Broj mobitela polaznika', 'ID rezervacije', 'Izostao'));//, 'Predmet rezervacije', 'Klijent'));
 				$i = 1;
 				foreach ($klijentRezervacije as $klijentRezervacija) {
 					$i++;
 					$row = $klijentRezervacija;
                                         $row['klijent_id'] = Klijent::getReadableBrojMobitela($klijentRezervacija['klijent_id']);
-					$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'B'.$i, 'N');
-					$row[] = self::getHyperlink(self::SHEET_NAME_KLIJENTI, $klijentCount, 'A'.$i);
+					//$row[] = self::getHyperlink(self::SHEET_NAME_REZERVACIJE, $rezervacijaCount, 'B'.$i, 'N');
+					//$row[] = self::getHyperlink(self::SHEET_NAME_KLIJENTI, $klijentCount, 'A'.$i);
 					$sheet->appendRow($row);
 				}
 			});
