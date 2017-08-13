@@ -37,6 +37,7 @@ class Raspored {
             $response .= '<div class = "raspored-vrijeme" style="height:' .
                     (self::HEIGHT_15_MIN * 4) . 'px;"><p>' . $hour . ':00</p></div>';
         }
+        $response .= '<div class = "raspored-heading">Vrijeme</div>';
         $response .= '</div>';
         return $response;
     }
@@ -127,11 +128,18 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
+            $extra = ($r->ucionica?$r->ucionica->link():"Uklonjena učionica");
+            $extra .= ' ('.$r->klijenti()->count();
+            $missed = $r->klijenti()->where('missed', 1)->count();
+            if ($missed) {
+                $extra .= '-'.$missed;
+            }
+            $extra .= ')';
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
                 'span' => (int) (($kraj - $pocetak) / 60 / 15),
                 'rezervacija' => $r->link(),
-                'extra' => $r->ucionica?$r->ucionica->link():"Uklonjena učionica",
+                'extra' => $extra,
                 'boja' => $djelatnik->boja
             );
         }
@@ -149,12 +157,14 @@ class Raspored {
         $count = 8;
         $widthPercent = 100/$count;
         $response = '<div class = "raspored">';
-        $response .= '<div><div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
+        $response .= '<div class = "raspored-scroller">';
+        $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= '</div>';
             if ($dayNumber == 5) {
                 $response .= self::HoursColumn($widthPercent / 2);
@@ -195,11 +205,18 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
+            $extra = $r->instruktor->link();
+            $extra .= ' ('.$r->klijenti()->count();
+            $missed = $r->klijenti()->where('missed', 1)->count();
+            if ($missed) {
+                $extra .= '-'.$missed;
+            }
+            $extra .= ')';
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
                 'span' => (int) (($kraj - $pocetak) / 60 / 15),
                 'rezervacija' => $r->link(),
-                'extra' => $r->instruktor->link(),
+                'extra' => $extra,
                 'boja' => $r->instruktor->boja
             );
         }
@@ -217,12 +234,14 @@ class Raspored {
         $count = 8;
         $widthPercent = 100/$count;
         $response = '<div class = "raspored">';
-        $response .= '<div><div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
+        $response .= '<div class = "raspored-scroller">';
+        $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= '</div>';
             if ($dayNumber == 5) {
                 $response .= self::HoursColumn($widthPercent / 2);
@@ -262,11 +281,18 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = $r->ucionica_id;
+            $extra = $r->instruktor->link();
+            $extra .= ' ('.$r->klijenti()->count();
+            $missed = $r->klijenti()->where('missed', 1)->count();
+            if ($missed) {
+                $extra .= '-'.$missed;
+            }
+            $extra .= ')';
             $data[$key][] = array(
                 'offset' => (int) (((date('H', $pocetak) - \BaseController::START_HOUR) * 60 + date('i', $pocetak)) / 15),
                 'span' => (int) (($kraj - $pocetak) / 60 / 15),
                 'rezervacija' => $r->link(),
-                'extra' => $r->instruktor->link(),
+                'extra' => $extra,
                 'boja' => $r->instruktor->boja
             );
         }
@@ -288,7 +314,8 @@ class Raspored {
         $dto = new \DateTime();
         $dto->setISODate($year, $week, $day);
         $response .= '<p>'.self::$dani[$day].', '.$dto->format('d.m.Y').'</p>';
-        $response .= '<div><div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
+        $response .= '<div class = "raspored-scroller">';
+        $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         $response .= self::HoursColumn($widthPercent/2);
         foreach ($rezervacije as $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';
@@ -299,6 +326,12 @@ class Raspored {
                 $response .= self::UcionicaHeading(null);
             }
             $response .= self::Blocks2HTML($blocks);
+            if (isset($blocks['ucionica'])) {
+                $response .= self::UcionicaHeading($blocks['ucionica']);
+            }
+            else {
+                $response .= self::UcionicaHeading(null);
+            }
             $response .= '</div>';
         }
         $response .= self::HoursColumn($widthPercent/2);
