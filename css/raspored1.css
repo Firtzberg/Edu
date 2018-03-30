@@ -8,16 +8,25 @@ div.raspored > p {
 }
 
 div.raspored-scroller {
-    width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
 }
 div.raspored-scroller > div {
     width: 100%;
+    margin: 0;
+    padding: 0;
     overflow-x: visible;
 }
 div.raspored-scroller > div > div {
     float: left;
     margin: 0;
+}
+
+div.raspored-time {
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    text-align: center;
 }
 
 div.raspored-blocks{

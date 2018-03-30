@@ -30,8 +30,8 @@ class Raspored {
      * gets a raspored column with hours
      * @return string
      */
-    public static function HoursColumn($widthPercent) {
-        $response = '<div style="width:'.$widthPercent.'%;">';
+    public static function HoursColumn($left) {
+        $response = '<div class = "raspored-time col-lg-1 col-md-1 col-sm-2 col-xs-3'.($left?'':' hidden-xs').'">';
         $response .= '<div class = "raspored-heading">Vrijeme</div>';
         for ($hour = \BaseController::START_HOUR; $hour < \BaseController::END_HOUR; $hour++) {
             $response .= '<div class = "raspored-vrijeme" style="height:' .
@@ -154,24 +154,22 @@ class Raspored {
      * @return string
      */
     public static function RasporedForUserInWeek($user_id, $week, $year) {
-        $count = 8;
+        $count = 7;
         $widthPercent = 100/$count;
-        $response = '<div class = "raspored">';
-        $response .= '<div class = "raspored-scroller">';
+        $response = '<div class = "raspored container-fluid"><div class = "row">';
+        $response .= self::HoursColumn(true);
+        $response .= '<div class = "raspored-scroller col-lg-10 col-md-10 col-sm-8 col-xs-9">';
         $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
-        $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= '</div>';
-            if ($dayNumber == 5) {
-                $response .= self::HoursColumn($widthPercent / 2);
-            }
         }
         $response .= '</div></div>';
-        $response .= '</div>';
+        $response .= self::HoursColumn(false);
+        $response .= '</div></div>';
         return $response;
     }
 
@@ -231,24 +229,22 @@ class Raspored {
      * @return string
      */
     public static function RasporedForUcionicaInWeek($ucionicaId, $week, $year) {
-        $count = 8;
+        $count = 7;
         $widthPercent = 100/$count;
-        $response = '<div class = "raspored">';
-        $response .= '<div class = "raspored-scroller">';
+        $response = '<div class = "raspored container-fluid"><div class = "row">';
+        $response .= self::HoursColumn(true);
+        $response .= '<div class = "raspored-scroller col-lg-10 col-md-10 col-sm-8 col-xs-9">';
         $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
-        $response .= self::HoursColumn($widthPercent/2);
         foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= self::Blocks2HTML($blocks);
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
             $response .= '</div>';
-            if ($dayNumber == 5) {
-                $response .= self::HoursColumn($widthPercent / 2);
-            }
         }
         $response .= '</div></div>';
-        $response .= '</div>';
+        $response .= self::HoursColumn(false);
+        $response .= '</div></div>';
         return $response;
     }
 
@@ -308,15 +304,16 @@ class Raspored {
      */
     public static function RasporedForDay($day, $week, $year) {
         $rezervacije = self::RezervacijeForDay($day, $week, $year);
-        $count = count($rezervacije)+1;
+        $count = count($rezervacije);
         $widthPercent = 100/$count;
-        $response = '<div class = "raspored">';
+        $response = '<div class = "raspored container-fluid">';
         $dto = new \DateTime();
         $dto->setISODate($year, $week, $day);
         $response .= '<p>'.self::$dani[$day].', '.$dto->format('d.m.Y').'</p>';
-        $response .= '<div class = "raspored-scroller">';
+        $response .= '<div class = "row">';
+        $response .= self::HoursColumn(true);
+        $response .= '<div class = "raspored-scroller col-lg-10 col-md-10 col-sm-8 col-xs-9">';
         $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
-        $response .= self::HoursColumn($widthPercent/2);
         foreach ($rezervacije as $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';
             if (isset($blocks['ucionica'])) {
@@ -334,9 +331,9 @@ class Raspored {
             }
             $response .= '</div>';
         }
-        $response .= self::HoursColumn($widthPercent/2);
         $response .= '</div></div>';
-        $response .= '</div>';
+        $response .= self::HoursColumn(false);
+        $response .= '</div></div>';
         return $response;
     }
 

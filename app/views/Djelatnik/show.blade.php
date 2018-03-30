@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('heading')
-{{ HTML::style('css/raspored.css') }}
+{{ HTML::style('css/raspored1.css') }}
 @endsection
 
 @section('title')
