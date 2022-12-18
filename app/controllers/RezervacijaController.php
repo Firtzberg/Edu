@@ -247,8 +247,10 @@ class RezervacijaController extends \ResourceController {
                 return $this->nenaplaceno($nenaplaceneRezervacije);
             }
         }
+        unset($rezervacija->id);
 
         return View::make('Rezervacija.create')
+                        ->with('rezervacija', $rezervacija)
                         ->with('klijent', View::make('Klijent.listForm')
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')

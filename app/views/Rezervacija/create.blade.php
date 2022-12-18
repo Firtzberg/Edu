@@ -21,8 +21,12 @@ $requiredPositive = array(
 ?>
 <h2 class="form-heading">Rezerviranje</h2>
 @if(isset($rezervacija))
+@if(isset($rezervacija->id))
 {{ Form::model($rezervacija, array('route' => array('Rezervacija.update', $rezervacija->id),
 'method' => 'put')) }}
+@else
+{{ Form::model($rezervacija, array('route' => 'Rezervacija.store')) }}
+@endif
 @else
 {{ Form::open(array('route' => 'Rezervacija.store')) }}
 @endif
@@ -148,7 +152,7 @@ $requiredPositive = array(
 </div>
 <div class = "form-group">
     <?php
-    if (isset($rezervacija))
+    if (isset($rezervacija->id))
         $value = 'Promijeni';
     else
         $value = 'Rezerviraj';
