@@ -172,13 +172,18 @@ class RezervacijaController extends \ResourceController {
             Session::flash(self::DANGER_MESSAGE_KEY, User::NOT_FOUND_MESSAGE);
             return Redirect::route('home');
         }
-        
+
+        /**
+         * Zahtjevanje naplate prethodnih rezervacija ukinuta
+         */
+        /*
         if ($user_id == Auth::id()) {
             $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($user_id);
             if ($nenaplaceneRezervacije->count()) {
                 return $this->nenaplaceno($nenaplaceneRezervacije);
             }
         }
+        */
 
         return View::make('Rezervacija.create')
                         ->with('klijent', View::make('Klijent.listForm'))
@@ -205,13 +210,18 @@ class RezervacijaController extends \ResourceController {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije Vam dozvoljeno vršiti rezervaiju za naznačenog djelatnika.');
             return Redirect::route('home');
         }
-        
+
+        /**
+         * Zahtjevanje naplate prethodnih rezervacija ukinuta
+         */
+        /*
         if ($djelatnik_id == Auth::id()) {
             $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($djelatnik_id);
             if ($nenaplaceneRezervacije->count()) {
                 return $this->nenaplaceno($nenaplaceneRezervacije);
             }
         }
+        */
         
         $input['instruktor_id'] = $djelatnik_id;
         $rezervacija = new Rezervacija();
@@ -240,15 +250,20 @@ class RezervacijaController extends \ResourceController {
         if (!$rezervacija) {
             return $this->itemNotFound();
         }
-        
+
+        /**
+         * Zahtjevanje naplate prethodnih rezervacija ukinuta
+         */
+        /*
         if ($rezervacija->instruktor_id == Auth::id()) {
             $nenaplaceneRezervacije = $this->getNenaplaceneRezervacije($rezervacija->instruktor_id);
             if ($nenaplaceneRezervacije->count()) {
                 return $this->nenaplaceno($nenaplaceneRezervacije);
             }
         }
-        unset($rezervacija->id);
+        */
 
+        unset($rezervacija->id);
         return View::make('Rezervacija.create')
                         ->with('rezervacija', $rezervacija)
                         ->with('klijent', View::make('Klijent.listForm')
