@@ -9,7 +9,7 @@
  * @property integer $mjesec
  * @property integer|null $godina
  * @method static \Illuminate\Database\Query\Builder|\NeradniDan whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\NeradniDan whereDatum($value)
+ * @method static \Illuminate\Database\Query\Builder|\NeradniDan Datum($value)
  */
 
 class NeradniDan extends Eloquent{
@@ -44,7 +44,7 @@ class NeradniDan extends Eloquent{
             $andQuery->whereDan($dan)
                 ->whereMjesec($mjesec)
                 ->where(function($orQuery) use ($godina){
-                    $orQuery->whereNull('godina')->orWhereGodina($godina);
+                    $orQuery->whereNull('godina')->orWhere('godina', $godina);
                 });
         });
     }

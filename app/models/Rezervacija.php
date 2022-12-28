@@ -273,6 +273,15 @@ class Rezervacija extends Eloquent {
                                     return "Ne stignete odratiti $kolicina $mjera->znacenje u zadanom vremenu";
 			//kraj provjere završetka instrukcija
 
+            //provjera neradnih dana
+            if (!Auth::user()->hasPermission(Permission::PERMISSION_IGNORE_NERADNI_DAN)) {
+                $neradniDaniNaOdabraniDatum = NeradniDan::datum($datum)->get();
+                if (count($neradniDaniNaOdabraniDatum) > 0) {
+                    return 'Na odabrani datum se ne radi: ' . $neradniDaniNaOdabraniDatum[0]->naziv;
+                }
+            }
+            //kraj provjere neradnih dana
+
 			//provjera učionice
 				//provjera broj učenika
 					if($ucionica->max_broj_ucenika < count($polaznici))

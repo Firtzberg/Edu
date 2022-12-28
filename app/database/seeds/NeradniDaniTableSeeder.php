@@ -127,6 +127,13 @@ class NeradniDaniTableSeeder extends Seeder {
                 'opis' => 'Dozvola za dodavanje novih neradnih dana te uređivanje i brisanje postojećih. Zahtjeva ' . Permission::PERMISSION_VIEW_NERADNI_DAN . '.',
                 )
         )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_IGNORE_NERADNI_DAN,
+                'opis' => 'Dozvola za rezervinje na neradni dan.',
+            )
+        )->save();
     }
 
 }
