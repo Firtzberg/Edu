@@ -37,6 +37,9 @@
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_UCIONICA))
 					<li>{{ link_to_route('Ucionica.index', 'Učionice') }}</li>
 					@endif
+					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_NERADNI_DAN))
+					<li>{{ link_to_route('NeradniDan.index', 'Neradni Dani') }}</li>
+					@endif
 					@if(Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER))
 					<li>{{ link_to_route('Djelatnik.index', 'Djelatnici') }}</li>
                                         @endif

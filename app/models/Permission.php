@@ -24,12 +24,14 @@ class Permission extends Eloquent
     const PERMISSION_VIEW_KLIJENT = 'Gledanje klijenata';
     const PERMISSION_VIEW_ROLE = 'Gledanje uloga';
     const PERMISSION_VIEW_CJENOVNIK = 'Gledanje cjenovnika';
+    const PERMISSION_VIEW_NERADNI_DAN = 'Gledanje neradnih dana';
     const PERMISSION_MANAGE_UCIONICA = 'Upravljanje učionicama';
     const PERMISSION_MANAGE_USER = 'Upravljanje djelatnicima';
     const PERMISSION_MANAGE_PREDMET_KATEGORIJA = 'Upravljanje predmetima i kategorijama';
     const PERMISSION_MANAGE_ROLE = 'Upravljanje ulogama';
     const PERMISSION_MANAGE_CJENOVNIK = 'Upravljanje cjenovnicima';
     const PERMISSION_MANAGE_KLIJENT = 'Upravljanje klijentima';
+    const PERMISSION_MANAGE_NERADNI_DAN = 'Upravljanje neradnim danima';
     const PERMISSION_REMOVE_UCIONICA = 'Uklonjanje učionica';
     const PERMISSION_REMOVE_USER = 'Uklonjanje djelatnika';
     const PERMISSION_REMOVE_PREDMET_KATEGORIJA = 'Uklonjanje predmeta i kategorija';
@@ -37,6 +39,7 @@ class Permission extends Eloquent
     const PERMISSION_REMOVE_CJENOVNIK = 'Uklonjanje cjenovnika';
     const PERMISSION_PASSWORD_RESET = 'Promjena zaporke drugom djelatniku';
     const PERMISSION_DOWNLOAD_DATA = 'Preuzimanje podataka(Excel)';
+    const PERMISSION_IGNORE_NERADNI_DAN = 'Zanemarivanje neradnih dana';
     const PERMISSION_OWN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanje';
     const PERMISSION_TECAJ = 'Držanje tečajeva';
     const PERMISSION_FOREIGN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanjeza u ime drugog djelatnika';

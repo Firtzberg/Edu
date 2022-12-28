@@ -22,6 +22,7 @@ Route::pattern('Role', '[0-9]+');
 Route::pattern('Cjenovnik', '[0-9]+');
 Route::pattern('Predmet', '[0-9]+');
 Route::pattern('Kategorija', '[0-9]+');
+Route::pattern('NeradniDan', '[0-9]+');
 Route::when('*', 'csrf', array('post', 'put', 'delete', 'update'));
 
 Route::get('/signin', array('as' => 'signIn', 'uses' => 'DjelatnikController@signIn'));
@@ -42,6 +43,7 @@ Route::group(array('before' => 'auth'), function() {
 //search
     Route::post('/Djelatnik/list/{page}/{searchString?}', array('as' => 'Djelatnik.list', 'uses' => 'DjelatnikController@_list'));
     Route::post('/Ucionica/list/{page}/{searchString?}', array('as' => 'Ucionica.list', 'uses' => 'UcionicaController@_list'));
+    Route::post('/NeradniDan/list/{page}/{searchString?}', array('as' => 'NeradniDan.list', 'uses' => 'NeradniDanController@_list'));
     Route::post('/Klijent/list/{page}/{searchString?}', array('as' => 'Klijent.list', 'uses' => 'KlijentController@_list'));
     Route::post('/Role/list/{page}/{searchString?}', array('as' => 'Role.list', 'uses' => 'RoleController@_list'));
     Route::post('/Cjenovnik/list/{page}/{searchString?}', array('as' => 'Cjenovnik.list', 'uses' => 'CjenovnikController@_list'));
@@ -52,6 +54,7 @@ Route::group(array('before' => 'auth'), function() {
 //restfull
     Route::resource('Djelatnik', 'DjelatnikController');
     Route::resource('Ucionica', 'UcionicaController');
+    Route::resource('NeradniDan', 'NeradniDanController', array('except' => array('show')));
     Route::resource('Role', 'RoleController');
     Route::resource('Cjenovnik', 'CjenovnikController');
     Route::resource('Klijent', 'KlijentController', array('except' => array('destroy')));
