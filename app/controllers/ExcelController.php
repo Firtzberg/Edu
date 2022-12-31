@@ -184,7 +184,7 @@ class ExcelController extends \BaseController {
 					'ID učionice', 'Tečaj', 'Napomena', 'Dodana', 'Zadnja promjena', 'Djelatnik', 'Predmet', 'Mjera', 'Učionica'));
 				$i = 1;
 				$rezervacije = Rezervacija::select('id', 'instruktor_id', 'predmet_id', 'pocetak_rada', 'kolicina', 'mjera_id', 'kraj_rada',
-				'ucionica_id', 'tecaj', 'napomena', 'created_at', 'updated_at')->with('naplata', 'klijenti')
+				'ucionica_id', 'tecaj', 'tecaj_broj_polaznika', 'napomena', 'created_at', 'updated_at')->with('naplata', 'klijenti')
 				->whereBetween('pocetak_rada', array($from, $to))
 				->get();
 				$rezervacijaCount = $rezervacije->count();

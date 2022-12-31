@@ -11,6 +11,7 @@
  * @property integer $predmet_id
  * @property integer $ucionica_id
  * @property boolean $tecaj
+ * @property integer $tecaj_broj_polaznika
  * @property string $napomena
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
@@ -128,11 +129,20 @@ class Rezervacija extends Eloquent {
 				if(!isset($input['startMinute']))
 					return 'Minuta početka je obvezna.';
 				$startMinute = $input['startMinute'];
-                                
-                                $tecaj = false;
-                                if(isset($input['tecaj']))
-                                    $tecaj = $input['tecaj'];
-			//kraj provjere postojanja podataka za vrijeme pocetka
+            //kraj provjere postojanja podataka za vrijeme pocetka
+
+            //provjera postojanja podataka za tecaj
+                $tecaj = false;
+                if(isset($input['tecaj']))
+                    $tecaj = $input['tecaj'];
+
+                $tecaj_broj_polaznika = null;
+                if ($tecaj) {
+                    if(!isset($input['tecaj_broj_polaznika']))
+                        return 'Broj polaznika je obvezan za tečaj.';
+                    $tecaj_broj_polaznika = $input['tecaj_broj_polaznika'];
+                }
+            //kraj provjere postojanja podataka za tecaj
 
 			//provjera postojanja podataka za trajanje instrukcija
 				if(!isset($input['kolicina']))
@@ -205,6 +215,7 @@ class Rezervacija extends Eloquent {
 			//kraj provjere postojanja napomene
 		//kraj provjere postojanja potrebnih podataka
 
+        $broj_polaznika = $tecaj ? $tecaj_broj_polaznika : count($polaznici);
 		//provjera dozvoljenih vrijednosti podataka koji se ne odnose na relacije
 			//provjera dozvoljene vrijednosti za vrijeme pocetka
 				$dto = (new DateTime($datum))->setTime($startHour, $startMinute);
@@ -224,7 +235,7 @@ class Rezervacija extends Eloquent {
 			//kraj provjere dozvoljene vrijednosti za trajanje
 
 			//provjera broja polaznika
-				if(count($polaznici) < 1)
+				if($broj_polaznika < 1)
 					return 'Potreban je barem 1 polaznik.';
 			//kraj provjere broja polaznika
                         
@@ -284,7 +295,7 @@ class Rezervacija extends Eloquent {
 
 			//provjera učionice
 				//provjera broj učenika
-					if($ucionica->max_broj_ucenika < count($polaznici))
+					if($ucionica->max_broj_ucenika < $broj_polaznika)
 						return 'Odabrana učionica nema dovoljnu veličinu.';
 				//kraj provjere broj učenika
 
@@ -332,7 +343,8 @@ class Rezervacija extends Eloquent {
 		$this->kraj_rada = $kraj_rada;
 		$this->predmet_id = $predmet_id;
 		$this->ucionica_id = $ucionica_id;
-                $this->tecaj = $tecaj;
+        $this->tecaj = $tecaj;
+        $this->tecaj_broj_polaznika = $tecaj_broj_polaznika;
 		$this->napomena = $napomena;
 		//kraj pridruživanja
 

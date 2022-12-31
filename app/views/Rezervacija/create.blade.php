@@ -23,6 +23,37 @@ if(isset($rezervacija->tecaj)){
     $tecaj = $rezervacija->tecaj;
 }
 ?>
+<script type="text/javascript">
+    var isTecajHTML = '';
+    function onTecajChanged() {
+        var tecaj = jQuery('select.form-control[name=tecaj]').val();
+        var isTecaj = jQuery('div#is-tecaj');
+        if(tecaj === '1') {
+            isTecaj.html(isTecajHTML);
+            isTecaj.show();
+            jQuery('div#is-not-tecaj').hide();
+            klijentManager.term();
+        } else {
+            isTecajHTML = isTecaj.html();
+            isTecaj.hide();
+            isTecaj.empty();
+            jQuery('div#is-not-tecaj').show();
+            klijentManager.init([]);
+        }
+    }
+    jQuery(function () {
+        var tecaj = jQuery('select.form-control[name=tecaj]').val();
+        var isTecaj = jQuery('div#is-tecaj');
+        if(tecaj === '1') {
+            jQuery('div#is-not-tecaj').hide();
+            klijentManager.term();
+        } else {
+            isTecajHTML = isTecaj.html();
+            isTecaj.empty();
+            isTecaj.hide();
+        }
+    });
+</script>
 <h2 class="form-heading">Rezerviranje</h2>
 @if(isset($rezervacija))
 @if(isset($rezervacija->id))
@@ -141,7 +172,11 @@ if(isset($rezervacija->tecaj)){
                 {{ Form::select('ucionica_id', $ucionice, $local_ucionica_id,
 			$required) }}
             </div>
-            <div>
+            <div id="is-tecaj" class="form-group">
+                {{ Form::label('Broj polaznika') }}
+                {{ Form::input('number', 'tecaj_broj_polaznika', null, $requiredPositive) }}
+            </div>
+            <div id="is-not-tecaj">
                 @yield('klijent-input')
             </div>
         </div>
@@ -152,7 +187,7 @@ if(isset($rezervacija->tecaj)){
                     {{ Form::label('Tečaj') }}
                     {{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), $tecaj,
                                 array('class' => 'form-control',
-                        'required' => 'required')) }}
+                        'required' => 'required', 'onchange' => 'onTecajChanged()')) }}
                 </div>
             @else
                 {{ Form::hidden('tecaj', 0) }}

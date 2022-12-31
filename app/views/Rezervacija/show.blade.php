@@ -34,6 +34,9 @@ Nije definiran
 <dt>Rezervacija objavljena</dt><dd>{{ $rezervacija->created_at }}</dd>
 <dt>Posljednja izmjena</dt><dd>{{ $rezervacija->updated_at }}</dd>
 <dt>Tečaj</dt><dd>{{ $rezervacija->tecaj?'DA':'NE' }}</dd>
+@if($rezervacija->tecaj)
+<dt>Broj polaznika</dt><dd>{{ $rezervacija->tecaj_broj_polaznika }}</dd>
+@endif
 @if($rezervacija->napomena && !empty($rezervacija->napomena))
 <dt>Napomena</dt><dd>{{ $rezervacija->napomena }}</dd>
 @endif
@@ -59,6 +62,7 @@ array('class' => 'btn btn-danger')) }}
 @endif
 </div>
 </div>
+@if(!$rezervacija->tecaj)
 <div>
 <h3>Klijenti <small>ukupno {{ $rezervacija->klijenti()->count() }}</small></h3>
 <dl class="dl-horizontal">
@@ -73,4 +77,5 @@ array('class' => 'btn btn-danger')) }}
 @endforeach
 </dl>
 </div>
+@endif
 @endsection
