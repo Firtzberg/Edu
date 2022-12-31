@@ -1,6 +1,6 @@
 @section('klijent-input')
 {{ HTML::style('css/autocomplete.css'); }}
-{{ HTML::script('js/Klijent/listForm.js') }}
+{{ HTML::script('js/Klijent/listForm1.js') }}
 <div class="form-group">
 {{Form::label('Polaznici')}}
 <div id="form-klijenti-container">

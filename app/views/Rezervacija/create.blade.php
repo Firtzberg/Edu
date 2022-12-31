@@ -34,7 +34,7 @@ if(isset($rezervacija->tecaj)){
 @else
 {{ Form::open(array('route' => 'Rezervacija.store')) }}
 @endif
-{{ HTML::script('js/errorManager.js') }}
+{{ HTML::script('js/errorManager1.js') }}
 <?php $value = null; ?>
 <div class = "row">
     <div class = "col-xs-12 col-sm-5 col-lg-3">

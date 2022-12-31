@@ -189,5 +189,12 @@ var klijentManager = {
 				function(){klijentManager.add();}
 			);
 		});
+	},
+	term: function () {
+		errorManager.unregister(klijentManager.oneOrMore);
+		while (klijentManager.total > 0) {
+			klijentManager.remove(klijentManager.itemPrefix + klijentManager.total + klijentManager.removeSufix);
+		}
+		jQuery(klijentManager.addButtonSelector).off('click');
 	}
 }
