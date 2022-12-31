@@ -195,6 +195,7 @@ class RezervacijaController extends \ResourceController {
         */
 
         return View::make('Rezervacija.create')
+                        ->with('instruktor', $djelatnik)
                         ->with('klijent', View::make('Klijent.listForm'))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('instruktor', $djelatnik));
@@ -275,12 +276,12 @@ class RezervacijaController extends \ResourceController {
         unset($rezervacija->id);
         return View::make('Rezervacija.create')
                         ->with('rezervacija', $rezervacija)
+                        ->with('instruktor', $rezervacija->instruktor)
                         ->with('klijent', View::make('Klijent.listForm')
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor', $rezervacija->instruktor)
-                                ->with('local_tecaj', $rezervacija->tecaj))
+                                ->with('instruktor', $rezervacija->instruktor))
                         ->with('local_ucionica_id', $rezervacija->ucionica_id);
     }
 
@@ -305,12 +306,12 @@ class RezervacijaController extends \ResourceController {
 
         return View::make('Rezervacija.create')
                         ->with('rezervacija', $rezervacija)
+                        ->with('instruktor', $rezervacija->instruktor)
                         ->with('klijent', View::make('Klijent.listForm')
                                 ->with('klijenti', $rezervacija->klijenti))
                         ->with('predmet', View::make('Kategorija.select')
                                 ->with('predmet_id', $rezervacija->predmet_id)
-                                ->with('instruktor', $rezervacija->instruktor)
-                                ->with('local_tecaj', $rezervacija->tecaj));
+                                ->with('instruktor', $rezervacija->instruktor));
     }
 
     /**

@@ -17,7 +17,11 @@ $required = array(
 $requiredPositive = array(
     'class' => 'form-control',
     'required' => 'required',
-    'min' => 1)
+    'min' => 1);
+$tecaj = false;
+if(isset($rezervacija->tecaj)){
+    $tecaj = $rezervacija->tecaj;
+}
 ?>
 <h2 class="form-heading">Rezerviranje</h2>
 @if(isset($rezervacija))
@@ -142,6 +146,17 @@ $requiredPositive = array(
             </div>
         </div>
         <div class = "col-xs-12 col-lg-5">
+            {{ Form::hidden('instruktor_id', $instruktor->id) }}
+            @if($instruktor->hasPermission(\Permission::PERMISSION_TECAJ))
+                <div class = "form-group">
+                    {{ Form::label('Tečaj') }}
+                    {{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), $tecaj,
+                                array('class' => 'form-control',
+                        'required' => 'required')) }}
+                </div>
+            @else
+                {{ Form::hidden('tecaj', 0) }}
+            @endif
             @yield('predmet-select')
             <div class = "form-group">
                 {{ Form::label('Napomena') }}

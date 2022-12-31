@@ -1,21 +1,5 @@
 @section('predmet-select')
 {{ HTML::script('js/Kategorija/predmetSelector.js') }}
-{{ Form::hidden('instruktor_id', $instruktor->id) }}
-@if($instruktor->hasPermission(\Permission::PERMISSION_TECAJ))
-<div class = "form-group">
-    {{ Form::label('Tečaj') }}
-    <?php
-    if(!isset($local_tecaj)){
-        $local_tecaj = false;
-    }
-    ?>
-{{ Form::select('tecaj', array(0 => 'NE', 1 => 'DA'), $local_tecaj,
-            array('class' => 'form-control',
-    'required' => 'required')) }}
-</div>
-@else
-{{ Form::hidden('tecaj', 0) }}
-@endif
 <div id="predmet-select" class = 'form-group'>
     {{ Form::label('Odaberite predmet...') }}
     <script type="text/javascript">
