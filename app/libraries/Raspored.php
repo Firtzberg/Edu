@@ -129,10 +129,15 @@ class Raspored {
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
             $extra = ($r->ucionica?$r->ucionica->link():"Uklonjena učionica");
-            $extra .= ' ('.$r->klijenti()->count();
-            $missed = $r->klijenti()->where('missed', 1)->count();
-            if ($missed) {
-                $extra .= '-'.$missed;
+            $extra .= ' (';
+            if ($r->tecaj) {
+                $extra .= $r->tecaj_broj_polaznika;
+            } else {
+                $extra .= $r->klijenti()->count();
+                $missed = $r->klijenti()->where('missed', 1)->count();
+                if ($missed) {
+                    $extra .= '-'.$missed;
+                }
             }
             $extra .= ')';
             $data[$key][] = array(
@@ -204,10 +209,15 @@ class Raspored {
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
             $extra = $r->instruktor->link();
-            $extra .= ' ('.$r->klijenti()->count();
-            $missed = $r->klijenti()->where('missed', 1)->count();
-            if ($missed) {
-                $extra .= '-'.$missed;
+            $extra .= ' (';
+            if ($r->tecaj) {
+                $extra .= $r->tecaj_broj_polaznika;
+            } else {
+                $extra .= $r->klijenti()->count();
+                $missed = $r->klijenti()->where('missed', 1)->count();
+                if ($missed) {
+                    $extra .= '-'.$missed;
+                }
             }
             $extra .= ')';
             $data[$key][] = array(
@@ -278,10 +288,15 @@ class Raspored {
             $kraj = strtotime($r->kraj_rada);
             $key = $r->ucionica_id;
             $extra = $r->instruktor->link();
-            $extra .= ' ('.$r->klijenti()->count();
-            $missed = $r->klijenti()->where('missed', 1)->count();
-            if ($missed) {
-                $extra .= '-'.$missed;
+            $extra .= ' (';
+            if ($r->tecaj) {
+                $extra .= $r->tecaj_broj_polaznika;
+            } else {
+                $extra .= $r->klijenti()->count();
+                $missed = $r->klijenti()->where('missed', 1)->count();
+                if ($missed) {
+                    $extra .= '-'.$missed;
+                }
             }
             $extra .= ')';
             $data[$key][] = array(
