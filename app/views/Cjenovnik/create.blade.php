@@ -115,7 +115,7 @@ array(
             @foreach($data as $index => $info)
             <tr>
                 <td>{{ $index }} osoba</td>
-                <th>{{ Form::input('number', $info['key'], $info['cijena'], $requiredPositive + array('id' => "cijena_$index")) }}</th>
+                <th>{{ Form::input('number', $info['key'], $info['cijena'], $requiredPositive + array('id' => "cijena_$index", "step" => ".01")) }}</th>
                 @for($i = 1; $i < $index; $i++)
                 <td class="cijena_copy_{{ $index }}">{{ $info['cijena'] }}</td>
                 @endfor
@@ -123,7 +123,7 @@ array(
                 <td>-</td>
                 @endfor
                 <td class="total_{{ $index }}">{{ $info['cijena'] * $index }}</td>
-                <td>{{ Form::input('number', $info['key2'], $info['instruktor'], $requiredPositive + array('id' => "instruktor_$index")) }}</td>
+                <td>{{ Form::input('number', $info['key2'], $info['instruktor'], $requiredPositive + array('id' => "instruktor_$index", "step" => ".01")) }}</td>
                 <td class="tvrtka_{{ $index }}">{{ $info['cijena'] * $index - $info['instruktor'] }}</td>
                 @if($info['cijena'] == 0)
                 <td class="instruktor_pcnt_{{ $index }}">0</td>
@@ -136,7 +136,7 @@ array(
             @endforeach
             <tr>
                 <td>5 i više osoba</td>
-                <td colspan="4">{{ Form::input('number', 'cijena_vise_osoba', $AdditionalData['cijena'], $requiredPositive) }} po osobi</td>
+                <td colspan="4">{{ Form::input('number', 'cijena_vise_osoba', $AdditionalData['cijena'], $requiredPositive + array("step" => ".01")) }} po osobi</td>
                 <td></td>
                 <td></td>
                 <td></td>
