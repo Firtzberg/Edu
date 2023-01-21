@@ -31,6 +31,12 @@ Klijent {{ $klijent->ime }}
 @if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_KLIJENT))
 {{ link_to_route('Klijent.edit', 'Uredi', array($klijent->broj_mobitela), array('class' => 'btn btn-default')) }}
 @endif
+
+<div>
+    <h4>Nenaplaćene rezervacije</h4>
+    @include('Rezervacija.list', array('rezervacije' => $klijent->rezervacije()->nenaplacene()->with('predmet', 'mjera', 'instruktor')->paginate()))
+</div>
+
 <?php
 $suma_ukupno = 0;
 $suma_za_tvrtku = 0;
