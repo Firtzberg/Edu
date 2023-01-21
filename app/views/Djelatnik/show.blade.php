@@ -52,12 +52,19 @@ Djelatnik
 
 @if(Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING) || $instruktor->id == Auth::id())
 <div>
-    {{ Form::label('Dozvoljeni predmeti')}}
+    <h4>Dozvoljeni predmeti</h4>
     <div class = "row">
         @foreach($instruktor->predmeti as $predmet)
         <div class = "col-xs-6 col-sm-4 col-md-3 col-lg-2">{{ $predmet->link() }}</div>
         @endforeach
     </div>
+</div>
+@endif
+
+@if(($instruktor->id == Auth::id()) || Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING))
+<div>
+    <h4>Nenaplaćene rezervacije</h4>
+    @include('Rezervacija.list', array('rezervacije' => $instruktor->rezervacije()->nenaplacene()->with('predmet', 'mjera', 'instruktor')->paginate()))
 </div>
 @endif
 @endsection

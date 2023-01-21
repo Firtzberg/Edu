@@ -250,6 +250,10 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	}
 
+    public function rezervacije() {
+        return $this->hasMany('Rezervacija', 'instruktor_id');
+    }
+
 
 
 	public function predmeti(){
