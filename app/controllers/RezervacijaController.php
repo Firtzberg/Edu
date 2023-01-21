@@ -39,9 +39,7 @@ class RezervacijaController extends \ResourceController {
      */
     private function getNenaplaceneRezervacije($instruktor_id) {
         return Rezervacija::where('instruktor_id', $instruktor_id)
-                        ->where('pocetak_rada', '<', DB::Raw('NOW()'))
-                        ->where('tecaj', 0)
-                        ->has('naplata', '=', 0)
+                        ->nenaplacene()
                         ->get();
     }
 

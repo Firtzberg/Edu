@@ -84,6 +84,13 @@ class Rezervacija extends Eloquent {
 		->withPivot('missed');
 	}
 
+    public function scopeNenaplacene($query) {
+        return $query->where('tecaj', 0)
+            ->where('pocetak_rada', '<', DB::Raw('NOW()'))
+            ->has('naplata', '=', 0)
+            ->orderBy('pocetak_rada', 'desc');
+    }
+
         /**
      * 
      * @return string
