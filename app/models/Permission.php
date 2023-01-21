@@ -40,9 +40,10 @@ class Permission extends Eloquent
     const PERMISSION_PASSWORD_RESET = 'Promjena zaporke drugom djelatniku';
     const PERMISSION_DOWNLOAD_DATA = 'Preuzimanje podataka(Excel)';
     const PERMISSION_IGNORE_NERADNI_DAN = 'Zanemarivanje neradnih dana';
-    const PERMISSION_OWN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanje';
+    const PERMISSION_OWN_REZERVACIJA_HANDLING = 'Upravljanje vlastitim rezervacijama';
+    const PERMISSION_MANAGE_NAPLATA = 'Naplaćivanje rezervacija';
     const PERMISSION_TECAJ = 'Držanje tečajeva';
-    const PERMISSION_FOREIGN_REZERVACIJA_HANDLING = 'Rezerviranje i naplaćivanjeza u ime drugog djelatnika';
+    const PERMISSION_FOREIGN_REZERVACIJA_HANDLING = 'Upravljanje rezervacijama drugog djelatnika';
     const PERMISSION_REMOVE_STARTED_REZERVACIJA = 'Uklonjanje započete rezervacije';
     const PERMISSION_EDIT_STARTED_REZERVACIJA = 'Uređivanje započete rezervacije';
     const PERMISSION_REMOVE_NALATA = 'Uklonjanje naplate';

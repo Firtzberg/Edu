@@ -113,7 +113,14 @@ class PermissionsTableSeeder extends Seeder {
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_OWN_REZERVACIJA_HANDLING,
-                'opis' => 'Dozvola za rezerviranje u vlastito ime i uređivanje postojeće vlastite rezervacije, prije njenog početka. Ujedno dozvola za naplaćivanje osobne rezervacije nakon odrade. Dozvola za dodavanje novog klijenta ukoliko se ne pojavljuje u sustavu.',
+                'opis' => 'Dozvola za rezerviranje u vlastito ime i uređivanje postojeće vlastite rezervacije, prije njenog početka. Dozvola za dodavanje novog klijenta ukoliko se ne pojavljuje u sustavu.',
+            )
+        )->save();
+
+        Permission::create(
+            array(
+                'ime' => Permission::PERMISSION_MANAGE_NAPLATA,
+                'opis' => 'Dozvola za naplaćivanje vlastite rezervacije nakon odrade.',
             )
         )->save();
 
@@ -127,7 +134,7 @@ class PermissionsTableSeeder extends Seeder {
         Permission::create(
             array(
                 'ime' => Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING,
-                'opis' => 'Dozvola za rezerviranje u ime druge osobe i uređivanje postojeće tuđe rezervacije, prije njenog početka. Ujedno dozvola za naplaćivanje tuđe rezervacije nakon odrade. Dozvola za dodavanje novog klijenta ukoliko se ne pojavljuje u sustavu.',
+                'opis' => 'Dozvola za rezerviranje u ime druge osobe i uređivanje postojeće tuđe rezervacije, prije njenog početka. Dozvola za dodavanje novog klijenta ukoliko se ne pojavljuje u sustavu.',
             )
         )->save();
 
