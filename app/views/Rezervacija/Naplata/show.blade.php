@@ -7,8 +7,10 @@ Tečajevi se ne naplaćuju.
 Nije moguće naplatiti prije odrade instrukcija.
 @else
 Naplata nije izvršena.
+@if(Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_NAPLATA))
 {{ link_to_route('Naplata.create', 'Naplati', array($rezervacija->id),
 array('class' => 'btn btn-primary')) }}
+@endif
 @endif
 @endif
 </h4>

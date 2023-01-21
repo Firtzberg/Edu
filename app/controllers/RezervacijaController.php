@@ -11,6 +11,12 @@ class RezervacijaController extends \ResourceController {
             }
         }, array('only' => array('destroy_naplata')));
 
+        $this->beforeFilter(function() {
+            if (!(Auth::check() && Auth::user()->hasPermission(Permission::PERMISSION_MANAGE_NAPLATA))) {
+                return Redirect::to('logout');
+            }
+        }, array('only' => array('create_naplata', 'store_napata', 'destroy_naplata')));
+
         $this->beforeFilter('novaRezervacija', array('only' => array('create', 'store')));
 
         $this->beforeFilter('myRezervacija', array('only' => array('copy',
