@@ -74,10 +74,12 @@ class RezervacijaController extends \ResourceController {
             return Redirect::route('Rezervacija.show', $id)
                             ->with(self::DANGER_MESSAGE_KEY, 'Predmet rezervacije se više ne nalazi u sustavu. Nije moguća naplata.');
         }
+        /*
         if (strtotime($naplata->rezervacija->pocetak_rada) > time()) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
             return Redirect::route('Rezervacija.show', $id);
         }
+        */
 
         $naplata->stvarnaMjera = $naplata->rezervacija->mjera;
         $naplata->stvarna_kolicina = $naplata->rezervacija->kolicina;
@@ -97,10 +99,12 @@ class RezervacijaController extends \ResourceController {
                             ->with(self::DANGER_MESSAGE_KEY, 'Tečajvi se ne naplaćuju!');
         }
 
+        /*
         if (strtotime($rezervacija->pocetak_rada) > time()) {
             Session::flash(self::DANGER_MESSAGE_KEY, 'Nije moguće naplatiti instrukcije prije nego se odrade.');
             return Redirect::route('Rezervacija.show', $id);
         }
+        */
 
         $naplata->rezervacija_id = $rezervacija->id;
         $naplata->stvarna_kolicina = $rezervacija->kolicina;
