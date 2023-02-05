@@ -128,7 +128,7 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
-            $extra = ($r->ucionica?$r->ucionica->link():"Uklonjena učionica");
+            $extra = ($r->ucionica?$r->ucionica->link($week, $year):"Uklonjena učionica");
             $extra .= ' (';
             if ($r->tecaj) {
                 $extra .= $r->tecaj_broj_polaznika;
@@ -208,7 +208,7 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = date('N', $pocetak);
-            $extra = $r->instruktor->link();
+            $extra = $r->instruktor->link($week, $year);
             $extra .= ' (';
             if ($r->tecaj) {
                 $extra .= $r->tecaj_broj_polaznika;
@@ -287,7 +287,7 @@ class Raspored {
             $pocetak = strtotime($r->pocetak_rada);
             $kraj = strtotime($r->kraj_rada);
             $key = $r->ucionica_id;
-            $extra = $r->instruktor->link();
+            $extra = $r->instruktor->link($week, $year);
             $extra .= ' (';
             if ($r->tecaj) {
                 $extra .= $r->tecaj_broj_polaznika;

@@ -272,11 +272,17 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
      */
 
-    public function link() {
+    public function link($tjedan = null, $godina = null) {
 
         if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_USER)) {
-
-            return link_to_route('Djelatnik.show', $this->name, array('id' => $this->id));
+            $params = array('id' => $this->id);
+            $route = 'Djelatnik.show';
+            if (!is_null($tjedan) && !is_null($godina)) {
+                $params['tjedan'] = $tjedan;
+                $params['godina'] = $godina;
+                $route = 'Djelatnik.raspored';
+            }
+            return link_to_route($route, $this->name, $params);
 
         }
 
