@@ -74,5 +74,6 @@
 		@yield('content')
 	</div>
 	{{ HTML::script('js/bootstrap.min.js') }}
+	{{ HTML::script('js/Raspored/rezervacijaLauncher.js') }}
 </body>
 </html>

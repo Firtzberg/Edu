@@ -8,6 +8,9 @@
 
 namespace Helpers;
 
+use Illuminate\Support\Facades\Auth;
+use Permission;
+
 /**
  * Description of Rapored
  *
@@ -46,10 +49,18 @@ class Raspored {
      * gets a raspored column with hours
      * @return string
      */
-    public static function Blocks2HTML($blocks) {
+    public static function Blocks2HTML($blocks, $day, $week, $year, $ucionica_id = null, $instruktor_id = null) {
+        $time = new \DateTime();
+        $time->setTime(0, 0);
+        $time->setISODate($year, $week, $day);
+        $datum = $time->format('Y-m-d');
         $diff = \BaseController::END_HOUR - \BaseController::START_HOUR;
         $response = '<div class = "raspored-blocks" style="height:'.
-                ($diff*4*self::HEIGHT_15_MIN).'px">';
+                ($diff*4*self::HEIGHT_15_MIN).'px" datum="'.$datum.'" ucionica-id="'.$ucionica_id.'"';
+        if (Auth::user()->hasPermission(Permission::PERMISSION_FOREIGN_REZERVACIJA_HANDLING)) {
+            $response .= ' instruktor-id="'.$instruktor_id.'"';
+        }
+        $response .= '>';
         for($i = 0; $i < $diff; $i ++){
             $response .= '<hr style="top:'.(self::HEIGHT_15_MIN*4*$i).'px;"/>';
         }
@@ -59,7 +70,7 @@ class Raspored {
             }
             $response .= '<div style="background-color:#' . $block['boja']
                     . ';height:' . (self::HEIGHT_15_MIN * $block['span']) . 'px;top: ' .
-                    (self::HEIGHT_15_MIN * $block['offset']) . 'px;">' . $block['rezervacija'] . '<br/>' . $block['extra'] .
+                    (self::HEIGHT_15_MIN * $block['offset']) . 'px;" onclick="if(event.stopPropagation){event.stopPropagation();}event.cancelBubble=true;">' . $block['rezervacija'] . '<br/>' . $block['extra'] .
                     '</div>';
         }
         $response .= '</div>';
@@ -168,7 +179,7 @@ class Raspored {
         foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
-            $response .= self::Blocks2HTML($blocks);
+            $response .= self::Blocks2HTML($blocks, $dayNumber, $week, $year, '', $user_id);
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= '</div>';
         }
@@ -248,7 +259,7 @@ class Raspored {
         foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
-            $response .= self::Blocks2HTML($blocks);
+            $response .= self::Blocks2HTML($blocks, $dayNumber, $week, $year, $ucionicaId);
             $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= '</div>';
         }
@@ -337,7 +348,7 @@ class Raspored {
             else {
                 $response .= self::UcionicaHeading(null);
             }
-            $response .= self::Blocks2HTML($blocks);
+            $response .= self::Blocks2HTML($blocks, $day, $week, $year, isset($blocks['ucionica']) ? $blocks['ucionica']->id : null);
             if (isset($blocks['ucionica'])) {
                 $response .= self::UcionicaHeading($blocks['ucionica'], $week, $year);
             }

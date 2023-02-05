@@ -74,7 +74,7 @@ if(isset($rezervacija->tecaj)){
             if (isset($rezervacija))
                 $value = date('Y-m-d', strtotime($rezervacija->pocetak_rada));
             else
-                $value = date('Y-m-d');
+                $value = Input::get('datum', date('Y-m-d'));
             $attributes = array(
                 'class' => 'form-control',
                 'required' => 'required');
@@ -92,7 +92,7 @@ if(isset($rezervacija->tecaj)){
                     if (isset($rezervacija))
                         $value = date('H', strtotime($rezervacija->pocetak_rada));
                     else
-                        $value = 8;
+                        $value = Input::get('startHour', 8);
                     ?>
                     {{ Form::selectRange('startHour', BaseController::START_HOUR, BaseController::END_HOUR, $value,
 				$required) }}</div>
@@ -139,7 +139,7 @@ if(isset($rezervacija->tecaj)){
                     if (isset($rezervacija))
                         $value = date('H', strtotime($rezervacija->kraj_rada));
                     else
-                        $value = 8;
+                        $value = Input::get('startHour', 8) + 1;
                     ?>
                     {{ Form::selectRange('endHour', BaseController::START_HOUR, BaseController::END_HOUR, $value,
 				$required) }}</div>
@@ -165,7 +165,7 @@ if(isset($rezervacija->tecaj)){
                     $ucionice[$row->id] = $row->naziv . '(' . $row->max_broj_ucenika . ')';
                 }
                 if(!isset($local_ucionica_id)){
-                    $local_ucionica_id = null;
+                    $local_ucionica_id = Input::get('ucionica_id');
                 }
                 ?>
                 {{ Form::label('Učionica') }}
@@ -181,7 +181,7 @@ if(isset($rezervacija->tecaj)){
             </div>
         </div>
         <div class = "col-xs-12 col-lg-5">
-            {{ Form::hidden('instruktor_id', $instruktor->id) }}
+            {{ Form::hidden('instruktor_id', Input::get('instruktor_id', $instruktor->id)) }}
             @if($instruktor->hasPermission(\Permission::PERMISSION_TECAJ))
                 <div class = "form-group">
                     {{ Form::label('Tečaj') }}
