@@ -43,9 +43,16 @@ class Ucionica extends Eloquent {
      * 
      * @return string
      */
-    public function link() {
+    public function link($tjedan = null, $godina = null) {
+        $params = array('id' => $this->id);
+        $route = 'Ucionica.show';
+        if (!is_null($tjedan) && !is_null($godina)) {
+            $params['tjedan'] = $tjedan;
+            $params['godina'] = $godina;
+            $route = 'Ucionica.raspored';
+        }
         if (Auth::user()->hasPermission(Permission::PERMISSION_VIEW_UCIONICA)) {
-            return link_to_route('Ucionica.show', $this->naziv, array('id' => $this->id));
+            return link_to_route($route, $this->naziv, $params);
         }
         return $this->naziv;
     }

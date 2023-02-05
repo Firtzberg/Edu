@@ -84,11 +84,11 @@ class Raspored {
      * @param \Ucionica $ucionica
      * @return string
      */
-    public static function UcionicaHeading($ucionica) {
+    public static function UcionicaHeading($ucionica, $tjedan = null, $godina = null) {
         $response = '<div class = "raspored-heading">';
         if ($ucionica)
         {
-            $response .= $ucionica->link();
+            $response .= $ucionica->link($tjedan, $godina);
         }
         else
         {
@@ -332,14 +332,14 @@ class Raspored {
         foreach ($rezervacije as $blocks) {
             $response .= '<div class = "raspored-column"  style="width:'.$widthPercent.'%">';
             if (isset($blocks['ucionica'])) {
-                $response .= self::UcionicaHeading($blocks['ucionica']);
+                $response .= self::UcionicaHeading($blocks['ucionica'], $week, $year);
             }
             else {
                 $response .= self::UcionicaHeading(null);
             }
             $response .= self::Blocks2HTML($blocks);
             if (isset($blocks['ucionica'])) {
-                $response .= self::UcionicaHeading($blocks['ucionica']);
+                $response .= self::UcionicaHeading($blocks['ucionica'], $week, $year);
             }
             else {
                 $response .= self::UcionicaHeading(null);
