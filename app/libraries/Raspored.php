@@ -71,9 +71,9 @@ class Raspored {
      * @param int $dayNumber
      * @return string
      */
-    public static function DayHeading($dayNumber, $formatedDate) {
+    public static function DayHeading($dayNumber, $formatedDate, $week, $year) {
         $response = '<div class = "raspored-heading">';
-        $response .= self::$dani[$dayNumber];
+        $response .= link_to_route('home.raspored', self::$dani[$dayNumber], array('day' => $dayNumber, 'week' => $week, 'year' => $year));
         $response .= '<br/><small>'.$formatedDate.'</small>';
         $response .= '</div>';
         return $response;
@@ -167,9 +167,9 @@ class Raspored {
         $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         foreach (self::RezervacijeForUserInWeek(\User::find($user_id), $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
-            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= self::Blocks2HTML($blocks);
-            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= '</div>';
         }
         $response .= '</div></div>';
@@ -247,9 +247,9 @@ class Raspored {
         $response .= '<div style="min-width:'.($count*self::MIN_COLUMN_WIGHT).'px;">';
         foreach (self::RezervacijeForUcionicaInWeek($ucionicaId, $week, $year) as $dayNumber => $blocks) {
             $response .= '<div style="width:'.$widthPercent.'%;">';
-            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= self::Blocks2HTML($blocks);
-            $response .= self::DayHeading($dayNumber, $blocks['formatedDate']);
+            $response .= self::DayHeading($dayNumber, $blocks['formatedDate'], $week, $year);
             $response .= '</div>';
         }
         $response .= '</div></div>';
