@@ -4,6 +4,9 @@ var firstHour = 8;
 
 function launchRezervacija(datum, startHour, ucionicaId, instruktorId) {
     var newLocation = '/Rezervacija/create';
+    if (window.location.toString().includes('/osoblje')) {
+        newLocation = '/osoblje' + newLocation;
+    }
     if (instruktorId) {
         newLocation += '/' + instruktorId;
     }
