@@ -40,7 +40,7 @@ class IzvjestajController extends \BaseController {
         $tjedan = $dto->format('W');
         $godina = $dto->format('o');
 
-        $primanja = Naplata::select(DB::raw('weekday(pocetak_rada)+1 as dan, ' .
+        $primanja = Naplata::select(DB::raw('weekday(naplate.created_at)+1 as dan, ' .
                                 'COALESCE(sum(stvarna_kolicina*trajanje),0) as minuta, ' .
                                 'COALESCE(sum(za_instruktora),0) as za_instruktora, ' .
                                 'COALESCE(sum(za_tvrtku),0) as za_tvrtku, ' .
@@ -49,8 +49,8 @@ class IzvjestajController extends \BaseController {
                 ->join('mjere', 'mjere.id', '=', 'naplate.stvarna_mjera');
         if (!is_null($id))
             $primanja = $primanja->where('rezervacije.instruktor_id', '=', $id);
-        $primanja = $primanja->where(DB::raw('yearweek(pocetak_rada, 3)'), '=', $godina . $tjedan)
-                ->groupBy(DB::raw('weekday(pocetak_rada)'))
+        $primanja = $primanja->where(DB::raw('yearweek(naplate.created_at, 3)'), '=', $godina . $tjedan)
+                ->groupBy(DB::raw('weekday(naplate.created_at)'))
                 ->get();
         $dani = array(1 => 'Ponedjeljak', 'Utorak', 'Srijeda', 'Četvrtak', 'Petak', 'Subota', 'Nedjelja');
         $di = new DateInterval('P1D');
@@ -115,7 +115,7 @@ class IzvjestajController extends \BaseController {
         if (is_null($godina))
             $godina = date('Y');
 
-        $primanja = Naplata::select(DB::raw('month(pocetak_rada) as mjesec, ' .
+        $primanja = Naplata::select(DB::raw('month(naplate.created_at) as mjesec, ' .
                                 'COALESCE(sum(stvarna_kolicina*trajanje),0) as minuta, ' .
                                 'COALESCE(sum(za_instruktora),0) as za_instruktora, ' .
                                 'COALESCE(sum(za_tvrtku),0) as za_tvrtku, ' .
@@ -124,8 +124,8 @@ class IzvjestajController extends \BaseController {
                 ->join('mjere', 'mjere.id', '=', 'naplate.stvarna_mjera');
         if (!is_null($id))
             $primanja = $primanja->where('rezervacije.instruktor_id', '=', $id);
-        $primanja = $primanja->where(DB::raw('year(pocetak_rada)'), '=', $godina)
-                ->groupBy(DB::raw('month(pocetak_rada)'))
+        $primanja = $primanja->where(DB::raw('year(naplate.created_at)'), '=', $godina)
+                ->groupBy(DB::raw('month(naplate.created_at)'))
                 ->get();
 
         $mjeseci = array(1 => 'Siječanj', 'Veljača', 'Ožujak', 'Travanj', 'Svibanj', 'Lipanj',
